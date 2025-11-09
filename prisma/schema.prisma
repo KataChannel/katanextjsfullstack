@@ -10,28 +10,146 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+// ==================== USER & AUTH ====================
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
-  name      String?
+  name      String
+  role      String   @default("staff") // staff, manager, director
+  phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  posts Post[]
+  lotsCreated      Lot[]           @relation("LotCreator")
+  stockMovements   StockMovement[]
+  inventoryChecks  InventoryCheck[]
 
   @@map("users")
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
+// ==================== WAREHOUSE STRUCTURE ====================
+model Warehouse {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  address     String?
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  lots Lot[]
+
+  @@map("warehouses")
+}
+
+model Lot {
+  id          String   @id @default(uuid())
+  code        String   @unique // Mã lô tự động: LOT-YYYYMMDD-XXX
+  name        String
+  description String?
+  
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Cascade)
+  
+  createdById String
+  createdBy   User   @relation("LotCreator", fields: [createdById], references: [id])
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId String
+  boxes          Box[]
+  stockMovements StockMovement[]
 
-  @@map("posts")
+  @@map("lots")
+}
+
+model Box {
+  id          String   @id @default(uuid())
+  code        String   @unique // Mã thùng: BOX-LOT-XXX
+  qrCode      String   @unique // QR Code string
+  name        String
+  description String?
+  capacity    Int      @default(100) // Sức chứa tối đa
+  
+  lotId String
+  lot   Lot    @relation(fields: [lotId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products       Product[]
+  stockMovements StockMovement[]
+
+  @@map("boxes")
+}
+
+// ==================== PRODUCT ====================
+model Product {
+  id          String   @id @default(uuid())
+  code        String   @unique // SKU hoặc mã sản phẩm
+  qrCode      String   @unique // QR code trên từng sản phẩm
+  name        String
+  description String?
+  unit        String   @default("pcs") // pcs, kg, liter, etc
+  
+  boxId String
+  box   Box    @relation(fields: [boxId], references: [id], onDelete: Cascade)
+  
+  status String @default("in_stock") // in_stock, out_of_stock, exported
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stockMovements  StockMovement[]
+  inventoryChecks InventoryCheck[]
+
+  @@map("products")
+}
+
+// ==================== STOCK MOVEMENT ====================
+model StockMovement {
+  id          String   @id @default(uuid())
+  type        String // import, export, transfer, adjust
+  quantity    Int
+  note        String?
+  
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  
+  boxId String?
+  box   Box?    @relation(fields: [boxId], references: [id])
+  
+  lotId String?
+  lot   Lot?    @relation(fields: [lotId], references: [id])
+  
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  
+  createdAt DateTime @default(now())
+
+  @@map("stock_movements")
+}
+
+// ==================== INVENTORY CHECK ====================
+model InventoryCheck {
+  id          String   @id @default(uuid())
+  type        String   @default("periodic") // periodic, spot
+  status      String   @default("pending") // pending, in_progress, completed
+  note        String?
+  
+  expectedQty Int?
+  actualQty   Int?
+  difference  Int?
+  
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  
+  checkedById String
+  checkedBy   User   @relation(fields: [checkedById], references: [id])
+  
+  createdAt   DateTime @default(now())
+  completedAt DateTime?
+
+  @@map("inventory_checks")
 }

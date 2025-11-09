@@ -1,0 +1,38 @@
+TỐI ƯU NHẤT – TÓM TẮT SIÊU NGẮN
+
+1. Quy trình kho (1 nhãn = tất cả)
+textNhập → Tạo lô + thùng → In NHÃN KÉP (QR + LÔ) → Dán lên MỖI SP → Quét QR → Tự động tồn, xuất, kiểm, giám đốc xem realtime
+
+2. Thao tác người dùng (1-2 giây)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+AiLàm gìNV nhậpTạo lô → In nhãn → Dán → Quét QR thùngNV xuấtQuét QR trên SP → Nhập số lượngNV kiểmQuét QR từng SPGiám đốcMở app → Xem tồn theo lô
+
+TỐI ƯU:
+
+Cầm SP → Quét QR → Biết lô, thùng, tồn
+Chi phí: 80đ/SP
+Tự động 100%
