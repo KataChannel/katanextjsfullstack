@@ -91,10 +91,11 @@ Dự án **Quản Lý Kho với QR Code** đã được hoàn thiện 100% theo 
 ```
 
 ### 9. ✅ Developer Experience (rule #4)
+- [x] **Bun.js runtime** - Nhanh hơn Node.js ~3-5x
 - [x] TypeScript strict mode
-- [x] Prisma Studio: `npm run db:studio`
+- [x] Prisma Studio: `bun run db:studio`
 - [x] Hot reload: Turbopack
-- [x] Seed script: `npm run db:seed`
+- [x] Seed script: `bun run db:seed`
 - [x] Clear error messages với Sonner toast
 
 ### 10. ✅ Documentation (rule #9)
@@ -194,27 +195,29 @@ katanextjsfullstack/
 
 ---
 
-## 🚀 Commands Chính
+## 🚀 Commands Chính (Bun.js)
 
 ```bash
 # Setup lần đầu
-npm install
-npm run db:migrate
-npm run db:seed
+bun install
+bun run db:migrate
+bun run db:seed
 
 # Development
-npm run dev              # http://localhost:3000
-npm run db:studio        # http://localhost:5555
+bun dev                  # http://localhost:3000 (nhanh hơn npm ~3x)
+bun run db:studio        # http://localhost:5555
 
 # Build & Deploy
-npm run build
-npm run start
+bun run build
+bun run start
 
 # Database
-npm run db:migrate       # Tạo migration mới
-npm run db:reset         # Reset database
-npm run db:generate      # Generate Prisma Client
+bun run db:migrate       # Tạo migration mới
+bun run db:reset         # Reset database
+bun run db:generate      # Generate Prisma Client
 ```
+
+> **⚡ Bun.js**: Dự án sử dụng Bun thay vì Node.js - nhanh hơn ~3-5x
 
 ---
 

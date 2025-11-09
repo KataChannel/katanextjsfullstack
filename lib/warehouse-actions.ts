@@ -140,8 +140,8 @@ export async function getBoxes(lotId?: string) {
             warehouse: true
           }
         },
-        _count: {
-          select: { products: true }
+        products: {
+          orderBy: { createdAt: 'desc' }
         }
       }
     })

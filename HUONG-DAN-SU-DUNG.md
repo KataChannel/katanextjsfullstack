@@ -53,22 +53,24 @@ Warehouse (Kho) → Lot (Lô) → Box (Thùng) → Product (Sản phẩm)
 
 ### 1. Cài dependencies
 ```bash
-npm install
+bun install
 ```
 
 ### 2. Setup database
 ```bash
-npx prisma migrate dev
+bun run db:migrate
 ```
 
 ### 3. Chạy dev
 ```bash
-npm run dev
+bun run dev
+# hoặc
+bun dev
 ```
 
 ### 4. Mở Prisma Studio (theo dõi DB)
 ```bash
-npx prisma studio
+bun run db:studio
 ```
 
 ## Server Actions Chính
@@ -149,26 +151,30 @@ npx prisma studio
 
 ### Bước 1: Cài đặt dependencies
 ```bash
-npm install
+bun install
 ```
 
 ### Bước 2: Setup database
 ```bash
-npm run db:migrate
-npm run db:seed
+bun run db:migrate
+bun run db:seed
 ```
 
 ### Bước 3: Chạy development
 ```bash
-npm run dev
+bun run dev
+# hoặc
+bun dev
 ```
 
 ### Bước 4: Mở Prisma Studio (tùy chọn)
 ```bash
-npm run db:studio
+bun run db:studio
 ```
 
 Ứng dụng sẽ chạy tại: http://localhost:3000
+
+**Lưu ý**: Dự án sử dụng **Bun.js** - runtime JavaScript nhanh hơn Node.js
 
 ## File Quan Trọng
 - `/prisma/schema.prisma` → 6 models chính

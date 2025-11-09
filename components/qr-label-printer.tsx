@@ -108,41 +108,43 @@ export function QRLabelPrinter({ qrCodeDataUrl, title, code, additionalInfo }: Q
       </Button>
 
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
+        <DialogContent className="max-w-sm flex flex-col max-h-[90vh]">
+          <DialogHeader className="shrink-0">
             <DialogTitle>Xem trước nhãn QR</DialogTitle>
             <DialogDescription>
               Nhãn sẽ được in với kích thước 80mm x 50mm
             </DialogDescription>
           </DialogHeader>
           
-          <div className="flex flex-col items-center space-y-4 py-4">
-            <Card className="w-full">
-              <CardHeader className="text-center pb-2">
-                <CardTitle className="text-lg">{title}</CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center space-y-2">
-                {qrCodeDataUrl && (
-                  <img 
-                    src={qrCodeDataUrl} 
-                    alt="QR Code" 
-                    className="w-32 h-32 border-2 border-muted"
-                  />
-                )}
-                <p className="font-mono text-sm font-bold">{code}</p>
-                {additionalInfo && (
-                  <CardDescription className="text-xs">{additionalInfo}</CardDescription>
-                )}
-              </CardContent>
-            </Card>
+          <div className="flex-1 overflow-y-auto px-1">
+            <div className="flex flex-col items-center space-y-4 py-4">
+              <Card className="w-full">
+                <CardHeader className="text-center pb-2">
+                  <CardTitle className="text-lg">{title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center space-y-2">
+                  {qrCodeDataUrl && (
+                    <img 
+                      src={qrCodeDataUrl} 
+                      alt="QR Code" 
+                      className="w-32 h-32 border-2 border-muted"
+                    />
+                  )}
+                  <p className="font-mono text-sm font-bold">{code}</p>
+                  {additionalInfo && (
+                    <CardDescription className="text-xs text-center">{additionalInfo}</CardDescription>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
-          <DialogFooter className="flex-col space-y-2">
-            <Button onClick={handlePrint} className="w-full">
+          <DialogFooter className="shrink-0 flex-col space-y-2 sm:space-y-2">
+            <Button onClick={handlePrint}>
               <Printer className="h-4 w-4 mr-2" />
               In ngay
             </Button>
-            <Button variant="outline" onClick={() => setShowPreview(false)} className="w-full">
+            <Button variant="outline" onClick={() => setShowPreview(false)}>
               Đóng
             </Button>
           </DialogFooter>

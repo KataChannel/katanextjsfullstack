@@ -5,21 +5,24 @@
 ## 🚀 Quick Start
 
 ```bash
-# 1. Cài đặt
-npm install
+# 1. Cài đặt (yêu cầu Bun.js)
+bun install
 
 # 2. Setup database
-npm run db:migrate
-npm run db:seed
+bun run db:migrate
+bun run db:seed
 
 # 3. Chạy app
-npm run dev
+bun dev
 
 # 4. Xem database (optional)
-npm run db:studio
+bun run db:studio
 ```
 
 Mở: http://localhost:3000
+
+> **⚡ Bun.js Required**: Dự án sử dụng Bun - runtime JavaScript siêu nhanh
+> Cài đặt: `curl -fsSL https://bun.sh/install | bash`
 
 ## 📱 Tính năng
 
@@ -32,6 +35,7 @@ Mở: http://localhost:3000
 
 ## 🛠 Tech Stack
 
+- **Bun.js** - Runtime siêu nhanh (thay Node.js)
 - **Next.js 16** (React 19, Turbopack)
 - **shadcn/ui** (15+ components)
 - **Prisma** (SQLite → PostgreSQL ready)
@@ -87,16 +91,17 @@ prisma/
 ## 🔧 Database Commands
 
 ```bash
-npm run db:studio    # Prisma Studio
-npm run db:migrate   # Create migration
-npm run db:seed      # Seed demo data
-npm run db:reset     # Reset DB
+bun run db:studio    # Prisma Studio
+bun run db:migrate   # Create migration
+bun run db:seed      # Seed demo data
+bun run db:reset     # Reset DB
 ```
 
-1. **Database changes**: Chạy `npm run db:migrate` sau khi thay đổi schema
-2. **Type safety**: Prisma tự generate types cho database
-3. **Real-time data**: Sử dụng `revalidatePath()` để update UI
-4. **Toast notifications**: Tự động hiển thị thành công/lỗi
+1. **Bun Runtime**: Nhanh hơn Node.js ~3x, built-in TypeScript
+2. **Database changes**: Chạy `bun run db:migrate` sau khi thay đổi schema
+3. **Type safety**: Prisma tự generate types cho database
+4. **Real-time data**: Sử dụng `revalidatePath()` để update UI
+5. **Toast notifications**: Tự động hiển thị thành công/lỗi
 
 ---
 

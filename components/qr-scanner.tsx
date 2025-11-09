@@ -16,6 +16,7 @@ interface QRScannerProps {
 
 export function QRScanner({ onScan, title = "Quét QR Code", description }: QRScannerProps) {
   const [isScanning, setIsScanning] = useState(false)
+  const [isInitializing, setIsInitializing] = useState(false)
   const [manualMode, setManualMode] = useState(false)
   const [manualInput, setManualInput] = useState("")
   const scannerRef = useRef<Html5Qrcode | null>(null)
@@ -23,49 +24,104 @@ export function QRScanner({ onScan, title = "Quét QR Code", description }: QRSc
 
   useEffect(() => {
     return () => {
+      // Cleanup on unmount
       if (scannerRef.current) {
-        scannerRef.current.stop().catch(console.error)
+        scannerRef.current.stop().catch(() => {
+          // Ignore errors during cleanup
+        }).finally(() => {
+          try {
+            scannerRef.current?.clear()
+          } catch {
+            // Ignore clear errors
+          }
+          scannerRef.current = null
+        })
       }
     }
   }, [])
 
-  const startScanning = async () => {
-    try {
-      const html5QrCode = new Html5Qrcode(qrCodeRegionId)
-      scannerRef.current = html5QrCode
+  useEffect(() => {
+    // Start scanner after DOM is ready
+    if (isInitializing && !isScanning) {
+      const initScanner = async () => {
+        try {
+          // Wait for DOM to be ready
+          await new Promise(resolve => setTimeout(resolve, 100))
+          
+          const element = document.getElementById(qrCodeRegionId)
+          if (!element) {
+            throw new Error("QR reader element not found")
+          }
 
-      await html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 10,
-          qrbox: { width: 250, height: 250 },
-        },
-        (decodedText) => {
-          onScan(decodedText)
-          stopScanning()
-        },
-        (errorMessage) => {
-          // Ignore errors
+          const html5QrCode = new Html5Qrcode(qrCodeRegionId)
+          scannerRef.current = html5QrCode
+
+          await html5QrCode.start(
+            { facingMode: "environment" },
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 250 },
+            },
+            (decodedText) => {
+              onScan(decodedText)
+              stopScanning()
+            },
+            (errorMessage) => {
+              // Ignore scanning errors
+            }
+          )
+
+          setIsScanning(true)
+          setIsInitializing(false)
+        } catch (err) {
+          console.error("Error starting scanner:", err)
+          setIsInitializing(false)
+          setIsScanning(false)
+          alert("Không thể khởi động camera. Vui lòng nhập QR code thủ công.")
+          setManualMode(true)
         }
-      )
+      }
 
-      setIsScanning(true)
-    } catch (err) {
-      console.error("Error starting scanner:", err)
-      alert("Không thể khởi động camera. Vui lòng nhập QR code thủ công.")
-      setManualMode(true)
+      initScanner()
     }
+  }, [isInitializing, isScanning, onScan])
+
+  const startScanning = () => {
+    setIsInitializing(true)
   }
 
   const stopScanning = async () => {
     if (scannerRef.current) {
-      try {
-        await scannerRef.current.stop()
+      const scanner = scannerRef.current
+      
+      // Check if DOM element still exists
+      const element = document.getElementById(qrCodeRegionId)
+      if (!element) {
+        // Element already removed, just cleanup state
         scannerRef.current = null
         setIsScanning(false)
-      } catch (err) {
-        console.error("Error stopping scanner:", err)
+        setIsInitializing(false)
+        return
       }
+      
+      try {
+        // Stop the scanner first
+        await scanner.stop()
+      } catch (err) {
+        // Ignore errors - element might be in invalid state
+      }
+      
+      try {
+        // Clear the scanner UI
+        scanner.clear()
+      } catch (err) {
+        // Ignore clear errors
+      }
+      
+      // Always cleanup state
+      scannerRef.current = null
+      setIsScanning(false)
+      setIsInitializing(false)
     }
   }
 
@@ -126,7 +182,7 @@ export function QRScanner({ onScan, title = "Quét QR Code", description }: QRSc
         {description && <CardDescription>{description}</CardDescription>}
       </CardHeader>
       <CardContent className="space-y-4">
-        {!isScanning ? (
+        {!isScanning && !isInitializing ? (
           <div className="flex flex-col space-y-2">
             <Button onClick={startScanning} className="w-full">
               <Camera className="h-4 w-4 mr-2" />
@@ -145,9 +201,18 @@ export function QRScanner({ onScan, title = "Quét QR Code", description }: QRSc
           <div className="space-y-4">
             <div
               id={qrCodeRegionId}
-              className="w-full rounded-lg overflow-hidden border"
-            />
-            <Button onClick={stopScanning} variant="destructive" className="w-full">
+              className="w-full rounded-lg overflow-hidden border min-h-[300px] flex items-center justify-center bg-muted"
+            >
+              {isInitializing && (
+                <p className="text-sm text-muted-foreground">Đang khởi động camera...</p>
+              )}
+            </div>
+            <Button 
+              onClick={stopScanning} 
+              variant="destructive" 
+              className="w-full"
+              disabled={isInitializing}
+            >
               <X className="h-4 w-4 mr-2" />
               Dừng quét
             </Button>

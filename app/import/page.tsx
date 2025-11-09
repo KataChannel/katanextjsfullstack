@@ -3,6 +3,7 @@ import { CreateLotForm } from "@/components/import/create-lot-form"
 import { CreateBoxForm } from "@/components/import/create-box-form"
 import { CreateProductsForm } from "@/components/import/create-products-form"
 import { ScanBoxQR } from "@/components/import/scan-box-qr"
+import { ViewBoxes } from "@/components/import/view-boxes"
 import { getLots, getWarehouses } from "@/lib/warehouse-actions"
 
 export default async function ImportPage() {
@@ -21,11 +22,12 @@ export default async function ImportPage() {
       </div>
 
       <Tabs defaultValue="lot" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="lot">1. Lô</TabsTrigger>
           <TabsTrigger value="box">2. Thùng</TabsTrigger>
           <TabsTrigger value="product">3. SP</TabsTrigger>
-          <TabsTrigger value="scan">4. Quét</TabsTrigger>
+          <TabsTrigger value="view">📦 Xem</TabsTrigger>
+          <TabsTrigger value="scan">Quét</TabsTrigger>
         </TabsList>
 
         <TabsContent value="lot" className="space-y-4 mt-4">
@@ -38,6 +40,10 @@ export default async function ImportPage() {
 
         <TabsContent value="product" className="space-y-4 mt-4">
           <CreateProductsForm lots={lots} />
+        </TabsContent>
+
+        <TabsContent value="view" className="space-y-4 mt-4">
+          <ViewBoxes lots={lots} />
         </TabsContent>
 
         <TabsContent value="scan" className="space-y-4 mt-4">
