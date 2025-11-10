@@ -1,2 +1,7 @@
-1. Sử dụng rule từ rulepromt.txt
-2. 
+1. Code websie chuẩn SEO Nextjs Fullstack 1 code base dự án này của tôi triển khai cho các domain 
+tazagroup.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/tazagroupvn"
+tazaskinclinic.com : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/tazaskinclinic"
+timona.edu.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/tazagroupvn"
+hderma.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/hderma"
+elasome.com : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/elasome"
+2. Xây dụng công cụ page builder kết hợp với tiptap Notion-like editor.
