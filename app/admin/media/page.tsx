@@ -11,8 +11,8 @@ export default async function MediaLibraryPage({
 }: {
   searchParams: Promise<{ q?: string }>;
 }) {
-  const params = await searchParams;
-  const searchQuery = params.q || "";
+  const { q } = await searchParams;
+  const searchQuery = q || "";
   
   const prisma = await getPrisma();
   

@@ -1,0 +1,275 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";import { Button } from "@/components/ui/button"
+
+import { Badge } from "@/components/ui/badge";import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+import { Button } from "@/components/ui/button";import { CreatePostForm } from "@/components/create-post-form"
+
+import { getPrisma } from "@/lib/prisma";import { TogglePublishButton } from "@/components/toggle-publish-button"
+
+import { generateSEOMetadata } from "@/lib/seo";import { getPosts, getUsers } from "@/lib/actions"
+
+import Link from "next/link";import { generateSEOMetadata } from "@/lib/seo"
+
+import { Clock, User, ArrowRight } from "lucide-react";import Link from "next/link"
+
+import type { Metadata } from "next";import type { Metadata } from "next"
+
+
+
+export const metadata: Metadata = generateSEOMetadata({export const metadata: Metadata = generateSEOMetadata({
+
+  title: "Blog - Kiến thức làm đẹp",  title: "Quản lý bài viết",
+
+  description: "Khám phá những bài viết hữu ích về làm đẹp, chăm sóc da và xu hướng thẩm mỹ mới nhất",  description: "Danh sách và quản lý tất cả bài viết trên website",
+
+  ogType: "website",  ogType: "website",
+
+});})
+
+
+
+export default async function BlogListPage() {export default async function PostsPage() {
+
+  const prisma = await getPrisma('tazagroup.vn');  const posts = await getPosts()
+
+    const users = await getUsers()
+
+  const posts = await prisma.post.findMany({
+
+    where: { published: true },  return (
+
+    orderBy: { createdAt: 'desc' },    <div className="container mx-auto p-6 space-y-8">
+
+    select: {      <div className="flex justify-between items-center">
+
+      id: true,        <h1 className="text-3xl font-bold">Quản lý Posts</h1>
+
+      title: true,        <Button variant="outline" asChild>
+
+      slug: true,          <Link href="/">← Trở về</Link>
+
+      excerpt: true,        </Button>
+
+      createdAt: true,      </div>
+
+      author: {
+
+        select: {      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+          name: true,        <Card>
+
+          email: true,          <CardHeader>
+
+        }            <CardTitle>Tạo Post mới</CardTitle>
+
+      }            <CardDescription>
+
+    }              Viết một bài post mới
+
+  });            </CardDescription>
+
+          </CardHeader>
+
+  return (          <CardContent>
+
+    <div className="min-h-screen">            {users.length === 0 ? (
+
+      {/* Header Section */}              <div className="text-center py-8">
+
+      <section className="bg-linear-to-b from-primary/5 to-background py-12 sm:py-16 border-b">                <p className="text-muted-foreground mb-4">
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">                  Chưa có user nào để tạo post
+
+          <div className="max-w-3xl mx-auto text-center space-y-4">                </p>
+
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">                <Button asChild variant="outline">
+
+              Blog làm đẹp                  <Link href="/users">Tạo User trước</Link>
+
+            </h1>                </Button>
+
+            <p className="text-base sm:text-lg text-muted-foreground">              </div>
+
+              Cập nhật kiến thức chăm sóc sắc đẹp, xu hướng làm đẹp và tips từ chuyên gia            ) : (
+
+            </p>              <CreatePostForm users={users} />
+
+            <Badge variant="secondary" className="mt-4">            )}
+
+              {posts.length} bài viết          </CardContent>
+
+            </Badge>        </Card>
+
+          </div>
+
+        </div>        <Card>
+
+      </section>          <CardHeader>
+
+            <CardTitle>Danh sách Posts ({posts.length})</CardTitle>
+
+      {/* Blog List */}            <CardDescription>
+
+      <section className="py-12 sm:py-16 lg:py-20">              Tất cả bài viết trong hệ thống
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">            </CardDescription>
+
+          {posts.length === 0 ? (          </CardHeader>
+
+            <Card>          <CardContent>
+
+              <CardContent className="py-16 text-center space-y-4">            {posts.length === 0 ? (
+
+                <p className="text-lg text-muted-foreground">              <p className="text-muted-foreground text-center py-8">
+
+                  Chưa có bài viết nào được xuất bản.                Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!
+
+                </p>              </p>
+
+                <Button variant="outline" asChild>            ) : (
+
+                  <Link href="/">Về trang chủ</Link>              <div className="space-y-4">
+
+                </Button>                {posts.map((post) => (
+
+              </CardContent>                  <div 
+
+            </Card>                    key={post.id} 
+
+          ) : (                    className="p-4 border rounded-lg space-y-3"
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">                  >
+
+              {posts.map((post) => (                    <div className="flex justify-between items-start">
+
+                <Card                       <div className="flex-1">
+
+                  key={post.id}                         <h3 className="font-semibold line-clamp-2">
+
+                  className="flex flex-col hover:shadow-xl transition-all duration-300 group"                          {post.title}
+
+                >                        </h3>
+
+                  <CardHeader className="space-y-3">                        <p className="text-sm text-muted-foreground mt-1">
+
+                    {/* Meta Info */}                          bởi {post.author.name || post.author.email}
+
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">                        </p>
+
+                      <div className="flex items-center gap-1">                      </div>
+
+                        <Clock className="h-3 w-3" />                      <div className="flex items-center gap-2">
+
+                        <time dateTime={post.createdAt.toISOString()}>                        <span className={`text-xs px-2 py-1 rounded ${
+
+                          {new Date(post.createdAt).toLocaleDateString('vi-VN', {                          post.published 
+
+                            year: 'numeric',                            ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' 
+
+                            month: 'long',                            : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
+
+                            day: 'numeric'                        }`}>
+
+                          })}                          {post.published ? 'Published' : 'Draft'}
+
+                        </time>                        </span>
+
+                      </div>                      </div>
+
+                    </div>                    </div>
+
+                    
+
+                    {/* Title */}                    {post.content && (
+
+                    <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">                      <p className="text-sm line-clamp-3">
+
+                      <Link href={`/posts/${post.slug}`} className="hover:underline">                        {post.content}
+
+                        {post.title}                      </p>
+
+                      </Link>                    )}
+
+                    </CardTitle>                    
+
+                  </CardHeader>                    <div className="flex justify-between items-center pt-2 border-t text-xs text-muted-foreground">
+
+                      <div className="flex items-center gap-2">
+
+                  <CardContent className="flex-1 flex flex-col space-y-4">                        <span>
+
+                    {/* Excerpt */}                          {new Date(post.createdAt).toLocaleDateString('vi-VN')}
+
+                    <CardDescription className="line-clamp-3 flex-1">                        </span>
+
+                      {post.excerpt || 'Nhấn để đọc thêm nội dung chi tiết...'}                        {post.published && (
+
+                    </CardDescription>                          <>
+
+                            <span>•</span>
+
+                    {/* Footer */}                            <Link 
+
+                    <div className="pt-4 border-t flex items-center justify-between">                              href={`/posts/${post.slug}`}
+
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">                              className="text-primary hover:underline"
+
+                        <User className="h-3 w-3" />                            >
+
+                        <span className="truncate max-w-[150px]">                              Xem bài viết →
+
+                          {post.author.name || post.author.email}                            </Link>
+
+                        </span>                          </>
+
+                      </div>                        )}
+
+                      <Button variant="ghost" size="sm" asChild>                      </div>
+
+                        <Link href={`/posts/${post.slug}`}>                      <TogglePublishButton postId={post.id} published={post.published} />
+
+                          Đọc thêm                    </div>
+
+                          <ArrowRight className="ml-1 h-3 w-3" />                  </div>
+
+                        </Link>                ))}
+
+                      </Button>              </div>
+
+                    </div>            )}
+
+                  </CardContent>          </CardContent>
+
+                </Card>        </Card>
+
+              ))}      </div>
+
+            </div>    </div>
+
+          )}  )
+
+        </div>}
+      </section>
+
+      {/* CTA Section */}
+      {posts.length > 0 && (
+        <section className="py-12 sm:py-16 bg-muted/30 border-t">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-bold">
+              Bạn muốn được tư vấn thêm?
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Liên hệ với chúng tôi để nhận tư vấn miễn phí từ các chuyên gia làm đẹp
+            </p>
+            <Button size="lg" asChild>
+              <Link href="/lien-he">
+                Liên hệ ngay
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}

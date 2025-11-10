@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@/components/analytics";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { headers } from "next/headers";
 import { extractDomain } from "@/lib/database";
 import { getPrisma } from "@/lib/prisma";
@@ -115,7 +117,11 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <Header />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
         <Toaster />
         
         {/* Analytics Scripts */}

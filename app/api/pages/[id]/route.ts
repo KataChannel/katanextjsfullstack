@@ -18,12 +18,13 @@ const pageUpdateSchema = z.object({
 // GET /api/pages/[id] - Get single page
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const prisma = await getPrisma();
     const page = await prisma.page.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         author: {
           select: {
@@ -58,9 +59,10 @@ export async function GET(
 // PATCH /api/pages/[id] - Update page
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const validatedData = pageUpdateSchema.parse(body);
 
@@ -72,7 +74,7 @@ export async function PATCH(
         where: { slug: validatedData.slug },
       });
 
-      if (existingPage && existingPage.id !== params.id) {
+      if (existingPage && existingPage.id !== id) {
         return NextResponse.json(
           { success: false, error: 'Slug đã tồn tại' },
           { status: 400 }
@@ -81,7 +83,7 @@ export async function PATCH(
     }
 
     const page = await prisma.page.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...validatedData,
         blocks: validatedData.blocks ? validatedData.blocks : undefined,
@@ -121,13 +123,14 @@ export async function PATCH(
 // DELETE /api/pages/[id] - Delete page
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const prisma = await getPrisma();
 
     await prisma.page.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({

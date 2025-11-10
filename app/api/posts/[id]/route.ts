@@ -18,12 +18,13 @@ const postUpdateSchema = z.object({
 // GET /api/posts/[id] - Get single post
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const prisma = await getPrisma();
     const post = await prisma.post.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         author: {
           select: {
@@ -58,9 +59,10 @@ export async function GET(
 // PATCH /api/posts/[id] - Update post
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
     const validatedData = postUpdateSchema.parse(body);
 
@@ -72,7 +74,7 @@ export async function PATCH(
         where: { slug: validatedData.slug },
       });
 
-      if (existingPost && existingPost.id !== params.id) {
+      if (existingPost && existingPost.id !== id) {
         return NextResponse.json(
           { success: false, error: 'Slug đã tồn tại' },
           { status: 400 }
@@ -81,7 +83,7 @@ export async function PATCH(
     }
 
     const post = await prisma.post.update({
-      where: { id: params.id },
+      where: { id },
       data: validatedData,
       include: {
         author: {
@@ -118,13 +120,14 @@ export async function PATCH(
 // DELETE /api/posts/[id] - Delete post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const prisma = await getPrisma();
 
     await prisma.post.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({

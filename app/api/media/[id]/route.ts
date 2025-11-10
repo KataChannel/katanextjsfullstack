@@ -6,12 +6,13 @@ import { join } from 'path';
 // GET /api/media/[id] - Get single media
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const prisma = await getPrisma();
     const media = await prisma.media.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!media) {
@@ -37,14 +38,15 @@ export async function GET(
 // DELETE /api/media/[id] - Delete media
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const prisma = await getPrisma();
 
     // Get media info
     const media = await prisma.media.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!media) {
@@ -65,7 +67,7 @@ export async function DELETE(
 
     // Delete from database
     await prisma.media.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({

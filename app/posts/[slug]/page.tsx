@@ -5,17 +5,18 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 
 interface PostProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: PostProps): Promise<Metadata> {
+  const { slug } = await params;
   const prisma = await getPrisma();
   
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   });
 
   if (!post) {
@@ -37,7 +38,8 @@ export async function generateMetadata({ params }: PostProps): Promise<Metadata>
 // Generate static params
 export async function generateStaticParams() {
   try {
-    const prisma = await getPrisma();
+    // Sử dụng domain mặc định cho build time
+    const prisma = await getPrisma('tazagroup.vn');
     const posts = await prisma.post.findMany({
       where: { published: true },
       select: { slug: true },
@@ -53,12 +55,13 @@ export async function generateStaticParams() {
 }
 
 export default async function PostDetail({ params }: PostProps) {
+  const { slug } = await params;
   const prisma = await getPrisma();
   const headersList = await headers();
   const hostname = headersList.get('x-hostname') || 'tazagroup.vn';
 
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: {
       author: {
         select: {

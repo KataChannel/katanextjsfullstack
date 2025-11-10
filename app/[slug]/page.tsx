@@ -4,17 +4,18 @@ import { generateSEOMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
   const prisma = await getPrisma();
   
   const page = await prisma.page.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   });
 
   if (!page) {
@@ -36,7 +37,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 // Generate static params for static generation
 export async function generateStaticParams() {
   try {
-    const prisma = await getPrisma();
+    // Sử dụng domain mặc định cho build time
+    const prisma = await getPrisma('tazagroup.vn');
     const pages = await prisma.page.findMany({
       where: { published: true },
       select: { slug: true },
@@ -52,10 +54,11 @@ export async function generateStaticParams() {
 }
 
 export default async function PageDetail({ params }: PageProps) {
+  const { slug } = await params;
   const prisma = await getPrisma();
 
   const page = await prisma.page.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     include: {
       author: {
         select: {

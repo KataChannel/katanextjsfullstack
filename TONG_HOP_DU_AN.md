@@ -146,18 +146,27 @@ File `.env`:
 DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/tazagroupvn"
 ```
 
-### 3. Chạy Development
+### 3. Setup Tất Cả Databases
+```bash
+bash scripts/setup-databases.sh
+```
+Script này sẽ:
+- Tạo 4 databases: tazagroupvn, tazaskinclinic, hderma, elasome
+- Push schema cho mỗi database
+- Generate Prisma Client
+
+### 4. Chạy Development
 ```bash
 npm run dev
 ```
 
-### 4. Build Production
+### 5. Build Production
 ```bash
 npm run build
 npm run start
 ```
 
-### 5. Quản Lý Database
+### 6. Quản Lý Database
 ```bash
 npm run db:studio      # Prisma Studio
 npm run db:push        # Push schema

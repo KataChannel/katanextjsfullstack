@@ -72,9 +72,16 @@ export async function createPost(formData: FormData) {
       return { success: false, error: 'Author not found' }
     }
 
+    // Generate slug from title
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
     const post = await prisma.post.create({
       data: {
         title,
+        slug,
         content: content || null,
         authorId,
       },

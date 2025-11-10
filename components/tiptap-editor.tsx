@@ -45,6 +45,7 @@ export function TiptapEditor({
   placeholder = 'Bắt đầu viết nội dung...',
 }: TiptapEditorProps) {
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: {
