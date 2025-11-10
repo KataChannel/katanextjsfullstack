@@ -1,162 +1,151 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { getUsers, getPosts } from "@/lib/actions"
-import Link from "next/link"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { getPrisma } from "@/lib/prisma";
+import Link from "next/link";
+import { FileText, Image, Users, Layout, Settings, BarChart3 } from "lucide-react";
 
 export default async function AdminPage() {
-  const users = await getUsers()
-  const posts = await getPosts()
+  const prisma = await getPrisma();
+  const [postsCount, pagesCount, usersCount, mediaCount] = await Promise.all([
+    prisma.post.count(),
+    prisma.page.count(),
+    prisma.user.count(),
+    prisma.media.count(),
+  ]);
 
-  const publishedPosts = posts.filter(post => post.published)
-  const draftPosts = posts.filter(post => !post.published)
-
-  const stats = {
-    totalUsers: users.length,
-    totalPosts: posts.length,
-    publishedPosts: publishedPosts.length,
-    draftPosts: draftPosts.length,
-    recentUsers: users.slice(0, 5),
-    recentPosts: posts.slice(0, 5)
-  }
+  const stats = [
+    { title: "Bài viết", count: postsCount, icon: FileText, href: "/posts", description: "Quản lý bài viết blog" },
+    { title: "Trang", count: pagesCount, icon: Layout, href: "/admin/pages", description: "Quản lý trang tĩnh" },
+    { title: "Người dùng", count: usersCount, icon: Users, href: "/users", description: "Quản lý người dùng" },
+    { title: "Media", count: mediaCount, icon: Image, href: "/admin/media", description: "Thư viện hình ảnh" },
+  ];
 
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Tổng quan hệ thống</p>
+          <p className="text-muted-foreground mt-2">Chào mừng đến với trang quản trị website</p>
         </div>
-        <Button variant="outline" asChild>
-          <Link href="/">← Trở về trang chủ</Link>
-        </Button>
+        <Button variant="outline" asChild><Link href="/">← Về trang chủ</Link></Button>
       </div>
 
-      {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Tổng Users</CardDescription>
-            <CardTitle className="text-3xl">{stats.totalUsers}</CardTitle>
-          </CardHeader>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Tổng Posts</CardDescription>
-            <CardTitle className="text-3xl">{stats.totalPosts}</CardTitle>
-          </CardHeader>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Posts Published</CardDescription>
-            <CardTitle className="text-3xl text-green-600">{stats.publishedPosts}</CardTitle>
-          </CardHeader>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Posts Draft</CardDescription>
-            <CardTitle className="text-3xl text-yellow-600">{stats.draftPosts}</CardTitle>
-          </CardHeader>
-        </Card>
+        {stats.map((stat) => {
+          const Icon = stat.icon;
+          return (
+            <Card key={stat.title} className="hover:shadow-lg transition-shadow">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <Icon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.count}</div>
+                <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
+                <Button variant="link" className="px-0 mt-2" asChild>
+                  <Link href={stat.href}>Quản lý →</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
-      {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Hành động nhanh</CardTitle>
-          <CardDescription>Các thao tác thường dùng</CardDescription>
+          <CardTitle>Thao tác nhanh</CardTitle>
+          <CardDescription>Các công cụ và tính năng thường dùng</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-4">
-            <Button asChild>
-              <Link href="/users">Quản lý Users</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/posts">Quản lý Posts</Link>
-            </Button>
-            <Button asChild variant="secondary">
-              <Link href="http://localhost:5556" target="_blank">
-                Mở Prisma Studio
-              </Link>
-            </Button>
-          </div>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Button variant="outline" className="justify-start h-auto py-4" asChild>
+            <Link href="/admin/page-builder">
+              <Layout className="mr-2 h-5 w-5" />
+              <div className="text-left"><div className="font-semibold">Page Builder</div><div className="text-xs text-muted-foreground">Tạo trang mới</div></div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="justify-start h-auto py-4" asChild>
+            <Link href="/posts">
+              <FileText className="mr-2 h-5 w-5" />
+              <div className="text-left"><div className="font-semibold">Tạo bài viết</div><div className="text-xs text-muted-foreground">Viết bài mới</div></div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="justify-start h-auto py-4" asChild>
+            <Link href="/admin/media">
+              <Image className="mr-2 h-5 w-5" />
+              <div className="text-left"><div className="font-semibold">Thư viện Media</div><div className="text-xs text-muted-foreground">Upload file</div></div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="justify-start h-auto py-4" asChild>
+            <Link href="/admin/seo-settings">
+              <Settings className="mr-2 h-5 w-5" />
+              <div className="text-left"><div className="font-semibold">Cài đặt SEO</div><div className="text-xs text-muted-foreground">Cấu hình SEO</div></div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="justify-start h-auto py-4" asChild>
+            <Link href="/admin/analytics">
+              <BarChart3 className="mr-2 h-5 w-5" />
+              <div className="text-left"><div className="font-semibold">Analytics</div><div className="text-xs text-muted-foreground">Thống kê</div></div>
+            </Link>
+          </Button>
+          <Button variant="outline" className="justify-start h-auto py-4" asChild>
+            <Link href="/users">
+              <Users className="mr-2 h-5 w-5" />
+              <div className="text-left"><div className="font-semibold">Người dùng</div><div className="text-xs text-muted-foreground">Quản lý users</div></div>
+            </Link>
+          </Button>
         </CardContent>
       </Card>
 
-      {/* Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Users gần đây</CardTitle>
-            <CardDescription>5 người dùng mới nhất</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {stats.recentUsers.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">
-                Chưa có user nào
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {stats.recentUsers.map((user) => (
-                  <div key={user.id} className="flex justify-between items-center">
-                    <div>
-                      <p className="font-medium">{user.name || "Chưa có tên"}</p>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
-                    </div>
-                    <div className="text-right">
-                      <Badge variant="outline">
-                        {user.posts.length} posts
-                      </Badge>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(user.createdAt).toLocaleDateString('vi-VN')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Posts gần đây</CardTitle>
-            <CardDescription>5 bài viết mới nhất</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {stats.recentPosts.length === 0 ? (
-              <p className="text-muted-foreground text-center py-4">
-                Chưa có bài viết nào
-              </p>
-            ) : (
-              <div className="space-y-4">
-                {stats.recentPosts.map((post) => (
-                  <div key={post.id} className="space-y-2">
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-medium line-clamp-1 flex-1">
-                        {post.title}
-                      </h4>
-                      <Badge 
-                        variant={post.published ? "default" : "secondary"}
-                        className="ml-2"
-                      >
-                        {post.published ? "Published" : "Draft"}
-                      </Badge>
-                    </div>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>bởi {post.author.name || post.author.email}</span>
-                      <span>{new Date(post.createdAt).toLocaleDateString('vi-VN')}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Hoạt động gần đây</CardTitle>
+          <CardDescription>Các thay đổi và cập nhật mới nhất</CardDescription>
+        </CardHeader>
+        <CardContent><RecentActivity /></CardContent>
+      </Card>
     </div>
-  )
+  );
+}
+
+async function RecentActivity() {
+  const prisma = await getPrisma();
+  const [recentPosts, recentPages] = await Promise.all([
+    prisma.post.findMany({ take: 3, orderBy: { updatedAt: 'desc' }, include: { author: true } }),
+    prisma.page.findMany({ take: 3, orderBy: { updatedAt: 'desc' }, include: { author: true } }),
+  ]);
+
+  return (
+    <div className="space-y-4">
+      {recentPosts.length === 0 && recentPages.length === 0 ? (
+        <p className="text-sm text-muted-foreground text-center py-8">Chưa có hoạt động nào</p>
+      ) : (
+        <>
+          {recentPosts.map((post) => (
+            <div key={`post-${post.id}`} className="flex items-center justify-between py-2 border-b last:border-0">
+              <div className="flex items-center gap-3">
+                <FileText className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">{post.title}</p>
+                  <p className="text-xs text-muted-foreground">Bài viết • Bởi {post.author.name || 'Admin'}</p>
+                </div>
+              </div>
+              <span className="text-xs text-muted-foreground">{new Date(post.updatedAt).toLocaleDateString('vi-VN')}</span>
+            </div>
+          ))}
+          {recentPages.map((page) => (
+            <div key={`page-${page.id}`} className="flex items-center justify-between py-2 border-b last:border-0">
+              <div className="flex items-center gap-3">
+                <Layout className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium">{page.title}</p>
+                  <p className="text-xs text-muted-foreground">Trang • Bởi {page.author.name || 'Admin'}</p>
+                </div>
+              </div>
+              <span className="text-xs text-muted-foreground">{new Date(page.updatedAt).toLocaleDateString('vi-VN')}</span>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
 }

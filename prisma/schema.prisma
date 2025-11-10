@@ -6,27 +6,40 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
+  role      String   @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   posts Post[]
+  pages Page[]
 
   @@map("users")
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String?
+  excerpt     String?
+  published   Boolean  @default(false)
+  
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
+  ogType          String?  @default("article")
+  canonicalUrl    String?
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -34,4 +47,73 @@ model Post {
   authorId String
 
   @@map("posts")
+  @@index([slug])
+  @@index([published])
+}
+
+model Page {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String?  @db.Text
+  published   Boolean  @default(false)
+  
+  // Page Builder JSON
+  blocks      Json?
+  
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
+  ogType          String?  @default("website")
+  canonicalUrl    String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+
+  @@map("pages")
+  @@index([slug])
+  @@index([published])
+}
+
+model SeoSettings {
+  id              String   @id @default(cuid())
+  domain          String   @unique
+  siteName        String
+  siteDescription String?
+  defaultOgImage  String?
+  twitterHandle   String?
+  googleAnalytics String?
+  googleTagManager String?
+  facebookPixel   String?
+  
+  // Structured Data
+  organizationSchema Json?
+  websiteSchema      Json?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("seo_settings")
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  alt       String?
+  caption   String?
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("media")
 }

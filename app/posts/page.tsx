@@ -3,7 +3,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CreatePostForm } from "@/components/create-post-form"
 import { TogglePublishButton } from "@/components/toggle-publish-button"
 import { getPosts, getUsers } from "@/lib/actions"
+import { generateSEOMetadata } from "@/lib/seo"
 import Link from "next/link"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = generateSEOMetadata({
+  title: "Quản lý bài viết",
+  description: "Danh sách và quản lý tất cả bài viết trên website",
+  ogType: "website",
+})
 
 export default async function PostsPage() {
   const posts = await getPosts()
@@ -88,9 +96,22 @@ export default async function PostsPage() {
                     )}
                     
                     <div className="flex justify-between items-center pt-2 border-t text-xs text-muted-foreground">
-                      <span>
-                        {new Date(post.createdAt).toLocaleDateString('vi-VN')}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span>
+                          {new Date(post.createdAt).toLocaleDateString('vi-VN')}
+                        </span>
+                        {post.published && (
+                          <>
+                            <span>•</span>
+                            <Link 
+                              href={`/posts/${post.slug}`}
+                              className="text-primary hover:underline"
+                            >
+                              Xem bài viết →
+                            </Link>
+                          </>
+                        )}
+                      </div>
                       <TogglePublishButton postId={post.id} published={post.published} />
                     </div>
                   </div>

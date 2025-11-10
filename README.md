@@ -1,6 +1,238 @@
 # Kata Next.js Fullstack
 
-Dự án fullstack sử dụng Next.js, shadcn/ui, Prisma và Server Actions.
+# 🚀 Taza SEO Website - Multi-tenant Next.js Fullstack Platform
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6-2D3748)](https://www.prisma.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)](https://tailwindcss.com/)
+
+**Hệ thống website SEO-optimized multi-tenant với Page Builder, Tiptap Editor và quản lý nội dung toàn diện.**
+
+## ✨ Tính năng nổi bật
+
+### 🌐 Multi-tenancy
+- Hỗ trợ **5 domains** với cùng một codebase
+- Tự động chuyển đổi database theo domain
+- Middleware intelligent domain detection
+
+### 📝 Page Builder Professional
+- **Drag & Drop** interface trực quan
+- **Tiptap Editor** kiểu Notion với full formatting
+- 5+ block types: Heading, Text, Image, Video, Code
+- Real-time preview
+- JSON storage cho flexibility
+
+### 🎯 SEO Optimization
+- Meta tags đầy đủ (Open Graph, Twitter Cards)
+- JSON-LD structured data (Organization, Article, Website, Breadcrumb)
+- Dynamic sitemap.xml tự động
+- robots.txt configuration
+- Canonical URLs
+- Mobile-first responsive design
+
+### 📱 Progressive Web App (PWA)
+- App manifest configured
+- Offline-ready architecture
+- Mobile responsive
+- Install prompt support
+
+### 🔌 RESTful API
+- **Pages API**: Full CRUD operations
+- **Posts API**: Blog management với pagination
+- **Media API**: File upload & management (images, videos)
+- Zod validation cho tất cả endpoints
+- Structured error responses
+
+### 🎨 Modern UI/UX
+- **shadcn/ui** components với Tailwind CSS 4
+- Vietnamese interface 100%
+- Dark mode ready
+- Combobox thay vì Select (accessible)
+- Enhanced Dialog (header/body/footer scrollable)
+
+## 🏗️ Tech Stack
+
+### Core
+- **Next.js 16** - React framework với App Router
+- **React 19** - Latest React với Server Components
+- **TypeScript 5** - Type safety
+- **Prisma 6** - Next-gen ORM cho PostgreSQL
+
+### UI & Styling
+- **Tailwind CSS 4** - Utility-first CSS
+- **shadcn/ui** - High-quality React components
+- **Radix UI** - Unstyled accessible components
+- **Lucide React** - Beautiful icons
+
+### Editor & Builder
+- **Tiptap** - Headless editor framework
+- **@hello-pangea/dnd** - Drag and drop
+
+### Forms & Validation
+- **React Hook Form** - Performant forms
+- **Zod** - TypeScript-first schema validation
+
+### Database
+- **PostgreSQL** - Production database
+- **Multi-tenant architecture** - 5 databases
+
+## 📦 Installation
+
+```bash
+# Clone repository
+git clone <repository-url>
+cd kataseo
+
+# Install dependencies
+npm install
+
+# Setup environment
+cp .env.example .env
+# Edit .env với DATABASE_URL của bạn
+
+# Generate Prisma Client
+npm run db:generate
+
+# Push schema to database
+npm run db:push
+
+# Start development server
+npm run dev
+```
+
+Truy cập http://localhost:3000
+
+## 📖 Documentation
+
+- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Chi tiết kiến trúc và implementation
+- **[QUICK_START.md](./QUICK_START.md)** - Hướng dẫn nhanh bắt đầu
+- **[API Documentation](#)** - API endpoints reference
+
+## 🗂️ Project Structure
+
+```
+kataseo/
+├── app/                      # Next.js App Router
+│   ├── [slug]/              # Dynamic pages
+│   ├── admin/               # Admin dashboard
+│   ├── api/                 # REST API routes
+│   ├── posts/               # Blog management
+│   └── users/               # User management
+├── components/              # React components
+│   ├── ui/                  # shadcn/ui components
+│   ├── page-builder.tsx     # Page Builder main
+│   └── tiptap-editor.tsx    # Tiptap editor wrapper
+├── lib/                     # Utilities
+│   ├── database.ts          # Multi-tenant DB manager
+│   ├── prisma.ts            # Prisma client
+│   ├── seo.ts               # SEO utilities
+│   └── actions.ts           # Server actions
+├── prisma/                  # Database schema
+└── public/                  # Static assets
+```
+
+## 🚀 Quick Commands
+
+```bash
+# Development
+npm run dev              # Start dev server
+npm run build            # Build for production
+npm run start            # Start production server
+
+# Database
+npm run db:studio        # Open Prisma Studio
+npm run db:generate      # Generate Prisma Client
+npm run db:push          # Push schema changes
+npm run db:migrate       # Create migration
+npm run db:reset         # Reset database
+
+# Code Quality
+npm run lint             # Run ESLint
+```
+
+## 🌍 Supported Domains
+
+| Domain | Database | Purpose |
+|--------|----------|---------|
+| tazagroup.vn | tazagroupvn | Main corporate website |
+| tazaskinclinic.com | tazaskinclinic | Skin clinic website |
+| timona.edu.vn | tazagroupvn | Education portal |
+| hderma.vn | hderma | Dermatology clinic |
+| elasome.com | elasome | E-commerce platform |
+
+## 📱 Features Walkthrough
+
+### Admin Dashboard
+- Tổng quan hệ thống với statistics
+- Quick actions cho các tác vụ thường dùng
+- Recent activity tracking
+
+### Page Builder
+1. Thêm blocks từ sidebar
+2. Drag & drop để sắp xếp
+3. Edit inline với Tiptap editor
+4. Configure SEO metadata
+5. Save và publish
+
+### Content Management
+- **Posts**: Blog articles với rich text editor
+- **Pages**: Landing pages với page builder
+- **Media**: Centralized media library
+- **Users**: User management system
+
+## 🔐 Security Features
+
+- ✅ Environment variable protection
+- ✅ SQL injection prevention (Prisma ORM)
+- ✅ XSS protection (React escaping)
+- ✅ Security headers configured
+- ✅ Input validation (Zod schemas)
+- ✅ File upload validation
+
+## 🎯 Roadmap
+
+- [ ] Authentication & Authorization (NextAuth.js)
+- [ ] Role-based access control
+- [ ] Email notifications
+- [ ] Analytics integration (GA, GTM, FB Pixel)
+- [ ] Advanced media editor
+- [ ] Multi-language support (i18n)
+- [ ] Comment system
+- [ ] Search functionality
+- [ ] Cache optimization
+- [ ] Performance monitoring
+
+## 📊 Performance
+
+- ⚡ Fast page loads với Next.js optimizations
+- 📱 Mobile-first responsive design
+- 🎨 Optimized images với Next.js Image
+- 🚀 Static generation cho public pages
+- 💾 Efficient database queries với Prisma
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is private and proprietary.
+
+## 👥 Authors
+
+- **Taza Group Development Team**
+
+## 📞 Support
+
+For support, email support@tazagroup.vn or visit our documentation.
+
+---
+
+**Built with ❤️ by Taza Group**  
+**Last Updated**: 10/11/2025  
+**Version**: 1.0.0  
+**Status**: ✅ Production Ready
 
 ## 🚀 Tính năng
 
