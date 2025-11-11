@@ -14,8 +14,8 @@ export default async function AdminPage() {
   ]);
 
   const stats = [
-    { title: "Bài viết", count: postsCount, icon: FileText, href: "/posts", description: "Quản lý bài viết blog" },
-    { title: "Trang", count: pagesCount, icon: Layout, href: "/admin/pages", description: "Quản lý trang tĩnh" },
+    { title: "Bài viết", count: postsCount, icon: FileText, href: "/admin/posts-management", description: "Quản lý bài viết blog" },
+    { title: "Trang", count: pagesCount, icon: Layout, href: "/admin/pages-management", description: "Quản lý trang tĩnh" },
     { title: "Người dùng", count: usersCount, icon: Users, href: "/users", description: "Quản lý người dùng" },
     { title: "Media", count: mediaCount, icon: Image, href: "/admin/media", description: "Thư viện hình ảnh" },
   ];
@@ -58,15 +58,15 @@ export default async function AdminPage() {
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <Button variant="outline" className="justify-start h-auto py-4" asChild>
-            <Link href="/admin/page-builder">
+            <Link href="/admin/pages-management">
               <Layout className="mr-2 h-5 w-5" />
-              <div className="text-left"><div className="font-semibold">Page Builder</div><div className="text-xs text-muted-foreground">Tạo trang mới</div></div>
+              <div className="text-left"><div className="font-semibold">Quản lý Trang</div><div className="text-xs text-muted-foreground">Chỉnh sửa trang tĩnh</div></div>
             </Link>
           </Button>
           <Button variant="outline" className="justify-start h-auto py-4" asChild>
-            <Link href="/posts">
+            <Link href="/admin/posts-management">
               <FileText className="mr-2 h-5 w-5" />
-              <div className="text-left"><div className="font-semibold">Tạo bài viết</div><div className="text-xs text-muted-foreground">Viết bài mới</div></div>
+              <div className="text-left"><div className="font-semibold">Quản lý Blog</div><div className="text-xs text-muted-foreground">Chỉnh sửa bài viết</div></div>
             </Link>
           </Button>
           <Button variant="outline" className="justify-start h-auto py-4" asChild>

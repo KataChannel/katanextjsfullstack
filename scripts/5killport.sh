@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Find and kill all processes running on ports 12001 and 12000
-echo "Killing all processes on ports 12001 and 12000..."
+# Find and kill all processes running on port 3000
+echo "Killing all processes on port 3000..."
 
 # Function to kill all processes on a specific port
 kill_port() {
@@ -34,34 +34,50 @@ kill_port() {
         done
         # Wait a bit for processes to terminate
         sleep 1
+        
+        # Double check and kill any remaining processes
+        REMAINING=$(sudo lsof -ti:$PORT 2>/dev/null)
+        if [ ! -z "$REMAINING" ]; then
+            echo "Found remaining processes, killing again: $REMAINING"
+            sudo kill -9 $REMAINING 2>/dev/null
+            sleep 1
+        fi
     else
         echo "No process found on port $PORT"
     fi
+    
+    # Use fuser as final fallback to ensure port is freed
+    sudo fuser -k $PORT/tcp 2>/dev/null
 }
 
-# Kill all processes on port 12001
-kill_port 12001
+# Kill all processes on port 3000
+kill_port 3000
 
-# Kill all processes on port 12000
-kill_port 12000
 
 # Verify ports are free
 echo ""
-echo "Verifying ports are free..."
-REMAINING_12001=$(sudo ss -tulpn | grep ":12001 " | grep -oP 'pid=\K[0-9]+' | sort -u)
-REMAINING_12000=$(sudo ss -tulpn | grep ":12000 " | grep -oP 'pid=\K[0-9]+' | sort -u)
+echo "Verifying port 3000 is free..."
+REMAINING_3000=$(sudo ss -tulpn | grep ":3000 " | grep -oP 'pid=\K[0-9]+' | sort -u)
 
-if [ -z "$REMAINING_12001" ] && [ -z "$REMAINING_12000" ]; then
-    echo "✓ All processes successfully killed. Ports 12001 and 12000 are now free."
+if [ -z "$REMAINING_3000" ]; then
+    echo "✓ All processes successfully killed. Port 3000 is now free."
 else
     echo "⚠ Warning: Some processes may still be running!"
-    if [ ! -z "$REMAINING_12001" ]; then
-        echo "  - Port 12001 still has PIDs: $REMAINING_12001"
-        sudo ss -tulpn | grep ":12001 "
-    fi
-    if [ ! -z "$REMAINING_12000" ]; then
-        echo "  - Port 12000 still has PIDs: $REMAINING_12000"
-        sudo ss -tulpn | grep ":12000 "
+    echo "  - Port 3000 still has PIDs: $REMAINING_3000"
+    echo "  - Attempting final kill..."
+    for PID in $REMAINING_3000; do
+        sudo kill -9 $PID 2>/dev/null
+        echo "  ✓ Force killed PID $PID"
+    done
+    sleep 1
+    
+    # Final verification
+    FINAL_CHECK=$(sudo ss -tulpn | grep ":3000 " | grep -oP 'pid=\K[0-9]+' | sort -u)
+    if [ -z "$FINAL_CHECK" ]; then
+        echo "✓ Port 3000 is now completely free!"
+    else
+        echo "✗ Failed to free port 3000. Remaining: $FINAL_CHECK"
+        sudo ss -tulpn | grep ":3000 "
     fi
 fi
 

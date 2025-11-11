@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * Middleware để xử lý multi-tenancy
+ * Proxy để xử lý multi-tenancy
  * Thêm thông tin domain vào headers để sử dụng trong app
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   
   // Lấy domain từ hostname
@@ -49,7 +49,7 @@ function extractDomainFromHostname(hostname: string): string {
   return withoutWww;
 }
 
-// Cấu hình matcher cho middleware
+// Cấu hình matcher cho proxy
 export const config = {
   matcher: [
     /*
