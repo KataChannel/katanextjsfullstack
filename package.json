@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun --bun next dev",
+    "dev": "./scripts/bun-wrapper.sh bun --bun next dev",
     "build": "bun --bun next build",
     "start": "bun --bun next start",
     "lint": "bun --bun eslint",
@@ -12,7 +12,8 @@
     "db:push": "bunx prisma db push",
     "db:migrate": "bunx prisma migrate dev",
     "db:reset": "bunx prisma migrate reset",
-    "db:seed": "bun run prisma/seed.ts"
+    "db:seed": "bun run prisma/seed.ts",
+    "db:seed-pagebuilder": "bun run prisma/seed-pagebuilder.ts"
   },
   "prisma": {
     "seed": "bun run prisma/seed.ts"

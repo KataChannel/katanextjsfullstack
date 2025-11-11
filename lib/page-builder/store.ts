@@ -86,6 +86,11 @@ export interface BuilderElement {
 export type Breakpoint = 'mobile' | 'tablet' | 'desktop';
 
 /**
+ * Grid options
+ */
+export type GridSize = 1 | 4 | 8 | 12 | 16;
+
+/**
  * Canvas state
  */
 interface CanvasState {
@@ -93,8 +98,10 @@ interface CanvasState {
   selectedIds: string[];
   currentBreakpoint: Breakpoint;
   zoom: number;
-  gridSize: number;
+  gridSize: GridSize;
   snapToGrid: boolean;
+  showGrid: boolean;
+  magneticAlignment: boolean;
 }
 
 /**
@@ -129,7 +136,10 @@ interface BuilderStore {
   
   // Zoom & Grid
   setZoom: (zoom: number) => void;
+  setGridSize: (size: GridSize) => void;
   toggleSnapToGrid: () => void;
+  toggleShowGrid: () => void;
+  toggleMagneticAlignment: () => void;
   
   // Undo/Redo
   undo: () => void;
@@ -151,6 +161,8 @@ const initialCanvas: CanvasState = {
   zoom: 1,
   gridSize: 8,
   snapToGrid: true,
+  showGrid: true,
+  magneticAlignment: true,
 };
 
 /**
@@ -170,6 +182,21 @@ const createHistoryEntry = (canvas: CanvasState): HistoryState => ({
 });
 
 /**
+ * Create element with default values
+ */
+const createElementWithDefaults = (element: Partial<BuilderElement> & Pick<BuilderElement, 'id' | 'type' | 'name' | 'x' | 'y' | 'width' | 'height'>): BuilderElement => {
+  return {
+    layout: {},
+    style: {},
+    animation: { type: 'none' },
+    states: {
+      default: {},
+    },
+    ...element,
+  };
+};
+
+/**
  * Zustand store với devtools
  */
 export const useBuilderStore = create<BuilderStore>()(
@@ -180,12 +207,13 @@ export const useBuilderStore = create<BuilderStore>()(
       addElement: (element) =>
         set((state) => {
           const id = element.id || `el-${Date.now()}`;
+          const fullElement = createElementWithDefaults({ ...element, id });
           return {
             canvas: {
               ...state.canvas,
               elements: {
                 ...state.canvas.elements,
-                [id]: { ...element, id },
+                [id]: fullElement,
               },
               selectedIds: [id],
             },
@@ -329,11 +357,35 @@ export const useBuilderStore = create<BuilderStore>()(
           },
         })),
 
+      setGridSize: (size) =>
+        set((state) => ({
+          canvas: {
+            ...state.canvas,
+            gridSize: size,
+          },
+        })),
+
       toggleSnapToGrid: () =>
         set((state) => ({
           canvas: {
             ...state.canvas,
             snapToGrid: !state.canvas.snapToGrid,
+          },
+        })),
+
+      toggleShowGrid: () =>
+        set((state) => ({
+          canvas: {
+            ...state.canvas,
+            showGrid: !state.canvas.showGrid,
+          },
+        })),
+
+      toggleMagneticAlignment: () =>
+        set((state) => ({
+          canvas: {
+            ...state.canvas,
+            magneticAlignment: !state.canvas.magneticAlignment,
           },
         })),
 

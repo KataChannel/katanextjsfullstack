@@ -73,8 +73,17 @@ export default async function PageDetail({ params }: PageProps) {
     notFound();
   }
 
-  // Parse blocks if exists
-  const blocks = page.blocks ? (typeof page.blocks === 'string' ? JSON.parse(page.blocks) : page.blocks) : null;
+  // Parse blocks if exists and ensure it's an array
+  let blocks: any[] | null = null;
+  if (page.blocks) {
+    try {
+      const parsed = typeof page.blocks === 'string' ? JSON.parse(page.blocks) : page.blocks;
+      blocks = Array.isArray(parsed) ? parsed : null;
+    } catch (error) {
+      console.error('Error parsing blocks:', error);
+      blocks = null;
+    }
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -101,7 +110,7 @@ export default async function PageDetail({ params }: PageProps) {
 
         {/* Content */}
         <div className="prose prose-lg max-w-none">
-          {blocks ? (
+          {blocks && blocks.length > 0 ? (
             <PageBlocksRenderer blocks={blocks} />
           ) : (
             <div dangerouslySetInnerHTML={{ __html: page.content || '' }} />
@@ -114,6 +123,11 @@ export default async function PageDetail({ params }: PageProps) {
 
 // Component to render page builder blocks
 function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
+  // Safety check
+  if (!Array.isArray(blocks) || blocks.length === 0) {
+    return null;
+  }
+
   return (
     <div className="space-y-6">
       {blocks.map((block: any) => {

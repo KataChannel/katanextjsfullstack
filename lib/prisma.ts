@@ -29,7 +29,16 @@ export async function getPrisma(defaultDomain?: string): Promise<PrismaClient> {
 }
 
 // Export default prisma client cho các trường hợp không cần multi-tenancy
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+  // Disable tracing để tránh warning với Bun
+  // @ts-ignore - Prisma internal config
+  __internal: {
+    engine: {
+      enableTracing: false,
+    },
+  },
+});
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;

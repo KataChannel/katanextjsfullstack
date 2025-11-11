@@ -1,0 +1,151 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import {
+  LayoutDashboard,
+  FileText,
+  Layout,
+  Image,
+  Settings,
+  BarChart3,
+  Users,
+  Menu,
+  ChevronLeft,
+  Home,
+  Palette,
+  X,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const menuItems = [
+  { title: 'Dashboard', icon: LayoutDashboard, href: '/admin', exact: true },
+  { title: 'Quản lý Trang', icon: Layout, href: '/admin/pages-management' },
+  { title: 'Quản lý Blog', icon: FileText, href: '/admin/posts-management' },
+  { title: 'Thư viện Media', icon: Image, href: '/admin/media' },
+  { title: 'Page Builder', icon: Palette, href: '/admin/page-builder' },
+  { title: 'Analytics', icon: BarChart3, href: '/admin/analytics' },
+  { title: 'Cài đặt SEO', icon: Settings, href: '/admin/seo-settings' },
+  { title: 'Người dùng', icon: Users, href: '/users' },
+];
+
+export function AdminSidebar() {
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  // Prevent scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed top-4 left-4 z-50 lg:hidden"
+        onClick={() => setMobileOpen(!mobileOpen)}
+      >
+        {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </Button>
+
+      {/* Mobile Overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          'fixed left-0 top-0 z-50 h-screen border-r bg-background transition-all duration-300 flex flex-col',
+          // Desktop
+          'hidden lg:flex',
+          collapsed ? 'lg:w-16' : 'lg:w-64',
+          // Mobile
+          mobileOpen ? 'flex w-64' : 'hidden'
+        )}
+      >
+        {/* Header */}
+        <div className="flex h-16 items-center justify-between border-b px-4 shrink-0">
+          {!collapsed && (
+            <Link href="/admin" className="flex items-center gap-2 font-semibold">
+              <LayoutDashboard className="h-6 w-6" />
+              <span>Admin Panel</span>
+            </Link>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setCollapsed(!collapsed)}
+            className={cn('h-8 w-8 hidden lg:flex', collapsed && 'mx-auto')}
+          >
+            {collapsed ? <Menu className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          </Button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 space-y-1 p-2 overflow-y-auto">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = item.exact
+              ? pathname === item.href
+              : pathname?.startsWith(item.href);
+
+            return (
+              <Link key={item.href} href={item.href}>
+                <Button
+                  variant={isActive ? 'secondary' : 'ghost'}
+                  className={cn(
+                    'w-full justify-start',
+                    collapsed && 'lg:justify-center lg:px-2',
+                    isActive && 'bg-secondary'
+                  )}
+                  title={collapsed ? item.title : undefined}
+                >
+                  <Icon className={cn('h-5 w-5', !collapsed && 'mr-2')} />
+                  <span className={cn(collapsed && 'lg:hidden')}>{item.title}</span>
+                </Button>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Footer */}
+        <div className="border-t p-2 shrink-0">
+          <Link href="/">
+            <Button
+              variant="ghost"
+              className={cn(
+                'w-full justify-start',
+                collapsed && 'lg:justify-center lg:px-2'
+              )}
+              title={collapsed ? 'Về trang chủ' : undefined}
+            >
+              <Home className={cn('h-5 w-5', !collapsed && 'mr-2')} />
+              <span className={cn(collapsed && 'lg:hidden')}>Về trang chủ</span>
+            </Button>
+          </Link>
+        </div>
+      </aside>
+    </>
+  );
+}

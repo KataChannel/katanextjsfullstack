@@ -5,8 +5,7 @@ import { Label } from "@/components/ui/label";
 import { getPrisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { extractDomain } from "@/lib/database";
-import Link from "next/link";
-import { ArrowLeft, Save } from "lucide-react";
+import { Save } from "lucide-react";
 
 export default async function SeoSettingsPage() {
   const headersList = await headers();
@@ -36,21 +35,13 @@ export default async function SeoSettingsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Cài đặt SEO</h1>
-          <p className="text-muted-foreground mt-2">
-            Cấu hình SEO và tracking cho domain: <strong>{domain}</strong>
-          </p>
-        </div>
-        <Button variant="outline" asChild>
-          <Link href="/admin">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Quay lại
-          </Link>
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold">Cài đặt SEO</h1>
+        <p className="text-muted-foreground mt-2">
+          Cấu hình SEO và tracking cho domain: <strong>{domain}</strong>
+        </p>
       </div>
 
       <form action="/api/seo-settings" method="POST">
@@ -184,10 +175,7 @@ export default async function SeoSettingsPage() {
         </Card>
 
         {/* Submit Button */}
-        <div className="flex justify-end gap-4">
-          <Button type="button" variant="outline" asChild>
-            <Link href="/admin">Hủy</Link>
-          </Button>
+        <div className="flex justify-end">
           <Button type="submit">
             <Save className="mr-2 h-4 w-4" />
             Lưu cài đặt

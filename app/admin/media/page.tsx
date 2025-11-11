@@ -2,9 +2,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getPrisma } from "@/lib/prisma";
-import Link from "next/link";
-import { ArrowLeft, Upload, Trash2, Search, Image as ImageIcon } from "lucide-react";
+import { Upload, Trash2, Search, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function MediaLibraryPage({
   searchParams,
@@ -31,23 +31,13 @@ export default async function MediaLibraryPage({
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Thư viện Media</h1>
-          <p className="text-muted-foreground mt-2">
-            Quản lý hình ảnh và file multimedia
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/admin">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại
-            </Link>
-          </Button>
-        </div>
+      <div>
+        <h1 className="text-3xl font-bold">Thư viện Media</h1>
+        <p className="text-muted-foreground mt-2">
+          Quản lý hình ảnh và file multimedia
+        </p>
       </div>
 
       {/* Upload Section */}

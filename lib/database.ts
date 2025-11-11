@@ -50,6 +50,14 @@ export function getPrismaClient(domain: string): PrismaClient {
         url: databaseUrl,
       },
     },
+    log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+    // Disable tracing để tránh warning với Bun
+    // @ts-ignore - Prisma internal config
+    __internal: {
+      engine: {
+        enableTracing: false,
+      },
+    },
   });
   
   // Lưu vào cache

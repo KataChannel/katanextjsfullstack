@@ -6,8 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Edit2, Trash2, Eye, Lock } from "lucide-react";
-import Link from "next/link";
+import { Plus, Edit2, Trash2, Eye, Lock } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -140,18 +139,11 @@ export default function PostsManagementPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 sm:p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/admin">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-            </Button>
-            <h1 className="text-2xl sm:text-3xl font-bold">Quản lý Bài viết</h1>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold">Quản lý Bài viết</h1>
           <p className="text-sm text-muted-foreground">
             Quản lý các bài viết blog của website
           </p>

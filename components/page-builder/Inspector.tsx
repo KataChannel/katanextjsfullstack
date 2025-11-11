@@ -84,7 +84,7 @@ export function Inspector() {
                   <Input
                     id="bg-color"
                     type="color"
-                    value={selectedElement.style.backgroundColor || '#ffffff'}
+                    value={selectedElement.style?.backgroundColor || '#ffffff'}
                     onChange={(e) =>
                       updateElement(selectedId, {
                         style: { ...selectedElement.style, backgroundColor: e.target.value },
@@ -94,7 +94,7 @@ export function Inspector() {
                   />
                   <Input
                     type="text"
-                    value={selectedElement.style.backgroundColor || '#ffffff'}
+                    value={selectedElement.style?.backgroundColor || '#ffffff'}
                     onChange={(e) =>
                       updateElement(selectedId, {
                         style: { ...selectedElement.style, backgroundColor: e.target.value },
@@ -116,7 +116,7 @@ export function Inspector() {
                   <Input
                     id="text-color"
                     type="color"
-                    value={selectedElement.style.color || '#000000'}
+                    value={selectedElement.style?.color || '#000000'}
                     onChange={(e) =>
                       updateElement(selectedId, {
                         style: { ...selectedElement.style, color: e.target.value },
@@ -126,7 +126,7 @@ export function Inspector() {
                   />
                   <Input
                     type="text"
-                    value={selectedElement.style.color || '#000000'}
+                    value={selectedElement.style?.color || '#000000'}
                     onChange={(e) =>
                       updateElement(selectedId, {
                         style: { ...selectedElement.style, color: e.target.value },
@@ -147,7 +147,7 @@ export function Inspector() {
                 <Input
                   id="font-size"
                   type="number"
-                  value={selectedElement.style.fontSize || 16}
+                  value={selectedElement.style?.fontSize || 16}
                   onChange={(e) =>
                     updateElement(selectedId, {
                       style: { ...selectedElement.style, fontSize: parseInt(e.target.value) },
@@ -165,7 +165,7 @@ export function Inspector() {
               <Input
                 id="border-radius"
                 type="number"
-                value={selectedElement.style.borderRadius || 0}
+                value={selectedElement.style?.borderRadius || 0}
                 onChange={(e) =>
                   updateElement(selectedId, {
                     style: { ...selectedElement.style, borderRadius: parseInt(e.target.value) },
@@ -182,7 +182,7 @@ export function Inspector() {
               <Input
                 id="opacity"
                 type="range"
-                value={selectedElement.style.opacity || 1}
+                value={selectedElement.style?.opacity || 1}
                 onChange={(e) =>
                   updateElement(selectedId, {
                     style: { ...selectedElement.style, opacity: parseFloat(e.target.value) },
@@ -193,7 +193,7 @@ export function Inspector() {
                 step={0.1}
               />
               <span className="text-sm text-gray-500">
-                {Math.round((selectedElement.style.opacity || 1) * 100)}%
+                {Math.round((selectedElement.style?.opacity || 1) * 100)}%
               </span>
             </div>
           </TabsContent>
@@ -268,7 +268,7 @@ export function Inspector() {
                 <Input
                   id="padding"
                   type="number"
-                  value={selectedElement.layout.padding || 0}
+                  value={selectedElement.layout?.padding || 0}
                   onChange={(e) =>
                     updateElement(selectedId, {
                       layout: { ...selectedElement.layout, padding: parseInt(e.target.value) },

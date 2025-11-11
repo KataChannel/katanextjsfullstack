@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { getPrisma } from "@/lib/prisma";
 import Link from "next/link";
 import { 
-  ArrowLeft, 
   TrendingUp, 
   Eye, 
   FileText, 
@@ -116,28 +115,13 @@ export default async function AnalyticsPage() {
   ];
 
   return (
-    <div className="container mx-auto p-4 md:p-6 space-y-6">
-      {/* Header - Mobile First */}
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" asChild className="sm:hidden">
-              <Link href="/admin">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-            </Button>
-            <h1 className="text-2xl md:text-3xl font-bold">Thống kê Analytics</h1>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Theo dõi hiệu suất và hoạt động của website
-          </p>
-        </div>
-        <Button variant="outline" asChild className="w-full sm:w-auto">
-          <Link href="/admin">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Quay lại
-          </Link>
-        </Button>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="space-y-1">
+        <h1 className="text-2xl md:text-3xl font-bold">Thống kê Analytics</h1>
+        <p className="text-sm text-muted-foreground">
+          Theo dõi hiệu suất và hoạt động của website
+        </p>
       </div>
 
       {/* Stats Cards - Mobile First Grid */}

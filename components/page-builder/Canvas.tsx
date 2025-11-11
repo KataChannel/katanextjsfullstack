@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Stage, Layer, Rect, Text as KonvaText, Image as KonvaImage, Transformer } from 'react-konva';
 import { useBuilderStore, BuilderElement } from '@/lib/page-builder/store';
+import { ContextMenu } from './ContextMenu';
+import { GridControls } from './GridControls';
 import Konva from 'konva';
 
 /**
@@ -14,10 +16,12 @@ import Konva from 'konva';
 export function Canvas() {
   const canvas = useBuilderStore((state) => state.canvas);
   const selectedIds = canvas.selectedIds;
-  const { selectElements, moveElement, resizeElement } = useBuilderStore();
+  const { selectElements, moveElement, resizeElement, addElement, deleteElement } = useBuilderStore();
   const stageRef = useRef<Konva.Stage>(null);
   const transformerRef = useRef<Konva.Transformer>(null);
   const layerRef = useRef<Konva.Layer>(null);
+  
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elementId: string | null } | null>(null);
 
   // Update transformer khi selection thay đổi
   useEffect(() => {
@@ -54,6 +58,14 @@ export function Canvas() {
       onDragEnd: (e: Konva.KonvaEventObject<DragEvent>) => {
         moveElement(element.id, e.target.x(), e.target.y());
       },
+      onContextMenu: (e: Konva.KonvaEventObject<PointerEvent>) => {
+        e.evt.preventDefault();
+        setContextMenu({
+          x: e.evt.clientX,
+          y: e.evt.clientY,
+          elementId: element.id,
+        });
+      },
       onTransformEnd: (e: Konva.KonvaEventObject<Event>) => {
         const node = e.target;
         const scaleX = node.scaleX();
@@ -77,10 +89,10 @@ export function Canvas() {
           <Rect
             key={element.id}
             {...commonProps}
-            fill={element.style.backgroundColor || '#f0f0f0'}
+            fill={element.style?.backgroundColor || '#f0f0f0'}
             stroke={selectedIds.includes(element.id) ? '#0066ff' : '#ddd'}
             strokeWidth={2}
-            cornerRadius={element.style.borderRadius || 0}
+            cornerRadius={element.style?.borderRadius || 0}
           />
         );
 
@@ -91,9 +103,9 @@ export function Canvas() {
             key={element.id}
             {...commonProps}
             text={element.content || 'Text'}
-            fontSize={element.style.fontSize || 16}
-            fontStyle={element.style.fontWeight ? `${element.style.fontWeight}` : 'normal'}
-            fill={element.style.color || '#000'}
+            fontSize={element.style?.fontSize || 16}
+            fontStyle={element.style?.fontWeight ? `${element.style?.fontWeight}` : 'normal'}
+            fill={element.style?.color || '#000'}
           />
         );
 
@@ -102,16 +114,16 @@ export function Canvas() {
           <React.Fragment key={element.id}>
             <Rect
               {...commonProps}
-              fill={element.style.backgroundColor || '#0066ff'}
-              cornerRadius={element.style.borderRadius || 4}
+              fill={element.style?.backgroundColor || '#0066ff'}
+              cornerRadius={element.style?.borderRadius || 4}
               stroke={selectedIds.includes(element.id) ? '#00cc00' : 'transparent'}
               strokeWidth={2}
             />
             <KonvaText
               {...commonProps}
               text={element.content || 'Button'}
-              fontSize={element.style.fontSize || 14}
-              fill={element.style.color || '#fff'}
+              fontSize={element.style?.fontSize || 14}
+              fill={element.style?.color || '#fff'}
               align="center"
               verticalAlign="middle"
               listening={false}
@@ -160,9 +172,80 @@ export function Canvas() {
     return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyboard = (e: KeyboardEvent) => {
+      // Copy (Ctrl+C)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c' && selectedIds.length > 0) {
+        const selectedElements = selectedIds.map((id) => canvas.elements[id]);
+        localStorage.setItem('copiedElements', JSON.stringify(selectedElements));
+      }
+      
+      // Paste (Ctrl+V)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
+        const copiedElements = localStorage.getItem('copiedElements');
+        if (copiedElements) {
+          const elements = JSON.parse(copiedElements);
+          elements.forEach((el: BuilderElement) => {
+            addElement({
+              ...el,
+              id: `${el.type}-${Date.now()}-${Math.random()}`,
+              x: el.x + 20,
+              y: el.y + 20,
+            });
+          });
+        }
+      }
+      
+      // Duplicate (Ctrl+D)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd' && selectedIds.length > 0) {
+        e.preventDefault();
+        selectedIds.forEach((id) => {
+          const element = canvas.elements[id];
+          addElement({
+            ...element,
+            id: `${element.type}-${Date.now()}-${Math.random()}`,
+            x: element.x + 20,
+            y: element.y + 20,
+          });
+        });
+      }
+      
+      // Delete
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        selectedIds.forEach((id) => deleteElement(id));
+      }
+      
+      // Arrow keys to move
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        const step = e.shiftKey ? 10 : 1;
+        selectedIds.forEach((id) => {
+          const element = canvas.elements[id];
+          let newX = element.x;
+          let newY = element.y;
+          
+          if (e.key === 'ArrowUp') newY -= step;
+          if (e.key === 'ArrowDown') newY += step;
+          if (e.key === 'ArrowLeft') newX -= step;
+          if (e.key === 'ArrowRight') newX += step;
+          
+          moveElement(id, newX, newY);
+        });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyboard);
+    return () => window.removeEventListener('keydown', handleKeyboard);
+  }, [selectedIds, canvas.elements, addElement, deleteElement, moveElement]);
+
   return (
-    <div className="relative w-full h-full bg-gray-100 overflow-hidden">
+    <div className="flex flex-col w-full h-full bg-gray-100">
+      {/* Grid Controls Toolbar */}
+      <GridControls />
+
       {/* Canvas với Konva */}
+      <div className="relative flex-1 overflow-hidden">
       <Stage
         ref={stageRef}
         width={dimensions.width}
@@ -219,6 +302,17 @@ export function Canvas() {
         >
           +
         </button>
+      </div>
+
+      {/* Context Menu */}
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          elementId={contextMenu.elementId}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
       </div>
     </div>
   );

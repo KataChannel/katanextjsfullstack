@@ -1,0 +1,10 @@
+# Bun configuration file
+# https://bun.sh/docs/runtime/bunfig
+
+[install]
+# Install configuration
+production = false
+
+[test]
+# Test configuration
+preload = []

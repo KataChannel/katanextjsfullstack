@@ -6,10 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, Edit2, Trash2, Eye, Lock } from "lucide-react";
-import Link from "next/link";
+import { Plus, Edit2, Trash2, Eye, Lock, Palette, FileText, BarChart3 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
 
 interface Page {
   id: string;
@@ -17,12 +17,15 @@ interface Page {
   slug: string;
   published: boolean;
   content?: string;
+  blocks?: any;
   metaTitle?: string;
   metaDescription?: string;
   metaKeywords?: string;
   createdAt: string;
   updatedAt: string;
 }
+
+type PageFilter = 'all' | 'content' | 'builder';
 
 export default function PagesManagementPage() {
   const [pages, setPages] = useState<Page[]>([]);
@@ -38,6 +41,7 @@ export default function PagesManagementPage() {
     metaKeywords: '',
   });
   const [activeTab, setActiveTab] = useState('general');
+  const [filterType, setFilterType] = useState<PageFilter>('all');
 
   useEffect(() => {
     fetchPages();
@@ -135,28 +139,110 @@ export default function PagesManagementPage() {
     }
   };
 
+  // Filter pages
+  const filteredPages = pages.filter(page => {
+    if (filterType === 'all') return true;
+    if (filterType === 'content') return !page.blocks;
+    if (filterType === 'builder') return !!page.blocks;
+    return true;
+  });
+
+  // Statistics
+  const stats = {
+    total: pages.length,
+    published: pages.filter(p => p.published).length,
+    draft: pages.filter(p => !p.published).length,
+    content: pages.filter(p => !p.blocks).length,
+    builder: pages.filter(p => !!p.blocks).length,
+  };
+
   return (
-    <div className="container mx-auto p-4 sm:p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/admin">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-            </Button>
-            <h1 className="text-2xl sm:text-3xl font-bold">Quản lý Trang</h1>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold">Quản lý Trang</h1>
           <p className="text-sm text-muted-foreground">
-            Quản lý các trang tĩnh của website (Trang chủ, Về chúng tôi, Dịch vụ, Liên hệ)
+            Quản lý trang content và visual builder
           </p>
         </div>
-        <Button asChild>
-          <button onClick={() => setIsCreateOpen(true)}>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/admin/page-builder">
+              <Palette className="mr-2 h-4 w-4" />
+              Page Builder
+            </Link>
+          </Button>
+          <Button onClick={() => setIsCreateOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
-            Tạo trang mới
-          </button>
+            Tạo content
+          </Button>
+        </div>
+      </div>
+
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <BarChart3 className="h-4 w-4 text-blue-600" />
+            <span className="text-xs text-muted-foreground">Tổng số</span>
+          </div>
+          <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Eye className="h-4 w-4 text-green-600" />
+            <span className="text-xs text-muted-foreground">Published</span>
+          </div>
+          <div className="text-2xl font-bold text-green-600">{stats.published}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Lock className="h-4 w-4 text-orange-600" />
+            <span className="text-xs text-muted-foreground">Draft</span>
+          </div>
+          <div className="text-2xl font-bold text-orange-600">{stats.draft}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <FileText className="h-4 w-4 text-purple-600" />
+            <span className="text-xs text-muted-foreground">Content</span>
+          </div>
+          <div className="text-2xl font-bold text-purple-600">{stats.content}</div>
+        </Card>
+        <Card className="p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Palette className="h-4 w-4 text-pink-600" />
+            <span className="text-xs text-muted-foreground">Builder</span>
+          </div>
+          <div className="text-2xl font-bold text-pink-600">{stats.builder}</div>
+        </Card>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex gap-2 border-b pb-2">
+        <Button
+          variant={filterType === 'all' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setFilterType('all')}
+        >
+          Tất cả ({stats.total})
+        </Button>
+        <Button
+          variant={filterType === 'content' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setFilterType('content')}
+        >
+          <FileText className="mr-2 h-4 w-4" />
+          Content ({stats.content})
+        </Button>
+        <Button
+          variant={filterType === 'builder' ? 'default' : 'ghost'}
+          size="sm"
+          onClick={() => setFilterType('builder')}
+        >
+          <Palette className="mr-2 h-4 w-4" />
+          Builder ({stats.builder})
         </Button>
       </div>
 
@@ -165,84 +251,152 @@ export default function PagesManagementPage() {
         <div className="text-center py-12">
           <p className="text-muted-foreground">Đang tải...</p>
         </div>
-      ) : pages.length === 0 ? (
+      ) : filteredPages.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center space-y-4">
-            <p className="text-muted-foreground">Chưa có trang nào</p>
-            <Button onClick={() => setIsCreateOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Tạo trang đầu tiên
-            </Button>
+            {filterType === 'all' ? (
+              <>
+                <p className="text-muted-foreground">Chưa có trang nào</p>
+                <div className="flex gap-2 justify-center">
+                  <Button onClick={() => setIsCreateOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Tạo content
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/admin/page-builder">
+                      <Palette className="mr-2 h-4 w-4" />
+                      Page Builder
+                    </Link>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <p className="text-muted-foreground">
+                Không có trang {filterType === 'content' ? 'content' : 'builder'} nào
+              </p>
+            )}
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {pages.map((page) => (
-            <Card key={page.id} className="flex flex-col">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <CardTitle className="line-clamp-2">{page.title}</CardTitle>
-                    <CardDescription className="text-xs mt-1">/{page.slug}</CardDescription>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredPages.map((page) => {
+            const isBuilderPage = !!page.blocks;
+            const elementCount = isBuilderPage && page.blocks?.elements?.length || 0;
+
+            return (
+              <Card key={page.id} className="flex flex-col hover:shadow-lg transition-shadow">
+                {/* Type Indicator & Preview */}
+                {isBuilderPage ? (
+                  <div className="h-32 bg-linear-to-br from-blue-50 to-purple-50 flex items-center justify-center border-b">
+                    <div className="text-center">
+                      <Palette className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                      <div className="text-2xl font-bold text-blue-600">{elementCount}</div>
+                      <div className="text-xs text-gray-600">Elements</div>
+                    </div>
                   </div>
-                  <Badge variant={page.published ? "default" : "secondary"}>
-                    {page.published ? "Live" : "Draft"}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col justify-between">
-                <div className="text-xs text-muted-foreground space-y-1 mb-4">
-                  <p>Cập nhật: {new Date(page.updatedAt).toLocaleDateString('vi-VN')}</p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setEditingPage(page);
-                      setFormData({
-                        title: page.title,
-                        slug: page.slug,
-                        content: page.content || '',
-                        metaTitle: page.metaTitle || '',
-                        metaDescription: page.metaDescription || '',
-                        metaKeywords: page.metaKeywords || '',
-                      });
-                    }}
-                  >
-                    <Edit2 className="h-3 w-3 mr-1" />
-                    Sửa
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleTogglePublish(page.id, page.published)}
-                  >
-                    {page.published ? (
+                ) : (
+                  <div className="h-32 bg-linear-to-br from-green-50 to-teal-50 flex items-center justify-center border-b">
+                    <FileText className="h-12 w-12 text-green-600" />
+                  </div>
+                )}
+
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <CardTitle className="line-clamp-1 text-base">{page.title}</CardTitle>
+                      </div>
+                      <CardDescription className="text-xs">/{page.slug}</CardDescription>
+                    </div>
+                    <Badge variant={page.published ? "default" : "secondary"} className="shrink-0">
+                      {page.published ? "Live" : "Draft"}
+                    </Badge>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="flex-1 flex flex-col justify-between pt-0">
+                  <div className="text-xs text-muted-foreground mb-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      {isBuilderPage ? (
+                        <Badge variant="outline" className="text-xs">
+                          <Palette className="h-3 w-3 mr-1" />
+                          Builder
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="text-xs">
+                          <FileText className="h-3 w-3 mr-1" />
+                          Content
+                        </Badge>
+                      )}
+                    </div>
+                    <p>Cập nhật: {new Date(page.updatedAt).toLocaleDateString('vi-VN')}</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {isBuilderPage ? (
                       <>
-                        <Lock className="h-3 w-3 mr-1" />
-                        Ẩn
+                        <Button variant="outline" size="sm" asChild className="flex-1">
+                          <Link href={`/admin/page-builder/${page.id}`}>
+                            <Edit2 className="h-3 w-3 mr-1" />
+                            Edit Builder
+                          </Link>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          asChild
+                        >
+                          <Link href={`/pages/${page.slug}`} target="_blank">
+                            <Eye className="h-3 w-3" />
+                          </Link>
+                        </Button>
                       </>
                     ) : (
                       <>
-                        <Eye className="h-3 w-3 mr-1" />
-                        Hiển thị
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditingPage(page);
+                            setFormData({
+                              title: page.title,
+                              slug: page.slug,
+                              content: page.content || '',
+                              metaTitle: page.metaTitle || '',
+                              metaDescription: page.metaDescription || '',
+                              metaKeywords: page.metaKeywords || '',
+                            });
+                          }}
+                        >
+                          <Edit2 className="h-3 w-3 mr-1" />
+                          Sửa
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleTogglePublish(page.id, page.published)}
+                        >
+                          {page.published ? (
+                            <Lock className="h-3 w-3" />
+                          ) : (
+                            <Eye className="h-3 w-3" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => handleDelete(page.id)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
                       </>
                     )}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-destructive hover:text-destructive"
-                    onClick={() => handleDelete(page.id)}
-                  >
-                    <Trash2 className="h-3 w-3 mr-1" />
-                    Xóa
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
       )}
 
