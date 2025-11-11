@@ -1,0 +1,12 @@
+ULTRA BUILDER MVP – 8 CORE FEATURES
+Tech: React 19 + TypeScript + Konva + Yoga + Tailwind + Framer Motion
+Goal: Drag-drop → Edit → Preview → Export HTML + Deploy
+Use Copilot to generate 90% code from comments
+1. Canvas + Drag & Drop (Konva + snap grid 8px + multi-select)
+2. Component System (Atom: Button, Text, Image | Drag from sidebar)
+3. Layout Engine (Flex + Grid via Yoga WASM → Tailwind classes)
+4. Responsive Preview (3 breakpoints: 375, 768, 1024 in iframe)
+5. Inspector Panel (Style, Layout) + Unlimited Undo/Redo (Zustand)
+6. State System (hover, focus, active → data-state)
+7. Basic Animation (fade, slide on scroll → Framer Motion)
+8. Clean Export (HTML + Tailwind CSS, no runtime JS)
