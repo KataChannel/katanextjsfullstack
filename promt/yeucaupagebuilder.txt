@@ -1,12 +1,186 @@
-ULTRA BUILDER MVP – 8 CORE FEATURES
-Tech: React 19 + TypeScript + Konva + Yoga + Tailwind + Framer Motion
-Goal: Drag-drop → Edit → Preview → Export HTML + Deploy
-Use Copilot to generate 90% code from comments
-1. Canvas + Drag & Drop (Konva + snap grid 8px + multi-select)
-2. Component System (Atom: Button, Text, Image | Drag from sidebar)
-3. Layout Engine (Flex + Grid via Yoga WASM → Tailwind classes)
-4. Responsive Preview (3 breakpoints: 375, 768, 1024 in iframe)
-5. Inspector Panel (Style, Layout) + Unlimited Undo/Redo (Zustand)
-6. State System (hover, focus, active → data-state)
-7. Basic Animation (fade, slide on scroll → Framer Motion)
-8. Clean Export (HTML + Tailwind CSS, no runtime JS)
+ULTRA BUILDER MVP
+
+I. FRONTEND LAYER – GIAO DIỆN NGƯỜI DÙNG (VISUAL CANVAS)
+1. Real-time Collaborative Canvas
+
+Multi-user editing (như Figma)
+Real-time sync qua WebSocket + CRDT (Conflict-free Replicated Data Types)
+Lock element / section khi đang chỉnh sửa
+
+2. Drag & Drop Engine (Physics-based)
+
+Snap grid hệ thống (1px, 4px, 8px, 12px, golden ratio)
+Magnetic alignment + smart guides
+Copy-paste style / component giữa các page
+
+3. Live Preview Engine
+
+5 chế độ xem: Desktop, Tablet Landscape, Tablet Portrait, Mobile Landscape, Mobile Portrait
+Custom breakpoint (tự định nghĩa 320px → 4K)
+Preview trong iframe isolate CSS/JS
+
+4. Contextual Toolbar & Inspector Panel
+
+Right-click menu thông minh (Copy CSS, Duplicate, Convert to Symbol)
+Inspector: Style, Layout, Animation, Interaction, Data Binding
+History panel + Undo/Redo không giới hạn (branching history)
+
+II. CORE ENGINE – TRÁI TIM CỦA PAGE BUILDER
+5. Component System (Atomic Design)
+textAtom → Molecule → Organism → Template → Page
+
+Atom: Button, Input, Icon, Text
+Molecule: Card, Navbar Item, Form Group
+Organism: Hero Section, Pricing Table, Testimonial Carousel
+Template: Landing Page, Blog, Dashboard
+Page: Instance của Template + override
+
+6. Symbol / Master Component System
+
+Tạo 1 → dùng 100 nơi → sửa 1 lần
+Override per instance (text, color, spacing)
+Sync / Detach control
+
+7. Layout Engine (Constraint + Flex + Grid)
+
+CSS Grid + Flexbox + Constraint Layout (như Android)
+Auto-layout (tự co giãn theo content)
+Stack, Wrap, Fixed, Absolute, Sticky
+
+8. Responsive Behavior Engine
+
+Breakpoint-specific property
+Fluid typography (vw + clamp)
+Container queries (CSS container:)
+
+9. State Management & Interaction Engine
+
+Hover, Active, Focus, Visited, Disabled
+Click → Trigger Action (Open modal, Navigate, API call)
+Form state: Pristine, Dirty, Valid, Invalid, Submitting
+
+10. Animation & Motion Engine
+
+Timeline editor (như After Effects)
+Scroll-triggered animation (parallax, fade, scale, pin)
+Micro-interaction (button press, hover ripple)
+Lottie / SVG / GSAP / Web Animation API
+
+
+III. DATA & DYNAMIC CONTENT LAYER
+11. Dynamic Data Binding
+
+Connect to CMS, API, Database, Google Sheets, Airtable
+Repeater / Loop (hiển thị danh sách sản phẩm, bài viết)
+Conditional Rendering: if user.loggedIn → show Dashboard
+
+12. Form Builder Pro
+
+Multi-step form
+Conditional logic (show/hide field)
+File upload, signature, payment (Stripe, PayPal)
+Submission → Webhook / Email / Zapier / Database
+
+13. CMS Integration (Headless Ready)
+
+Content Type Builder (Custom Post Type)
+Relation field (1-1, 1-n, n-n)
+Draft & Publish workflow
+
+
+IV. BACKEND / RUNTIME ENGINE
+14. Render Engine (SSR + SSG + ISR + CSR)
+
+Static Site Generation (SSG) → xuất HTML thuần
+Server-Side Rendering (SSR) → SEO + dynamic
+Incremental Static Regeneration (ISR)
+Client-Side Hydration
+
+15. Code Export Engine
+
+Xuất clean HTML/CSS/JS (không bloat)
+React / Vue / Svelte component
+Tailwind / SCSS / CSS Modules
+WordPress block / Shopify section
+
+16. Performance Optimizer
+
+Critical CSS inline
+Lazy load image / iframe / Lottie
+Font optimization (subset + preload)
+Bundle splitting + tree shaking
+
+17. SEO & Metadata Engine
+
+Open Graph, Twitter Card, JSON-LD
+Sitemap.xml auto generate
+Canonical, hreflang, robots.txt
+
+
+V. DEVELOPER & EXTENSION LAYER
+18. Plugin / Add-on System
+
+Marketplace (giống WordPress)
+API để dev tạo widget mới
+Sandbox runtime (không crash toàn bộ page)
+
+19. Custom Code Injection
+
+<head>, <body>, per page, global
+Custom JS/CSS
+Embed script (analytics, chatbot)
+
+20. Version Control & Git Integration
+
+Save version → compare → restore
+Branch per page
+GitHub / GitLab sync
+
+21. White Label & Multi-tenant
+
+Tùy chỉnh logo, màu, domain
+Agency mode: quản lý nhiều client
+User role: Admin, Editor, Viewer
+
+
+VI. AI-POWERED FEATURES (2025+)
+22. AI Layout Generator
+
+Nhập: “Tạo landing page bán khóa học online”
+AI sinh layout + copy + image placeholder
+
+23. AI Copywriter & Image Generator
+
+Viết tiêu đề, CTA, meta description
+Tạo ảnh từ text (Stable Diffusion API)
+
+24. AI Bug Detector & Optimizer
+
+Phát hiện layout collapse
+Gợi ý cải thiện tốc độ, accessibility
+
+
+VII. ACCESSIBILITY & COMPLIANCE
+25. WCAG 2.2 AA Compliance Engine
+
+Auto check contrast, alt text, ARIA label
+Keyboard navigation
+Screen reader test mode
+
+26. GDPR / CCPA Ready
+
+Cookie consent builder
+Data request form
+Right to be forgotten
+
+
+VIII. DEPLOYMENT & HOSTING
+27. One-click Deploy
+
+Vercel, Netlify, Cloudflare Pages, AWS Amplify
+Custom domain + SSL auto
+CDN global
+
+28. Edge Runtime Support
+
+Run logic tại edge (Cloudflare Workers, Deno, Fastly)

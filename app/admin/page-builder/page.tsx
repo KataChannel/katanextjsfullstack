@@ -1,153 +1,115 @@
 'use client';
 
 import { useState } from 'react';
-import { PageBuilder, PageBlock } from '@/components/page-builder';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, Eye } from 'lucide-react';
+import { Download, Eye, FileCode } from 'lucide-react';
+import { Canvas } from '@/components/page-builder/Canvas';
+import { ComponentSidebar } from '@/components/page-builder/ComponentSidebar';
+import { Inspector } from '@/components/page-builder/Inspector';
+import { ResponsivePreview } from '@/components/page-builder/ResponsivePreview';
+import { useBuilderStore } from '@/lib/page-builder/store';
+import { exportToHTML, downloadHTML } from '@/lib/page-builder/export-html';
+import { toast } from 'sonner';
 
+/**
+ * ULTRA BUILDER MVP
+ * Page Builder với Konva + Yoga + Framer Motion
+ * Mobile First + Responsive + PWA
+ */
 export default function PageBuilderPage() {
-  const [pageTitle, setPageTitle] = useState('');
-  const [pageSlug, setPageSlug] = useState('');
-  const [blocks, setBlocks] = useState<PageBlock[]>([]);
-  const [metaTitle, setMetaTitle] = useState('');
-  const [metaDescription, setMetaDescription] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+  const canvas = useBuilderStore((state) => state.canvas);
 
-  const handleSave = async () => {
-    const pageData = {
-      title: pageTitle,
-      slug: pageSlug,
-      blocks: JSON.stringify(blocks),
-      metaTitle,
-      metaDescription,
-    };
+  const handleExport = () => {
+    try {
+      const html = exportToHTML(canvas.elements);
+      downloadHTML(html, 'page-builder-export.html');
+      toast.success('Export HTML thành công!');
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Lỗi khi export HTML');
+    }
+  };
 
-    console.log('Saving page:', pageData);
-    // TODO: Implement API call to save page
-    alert('Tính năng lưu trang đang được phát triển');
+  const handlePreview = () => {
+    setShowPreview(!showPreview);
   };
 
   return (
-    <div className="container mx-auto py-6 px-4">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Trình tạo trang</h1>
-          <p className="text-muted-foreground">Tạo và chỉnh sửa trang web với page builder</p>
+    <div className="h-screen w-full flex flex-col bg-gray-100">
+      {/* Header Toolbar */}
+      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-4">
+          <h1 className="text-xl font-bold text-gray-900">Ultra Builder MVP</h1>
+          <div className="h-6 w-px bg-gray-300" />
+          <span className="text-sm text-gray-600">
+            {Object.keys(canvas.elements).length} elements
+          </span>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Eye className="mr-2 h-4 w-4" />
-            Xem trước
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePreview}
+            className="flex items-center gap-2"
+          >
+            <Eye className="w-4 h-4" />
+            {showPreview ? 'Editor' : 'Preview'}
           </Button>
-          <Button onClick={handleSave}>
-            <Save className="mr-2 h-4 w-4" />
-            Lưu trang
+          
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleExport}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+          >
+            <Download className="w-4 h-4" />
+            Export HTML
           </Button>
         </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {showPreview ? (
+          // Preview Mode - Full width
+          <div className="flex-1">
+            <ResponsivePreview />
+          </div>
+        ) : (
+          // Editor Mode - 3 columns layout
+          <>
+            {/* Left Sidebar - Component Palette */}
+            <aside className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
+              <ComponentSidebar />
+            </aside>
+
+            {/* Center - Canvas */}
+            <main className="flex-1 overflow-hidden relative">
+              <Canvas />
+            </main>
+
+            {/* Right Sidebar - Inspector */}
+            <aside className="w-80 bg-white border-l border-gray-200 overflow-y-auto">
+              <Inspector />
+            </aside>
+          </>
+        )}
       </div>
 
-      <Tabs defaultValue="content" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="content">Nội dung</TabsTrigger>
-          <TabsTrigger value="settings">Cài đặt</TabsTrigger>
-          <TabsTrigger value="seo">SEO</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="content" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Thông tin cơ bản</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Tiêu đề trang</Label>
-                <Input
-                  id="title"
-                  value={pageTitle}
-                  onChange={(e) => setPageTitle(e.target.value)}
-                  placeholder="Nhập tiêu đề trang..."
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="slug">Đường dẫn (slug)</Label>
-                <Input
-                  id="slug"
-                  value={pageSlug}
-                  onChange={(e) => setPageSlug(e.target.value)}
-                  placeholder="vi-du-duong-dan"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Nội dung trang</CardTitle>
-              <CardDescription>
-                Kéo thả và sắp xếp các khối nội dung để xây dựng trang web
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <PageBuilder initialBlocks={blocks} onChange={setBlocks} />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="settings" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Cài đặt trang</CardTitle>
-              <CardDescription>Cấu hình các tùy chọn hiển thị và hành vi</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Các tùy chọn cài đặt sẽ được bổ sung sau
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="seo" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Tối ưu SEO</CardTitle>
-              <CardDescription>Tối ưu hóa trang web cho công cụ tìm kiếm</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="metaTitle">Meta Title</Label>
-                <Input
-                  id="metaTitle"
-                  value={metaTitle}
-                  onChange={(e) => setMetaTitle(e.target.value)}
-                  placeholder="Tiêu đề SEO (50-60 ký tự)"
-                  maxLength={60}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {metaTitle.length}/60 ký tự
-                </p>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="metaDescription">Meta Description</Label>
-                <textarea
-                  id="metaDescription"
-                  value={metaDescription}
-                  onChange={(e) => setMetaDescription(e.target.value)}
-                  placeholder="Mô tả SEO (150-160 ký tự)"
-                  maxLength={160}
-                  className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm"
-                />
-                <p className="text-xs text-muted-foreground">
-                  {metaDescription.length}/160 ký tự
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* Footer Status Bar */}
+      <footer className="bg-white border-t border-gray-200 px-4 py-2 flex items-center justify-between text-xs text-gray-600">
+        <div className="flex items-center gap-4">
+          <span>Grid: {canvas.snapToGrid ? 'ON' : 'OFF'} ({canvas.gridSize}px)</span>
+          <span>Zoom: {Math.round(canvas.zoom * 100)}%</span>
+          <span>Breakpoint: {canvas.currentBreakpoint}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <FileCode className="w-4 h-4" />
+          <span>Tech: React 19 + TypeScript + Konva + Yoga + Tailwind</span>
+        </div>
+      </footer>
     </div>
   );
 }
