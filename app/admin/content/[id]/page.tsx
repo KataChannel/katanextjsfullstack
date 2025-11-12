@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 import { TiptapEditor } from "@/components/tiptap-editor";
 import Link from "next/link";
+import { generateSlug } from "@/lib/utils";
 
 interface PageParams {
   params: Promise<{
@@ -33,10 +34,15 @@ interface ContentData {
 
 export default function ContentEditPage({ params }: PageParams) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [id, setId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
+  const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+  const [contentType, setContentType] = useState<"page" | "post">(
+    (searchParams.get("type") as "page" | "post") || "page"
+  );
   const [formData, setFormData] = useState<ContentData>({
     title: "",
     slug: "",
@@ -109,9 +115,8 @@ export default function ContentEditPage({ params }: PageParams) {
 
     try {
       if (id === "new") {
-        // Create new - determine type from URL params or default to page
-        const searchParams = new URLSearchParams(window.location.search);
-        const type = searchParams.get("type") || "page";
+        // Create new - use contentType from state
+        const type = contentType;
         
         // Get authorId
         const contentsRes = await fetch("/api/pages?limit=1");
@@ -181,8 +186,7 @@ export default function ContentEditPage({ params }: PageParams) {
   }
 
   const isNewContent = id === "new";
-  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
-  const contentType = searchParams?.get("type") || formData.type || "page";
+  const displayType = formData.type || contentType;
 
   return (
     <div className="space-y-6 pb-16">
@@ -197,8 +201,8 @@ export default function ContentEditPage({ params }: PageParams) {
             </Button>
             <h1 className="text-2xl sm:text-3xl font-bold">
               {isNewContent 
-                ? `Tạo ${contentType === "page" ? "trang" : "bài viết"} mới`
-                : `Chỉnh sửa ${formData.type === "page" ? "trang" : "bài viết"}`
+                ? `Tạo ${displayType === "page" ? "trang" : "bài viết"} mới`
+                : `Chỉnh sửa ${displayType === "page" ? "trang" : "bài viết"}`
               }
             </h1>
           </div>
@@ -219,10 +223,34 @@ export default function ContentEditPage({ params }: PageParams) {
       {/* Form Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin nội dung</CardTitle>
-          <CardDescription>
-            Điền đầy đủ thông tin và nội dung
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Thông tin nội dung</CardTitle>
+              <CardDescription>
+                Điền đầy đủ thông tin và nội dung
+              </CardDescription>
+            </div>
+            
+            {/* Type switcher - only for new content */}
+            {isNewContent && (
+              <div className="flex gap-2">
+                <Button
+                  variant={contentType === "page" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setContentType("page")}
+                >
+                  📄 Page
+                </Button>
+                <Button
+                  variant={contentType === "post" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setContentType("post")}
+                >
+                  📝 Post
+                </Button>
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -239,9 +267,15 @@ export default function ContentEditPage({ params }: PageParams) {
                 <Input
                   id="title"
                   value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const newTitle = e.target.value;
+                    setFormData({ ...formData, title: newTitle });
+                    
+                    // Auto-generate slug only if not manually edited
+                    if (!isSlugManuallyEdited && newTitle) {
+                      setFormData(prev => ({ ...prev, slug: generateSlug(newTitle) }));
+                    }
+                  }}
                   placeholder="Tiêu đề nội dung"
                 />
               </div>
@@ -253,13 +287,14 @@ export default function ContentEditPage({ params }: PageParams) {
                 <Input
                   id="slug"
                   value={formData.slug}
-                  onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setIsSlugManuallyEdited(true);
+                    setFormData({ ...formData, slug: generateSlug(e.target.value) });
+                  }}
                   placeholder="url-slug-tuy-chinh"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Chỉ dùng chữ thường, số và dấu gạch ngang
+                  Tự động tạo từ tiêu đề. Chỉ dùng chữ thường, số và dấu gạch ngang.
                 </p>
               </div>
 
