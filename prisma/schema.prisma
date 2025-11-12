@@ -32,6 +32,9 @@ model Post {
   excerpt     String?
   published   Boolean  @default(false)
   
+  // Page Builder JSON
+  blocks      Json?
+  
   // SEO Fields
   metaTitle       String?
   metaDescription String?

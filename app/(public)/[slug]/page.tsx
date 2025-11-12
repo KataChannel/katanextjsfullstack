@@ -1,7 +1,8 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { getPrisma } from '@/lib/prisma';
-import { generateSEOMetadata } from '@/lib/seo';
+import { generateSEOMetadata, generateArticleSchema } from '@/lib/seo';
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 
 interface PageProps {
   params: Promise<{
@@ -14,24 +15,41 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const prisma = await getPrisma();
   
+  // Try to find as page first
   const page = await prisma.page.findUnique({
     where: { slug },
   });
 
-  if (!page) {
-    return {
-      title: 'Không tìm thấy trang',
-    };
+  if (page) {
+    return generateSEOMetadata({
+      title: page.metaTitle || page.title,
+      description: page.metaDescription || page.content?.substring(0, 160) || '',
+      keywords: page.metaKeywords || undefined,
+      ogImage: page.ogImage || undefined,
+      ogType: page.ogType || 'website',
+      canonicalUrl: page.canonicalUrl || undefined,
+    });
   }
 
-  return generateSEOMetadata({
-    title: page.metaTitle || page.title,
-    description: page.metaDescription || page.content?.substring(0, 160) || '',
-    keywords: page.metaKeywords || undefined,
-    ogImage: page.ogImage || undefined,
-    ogType: page.ogType || 'website',
-    canonicalUrl: page.canonicalUrl || undefined,
+  // Try to find as post
+  const post = await prisma.post.findUnique({
+    where: { slug },
   });
+
+  if (post) {
+    return generateSEOMetadata({
+      title: post.metaTitle || post.title,
+      description: post.metaDescription || post.excerpt || post.content?.substring(0, 160) || '',
+      keywords: post.metaKeywords || undefined,
+      ogImage: post.ogImage || undefined,
+      ogType: post.ogType || 'article',
+      canonicalUrl: post.canonicalUrl || undefined,
+    });
+  }
+
+  return {
+    title: 'Không tìm thấy trang',
+  };
 }
 
 // Generate static params for static generation
@@ -39,14 +57,26 @@ export async function generateStaticParams() {
   try {
     // Sử dụng domain mặc định cho build time
     const prisma = await getPrisma('tazagroup.vn');
+    
+    // Get all published pages
     const pages = await prisma.page.findMany({
       where: { published: true },
       select: { slug: true },
     });
 
-    return pages.map((page) => ({
-      slug: page.slug,
-    }));
+    // Get all published posts (will redirect to /posts/[slug])
+    const posts = await prisma.post.findMany({
+      where: { published: true },
+      select: { slug: true },
+    });
+
+    // Combine both
+    const allSlugs = [
+      ...pages.map((page) => ({ slug: page.slug })),
+      ...posts.map((post) => ({ slug: post.slug })),
+    ];
+
+    return allSlugs;
   } catch (error) {
     console.error('Error generating static params:', error);
     return [];
@@ -57,6 +87,7 @@ export default async function PageDetail({ params }: PageProps) {
   const { slug } = await params;
   const prisma = await getPrisma();
 
+  // Try to find as page first
   const page = await prisma.page.findUnique({
     where: { slug },
     include: {
@@ -69,40 +100,148 @@ export default async function PageDetail({ params }: PageProps) {
     },
   });
 
-  if (!page || !page.published) {
+  // If page found and published, use page data
+  if (page && page.published) {
+    // Continue with page render logic below
+  } else {
+    // Try to find as post
+    const post = await prisma.post.findUnique({
+      where: { slug },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    // If post found and published, render it directly (no redirect)
+    if (post && post.published) {
+      return renderContent(post, 'post');
+    }
+
+    // Neither page nor post found
     notFound();
   }
 
-  // Parse blocks if exists and ensure it's an array
+  // At this point, page is guaranteed to exist and be published
+  return renderContent(page, 'page');
+}
+
+// Helper function to render page or post content
+async function renderContent(content: any, type: 'page' | 'post') {
+  // Parse blocks - Handle both old format (array) and new PageBuilder format (object with canvas)
   let blocks: any[] | null = null;
-  if (page.blocks) {
+  let isPageBuilder = false;
+  
+  if (content.blocks) {
     try {
-      const parsed = typeof page.blocks === 'string' ? JSON.parse(page.blocks) : page.blocks;
-      blocks = Array.isArray(parsed) ? parsed : null;
+      const parsed = typeof content.blocks === 'string' ? JSON.parse(content.blocks) : content.blocks;
+      
+      // Check if it's PageBuilder format (has canvas.elements)
+      if (parsed && typeof parsed === 'object' && parsed.canvas && Array.isArray(parsed.canvas.elements)) {
+        blocks = parsed.canvas.elements;
+        isPageBuilder = true;
+      } 
+      // Check if it's old format (direct array)
+      else if (Array.isArray(parsed)) {
+        blocks = parsed;
+        isPageBuilder = false;
+      }
+      // Check if parsed.elements exists (alternative format)
+      else if (parsed && Array.isArray(parsed.elements)) {
+        blocks = parsed.elements;
+        isPageBuilder = true;
+      }
     } catch (error) {
       console.error('Error parsing blocks:', error);
       blocks = null;
     }
   }
 
+  // Generate structured data for posts
+  let articleSchema = null;
+  if (type === 'post') {
+    const headersList = await headers();
+    const hostname = headersList.get('x-hostname') || 'tazagroup.vn';
+    
+    articleSchema = generateArticleSchema({
+      headline: content.title,
+      description: content.excerpt || content.content?.substring(0, 200) || '',
+      image: content.ogImage || `https://${hostname}/og-default.jpg`,
+      datePublished: content.createdAt.toISOString(),
+      dateModified: content.updatedAt.toISOString(),
+      author: {
+        name: content.author?.name || 'Admin',
+      },
+      publisher: {
+        name: 'Taza Group',
+        logo: `https://${hostname}/logo.png`,
+      },
+      url: `https://${hostname}/${content.slug}`,
+    });
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <>
+      {/* JSON-LD Structured Data for posts */}
+      {articleSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+        />
+      )}
+
+      <div className="container mx-auto px-4 py-8">
       <article className="max-w-4xl mx-auto">
         {/* Header */}
         <header className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{page.title}</h1>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <time dateTime={page.createdAt.toISOString()}>
-              {new Date(page.createdAt).toLocaleDateString('vi-VN', {
+          {/* Featured Image (for posts) */}
+          {type === 'post' && content.ogImage && (
+            <div className="mb-6 -mx-4 md:mx-0">
+              <img
+                src={content.ogImage}
+                alt={content.title}
+                className="w-full h-auto rounded-lg"
+              />
+            </div>
+          )}
+
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{content.title}</h1>
+
+          {/* Excerpt (for posts) */}
+          {type === 'post' && content.excerpt && (
+            <p className="text-xl text-muted-foreground mb-4">{content.excerpt}</p>
+          )}
+
+          {/* Meta info */}
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-t border-b py-4">
+            <time dateTime={content.createdAt.toISOString()}>
+              {new Date(content.createdAt).toLocaleDateString('vi-VN', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
               })}
             </time>
-            {page.author.name && (
+            {content.author?.name && (
               <>
                 <span>•</span>
-                <span>Bởi {page.author.name}</span>
+                <span>Bởi {content.author.name}</span>
+              </>
+            )}
+            {content.updatedAt > content.createdAt && (
+              <>
+                <span>•</span>
+                <span>
+                  Cập nhật:{' '}
+                  {new Date(content.updatedAt).toLocaleDateString('vi-VN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </span>
               </>
             )}
           </div>
@@ -111,17 +250,148 @@ export default async function PageDetail({ params }: PageProps) {
         {/* Content */}
         <div className="prose prose-lg max-w-none">
           {blocks && blocks.length > 0 ? (
-            <PageBlocksRenderer blocks={blocks} />
+            isPageBuilder ? (
+              <PageBuilderRenderer elements={blocks} />
+            ) : (
+              <PageBlocksRenderer blocks={blocks} />
+            )
           ) : (
-            <div dangerouslySetInnerHTML={{ __html: page.content || '' }} />
+            <div dangerouslySetInnerHTML={{ __html: content.content || '' }} />
           )}
         </div>
       </article>
     </div>
+    </>
   );
 }
 
-// Component to render page builder blocks
+// Component to render PageBuilder elements
+function PageBuilderRenderer({ elements }: { elements: any[] }) {
+  if (!Array.isArray(elements) || elements.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="relative w-full">
+      {elements.map((element: any) => {
+        const { id, type, content, styles = {}, props = {} } = element;
+        
+        // Build inline styles from element.styles
+        const inlineStyles: React.CSSProperties = {
+          position: styles.position || 'relative',
+          left: styles.left,
+          top: styles.top,
+          width: styles.width,
+          height: styles.height,
+          backgroundColor: styles.backgroundColor,
+          color: styles.color,
+          fontSize: styles.fontSize,
+          fontWeight: styles.fontWeight,
+          textAlign: styles.textAlign as any,
+          padding: styles.padding,
+          margin: styles.margin,
+          borderRadius: styles.borderRadius,
+          border: styles.border,
+          boxShadow: styles.boxShadow,
+          zIndex: styles.zIndex,
+          opacity: styles.opacity,
+        };
+
+        // Remove undefined values
+        Object.keys(inlineStyles).forEach(key => {
+          if (inlineStyles[key as keyof React.CSSProperties] === undefined) {
+            delete inlineStyles[key as keyof React.CSSProperties];
+          }
+        });
+
+        switch (type) {
+          case 'text':
+            return (
+              <div key={id} style={inlineStyles} className="text-element">
+                {content || 'Text'}
+              </div>
+            );
+
+          case 'heading':
+            const level = props.level || 2;
+            if (level === 1) return <h1 key={id} style={inlineStyles} className="heading-element">{content || 'Heading'}</h1>;
+            if (level === 3) return <h3 key={id} style={inlineStyles} className="heading-element">{content || 'Heading'}</h3>;
+            if (level === 4) return <h4 key={id} style={inlineStyles} className="heading-element">{content || 'Heading'}</h4>;
+            if (level === 5) return <h5 key={id} style={inlineStyles} className="heading-element">{content || 'Heading'}</h5>;
+            if (level === 6) return <h6 key={id} style={inlineStyles} className="heading-element">{content || 'Heading'}</h6>;
+            return <h2 key={id} style={inlineStyles} className="heading-element">{content || 'Heading'}</h2>;
+
+          case 'button':
+            return (
+              <button key={id} style={inlineStyles} className="button-element" type="button">
+                {content || 'Button'}
+              </button>
+            );
+
+          case 'image':
+            return (
+              <div key={id} style={inlineStyles} className="image-element">
+                {content ? (
+                  <img 
+                    src={content} 
+                    alt={props.alt || ''} 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-muted flex items-center justify-center">
+                    Image
+                  </div>
+                )}
+              </div>
+            );
+
+          case 'container':
+            return (
+              <div key={id} style={inlineStyles} className="container-element">
+                {props.children || content || ''}
+              </div>
+            );
+
+          case 'video':
+            return (
+              <div key={id} style={inlineStyles} className="video-element">
+                {content ? (
+                  <iframe
+                    src={content}
+                    className="w-full h-full"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div className="w-full h-full bg-muted flex items-center justify-center">
+                    Video
+                  </div>
+                )}
+              </div>
+            );
+
+          case 'divider':
+            return (
+              <hr key={id} style={inlineStyles} className="divider-element" />
+            );
+
+          case 'spacer':
+            return (
+              <div key={id} style={inlineStyles} className="spacer-element" />
+            );
+
+          default:
+            return (
+              <div key={id} style={inlineStyles} className="unknown-element">
+                {content || type}
+              </div>
+            );
+        }
+      })}
+    </div>
+  );
+}
+
+// Component to render old format page builder blocks
 function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
   // Safety check
   if (!Array.isArray(blocks) || blocks.length === 0) {

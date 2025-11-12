@@ -108,18 +108,19 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
   };
 
   return (
-    <div className="flex h-screen w-screen fixed inset-0 bg-background overflow-hidden">
+    <div className="flex h-screen w-screen fixed inset-0 bg-background overflow-hidden" style={{ zIndex: 9999 }}>
       {/* Mobile Left Sidebar Overlay */}
       {showLeftSidebar && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden"
+          style={{ zIndex: 10000 }}
           onClick={() => setShowLeftSidebar(false)}
         >
           <div 
             className="w-full max-w-sm h-full bg-background shadow-2xl overflow-y-auto border-r"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between z-20">
               <div className="flex items-center gap-2">
                 <Layers className="w-5 h-5 text-primary" />
                 <h2 className="font-semibold">Thành Phần</h2>
@@ -140,14 +141,15 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
       {/* Mobile Right Sidebar Overlay */}
       {showRightSidebar && (
         <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden"
+          style={{ zIndex: 10000 }}
           onClick={() => setShowRightSidebar(false)}
         >
           <div 
             className="ml-auto w-full max-w-sm h-full bg-background shadow-2xl overflow-y-auto border-l"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between z-20">
               <div className="flex items-center gap-2">
                 <Settings2 className="w-5 h-5 text-primary" />
                 <h2 className="font-semibold">Thuộc Tính</h2>

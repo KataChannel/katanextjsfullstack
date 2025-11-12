@@ -8,6 +8,7 @@ const postUpdateSchema = z.object({
   content: z.string().optional(),
   excerpt: z.string().optional(),
   published: z.boolean().optional(),
+  blocks: z.any().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   metaKeywords: z.string().optional(),

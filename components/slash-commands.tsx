@@ -197,9 +197,10 @@ export const SlashCommandsList = forwardRef<any, SlashCommandsListProps>(
     }));
 
     return (
-      <div className="z-50 w-[calc(100vw-2rem)] sm:w-80 max-w-md rounded-lg border bg-popover p-2 shadow-md">
-        <div className="text-xs font-medium text-muted-foreground px-2 py-1.5 border-b mb-1">
-          💡 Slash Commands
+      <div className="z-50 w-[calc(100vw-2rem)] sm:w-80 max-w-md rounded-lg border border-border bg-popover/95 backdrop-blur-sm p-2 shadow-xl">
+        <div className="text-xs font-semibold text-foreground/80 px-2 py-1.5 border-b border-border/50 mb-1 flex items-center gap-1.5">
+          <span className="text-sm">💡</span>
+          <span>Slash Commands</span>
         </div>
         <div className="max-h-[60vh] sm:max-h-80 overflow-y-auto overflow-x-hidden">
           {props.items.length ? (
@@ -207,18 +208,30 @@ export const SlashCommandsList = forwardRef<any, SlashCommandsListProps>(
               <button
                 key={index}
                 type="button"
-                className={`flex w-full items-start gap-2 sm:gap-3 rounded-md px-2 py-2.5 text-left text-sm hover:bg-accent transition-colors touch-manipulation ${
-                  index === selectedIndex ? 'bg-accent shadow-sm' : ''
+                className={`flex w-full items-start gap-2 sm:gap-3 rounded-md px-2 py-2.5 text-left text-sm transition-all touch-manipulation ${
+                  index === selectedIndex 
+                    ? 'bg-primary/10 border border-primary/20 shadow-sm' 
+                    : 'hover:bg-accent/50 border border-transparent'
                 }`}
                 onClick={() => selectItem(index)}
                 onTouchStart={() => selectItem(index)}
               >
-                <div className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-md border bg-background">
-                  <item.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <div className={`flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-md border transition-colors ${
+                  index === selectedIndex 
+                    ? 'border-primary/30 bg-primary/5' 
+                    : 'border-border bg-background/50'
+                }`}>
+                  <item.icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 transition-colors ${
+                    index === selectedIndex ? 'text-primary' : 'text-foreground/70'
+                  }`} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm sm:text-base truncate">{item.title}</div>
-                  <div className="text-xs text-muted-foreground line-clamp-2">
+                  <div className={`font-medium text-sm sm:text-base truncate transition-colors ${
+                    index === selectedIndex ? 'text-foreground' : 'text-foreground/90'
+                  }`}>
+                    {item.title}
+                  </div>
+                  <div className="text-xs text-muted-foreground/80 line-clamp-2">
                     {item.description}
                   </div>
                 </div>
@@ -227,13 +240,26 @@ export const SlashCommandsList = forwardRef<any, SlashCommandsListProps>(
           ) : (
             <div className="px-2 py-8 text-center text-sm text-muted-foreground">
               <div className="text-2xl mb-2">🔍</div>
-              <div>Không tìm thấy lệnh</div>
-              <div className="text-xs mt-1">Thử từ khóa khác</div>
+              <div className="font-medium">Không tìm thấy lệnh</div>
+              <div className="text-xs mt-1 opacity-70">Thử từ khóa khác</div>
             </div>
           )}
         </div>
-        <div className="text-xs text-muted-foreground px-2 py-1.5 border-t mt-1 hidden sm:block">
-          <span className="opacity-60">↑↓ Di chuyển • Enter Chọn • Esc Đóng</span>
+        <div className="text-xs text-muted-foreground/70 px-2 py-1.5 border-t border-border/50 mt-1 hidden sm:block">
+          <div className="flex items-center justify-center gap-3">
+            <span className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-muted/80 rounded border border-border/50">↑↓</kbd>
+              <span>Di chuyển</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-muted/80 rounded border border-border/50">Enter</kbd>
+              <span>Chọn</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-muted/80 rounded border border-border/50">Esc</kbd>
+              <span>Đóng</span>
+            </span>
+          </div>
         </div>
       </div>
     );

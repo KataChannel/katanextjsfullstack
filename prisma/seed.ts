@@ -141,7 +141,7 @@ async function main() {
         <p>Tư vấn → Vẽ thiết kế → Gây tê → Tiêm Filler → Chăm sóc sau...</p>
       `,
       excerpt: 'Giải đáp mọi thắc mắc về tiêm filler môi: quy trình, giá cả, thời gian duy trì và lưu ý.',
-      published: false,
+      published: true,
       metaTitle: 'Tiêm Filler Môi - Giải Đáp Thắc Mắc | Taza Clinic',
       metaDescription: 'Tư vấn chi tiết về tiêm filler môi: quy trình chuẩn y khoa, bác sĩ giàu kinh nghiệm tại Taza.',
       metaKeywords: 'tiêm filler môi, filler môi, thẩm mỹ môi',

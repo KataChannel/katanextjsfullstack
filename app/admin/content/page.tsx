@@ -92,6 +92,7 @@ export default function ContentManagementPage() {
       ).map((post: any) => ({
         ...post,
         type: "post" as ContentType,
+        pageType: (post.blocks ? "builder" : "content") as PageType,
       }));
 
       const allContent = [...pages, ...posts].sort(
@@ -179,8 +180,8 @@ export default function ContentManagementPage() {
   const filteredContents = contents.filter((item) => {
     if (filterType === "all") return true;
     if (filterType === "pages") return item.type === "page" && !item.blocks;
-    if (filterType === "posts") return item.type === "post";
-    if (filterType === "builder") return item.type === "page" && !!item.blocks;
+    if (filterType === "posts") return item.type === "post" && !item.blocks;
+    if (filterType === "builder") return !!item.blocks; // Both pages and posts with builder
     return true;
   });
 
@@ -189,8 +190,8 @@ export default function ContentManagementPage() {
     published: contents.filter((c) => c.published).length,
     draft: contents.filter((c) => !c.published).length,
     pages: contents.filter((c) => c.type === "page" && !c.blocks).length,
-    posts: contents.filter((c) => c.type === "post").length,
-    builder: contents.filter((c) => c.type === "page" && !!c.blocks).length,
+    posts: contents.filter((c) => c.type === "post" && !c.blocks).length,
+    builder: contents.filter((c) => !!c.blocks).length, // Both pages and posts with builder
   };
 
   // ============================================================================
@@ -401,9 +402,9 @@ function ContentCard({
   onDelete: () => void;
   onTogglePublish: () => void;
 }) {
-  const isBuilder = item.type === "page" && !!item.blocks;
+  const isBuilder = !!item.blocks;
   const isPost = item.type === "post";
-  const elementCount = isBuilder ? (item.blocks?.elements?.length || 0) : 0;
+  const elementCount = isBuilder ? (item.blocks?.canvas?.elements?.length || item.blocks?.elements?.length || 0) : 0;
 
   const gradients = {
     builder: "bg-gradient-to-br from-blue-50 to-indigo-50",
@@ -487,7 +488,7 @@ function ContentCard({
                 </Link>
               </Button>
               <Button variant="outline" size="sm" asChild>
-                <Link href={`/pages/${item.slug}`} target="_blank">
+                <Link href={isPost ? `/posts/${item.slug}` : `/pages/${item.slug}`} target="_blank">
                   <Eye className="h-3 w-3" />
                 </Link>
               </Button>
