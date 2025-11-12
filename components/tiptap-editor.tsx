@@ -11,6 +11,8 @@ import { TableCell } from '@tiptap/extension-table-cell';
 import { TableHeader } from '@tiptap/extension-table-header';
 import { TextStyle } from '@tiptap/extension-text-style';
 import { Color } from '@tiptap/extension-color';
+import Highlight from '@tiptap/extension-highlight';
+import Underline from '@tiptap/extension-underline';
 import { useCallback, useEffect } from 'react';
 import { Button } from './ui/button';
 import {
@@ -29,6 +31,9 @@ import {
   Table as TableIcon,
   Undo,
   Redo,
+  Underline as UnderlineIcon,
+  Highlighter,
+  Divide,
 } from 'lucide-react';
 
 interface TiptapEditorProps {
@@ -51,29 +56,53 @@ export function TiptapEditor({
         heading: {
           levels: [1, 2, 3],
         },
+        horizontalRule: {
+          HTMLAttributes: {
+            class: 'my-4 border-t-2 border-gray-300',
+          },
+        },
       }),
       Placeholder.configure({
         placeholder,
+        showOnlyWhenEditable: true,
       }),
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-blue-500 underline',
+          class: 'text-blue-500 underline cursor-pointer hover:text-blue-700',
         },
       }),
       Image.configure({
         HTMLAttributes: {
-          class: 'max-w-full h-auto rounded-lg',
+          class: 'max-w-full h-auto rounded-lg my-4',
         },
       }),
       Table.configure({
         resizable: true,
+        HTMLAttributes: {
+          class: 'border-collapse table-auto w-full my-4',
+        },
       }),
       TableRow,
-      TableCell,
-      TableHeader,
+      TableCell.configure({
+        HTMLAttributes: {
+          class: 'border border-gray-300 px-4 py-2',
+        },
+      }),
+      TableHeader.configure({
+        HTMLAttributes: {
+          class: 'border border-gray-300 px-4 py-2 bg-gray-100 font-semibold',
+        },
+      }),
       TextStyle,
       Color,
+      Highlight.configure({
+        multicolor: true,
+        HTMLAttributes: {
+          class: 'bg-yellow-200 px-1',
+        },
+      }),
+      Underline,
     ],
     content,
     editable,
@@ -85,7 +114,7 @@ export function TiptapEditor({
     editorProps: {
       attributes: {
         class:
-          'prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none focus:outline-none min-h-[300px] p-4',
+          'prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none focus:outline-none min-h-[300px] p-4 border-none outline-none',
       },
     },
   });
@@ -121,9 +150,11 @@ export function TiptapEditor({
   }
 
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border rounded-lg overflow-hidden bg-background">
       {editable && <MenuBar editor={editor} onAddLink={addLink} onAddImage={addImage} onAddTable={addTable} />}
-      <EditorContent editor={editor} />
+      <div className="min-h-[400px]">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 }
@@ -137,13 +168,14 @@ interface MenuBarProps {
 
 function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
   return (
-    <div className="border-b bg-muted/50 p-2 flex flex-wrap gap-1">
+    <div className="border-b bg-muted/30 p-2 flex flex-wrap gap-1 sticky top-0 z-10">
       <Button
         type="button"
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleBold().run()}
-        className={editor.isActive('bold') ? 'bg-muted' : ''}
+        className={editor.isActive('bold') ? 'bg-accent' : ''}
+        title="Bold (Ctrl+B)"
       >
         <Bold className="h-4 w-4" />
       </Button>
@@ -153,7 +185,8 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={editor.isActive('italic') ? 'bg-muted' : ''}
+        className={editor.isActive('italic') ? 'bg-accent' : ''}
+        title="Italic (Ctrl+I)"
       >
         <Italic className="h-4 w-4" />
       </Button>
@@ -162,8 +195,20 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         type="button"
         variant="ghost"
         size="sm"
+        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        className={editor.isActive('underline') ? 'bg-accent' : ''}
+        title="Underline (Ctrl+U)"
+      >
+        <UnderlineIcon className="h-4 w-4" />
+      </Button>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        className={editor.isActive('strike') ? 'bg-muted' : ''}
+        className={editor.isActive('strike') ? 'bg-accent' : ''}
+        title="Strikethrough"
       >
         <Strikethrough className="h-4 w-4" />
       </Button>
@@ -172,8 +217,20 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         type="button"
         variant="ghost"
         size="sm"
+        onClick={() => editor.chain().focus().toggleHighlight().run()}
+        className={editor.isActive('highlight') ? 'bg-accent' : ''}
+        title="Highlight"
+      >
+        <Highlighter className="h-4 w-4" />
+      </Button>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
         onClick={() => editor.chain().focus().toggleCode().run()}
-        className={editor.isActive('code') ? 'bg-muted' : ''}
+        className={editor.isActive('code') ? 'bg-accent' : ''}
+        title="Inline Code"
       >
         <Code className="h-4 w-4" />
       </Button>
@@ -185,7 +242,8 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        className={editor.isActive('heading', { level: 1 }) ? 'bg-muted' : ''}
+        className={editor.isActive('heading', { level: 1 }) ? 'bg-accent' : ''}
+        title="Heading 1"
       >
         <Heading1 className="h-4 w-4" />
       </Button>
@@ -195,7 +253,8 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        className={editor.isActive('heading', { level: 2 }) ? 'bg-muted' : ''}
+        className={editor.isActive('heading', { level: 2 }) ? 'bg-accent' : ''}
+        title="Heading 2"
       >
         <Heading2 className="h-4 w-4" />
       </Button>
@@ -205,7 +264,8 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        className={editor.isActive('heading', { level: 3 }) ? 'bg-muted' : ''}
+        className={editor.isActive('heading', { level: 3 }) ? 'bg-accent' : ''}
+        title="Heading 3"
       >
         <Heading3 className="h-4 w-4" />
       </Button>
@@ -217,7 +277,8 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive('bulletList') ? 'bg-muted' : ''}
+        className={editor.isActive('bulletList') ? 'bg-accent' : ''}
+        title="Bullet List"
       >
         <List className="h-4 w-4" />
       </Button>
@@ -227,7 +288,8 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive('orderedList') ? 'bg-muted' : ''}
+        className={editor.isActive('orderedList') ? 'bg-accent' : ''}
+        title="Numbered List"
       >
         <ListOrdered className="h-4 w-4" />
       </Button>
@@ -237,26 +299,55 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         variant="ghost"
         size="sm"
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        className={editor.isActive('blockquote') ? 'bg-muted' : ''}
+        className={editor.isActive('blockquote') ? 'bg-accent' : ''}
+        title="Quote"
       >
         <Quote className="h-4 w-4" />
       </Button>
 
       <div className="w-px h-6 bg-border mx-1" />
 
-      <Button type="button" variant="ghost" size="sm" onClick={onAddLink}>
+      <Button 
+        type="button" 
+        variant="ghost" 
+        size="sm" 
+        onClick={onAddLink}
+        title="Add Link"
+      >
         <Link2 className="h-4 w-4" />
       </Button>
 
-      <Button type="button" variant="ghost" size="sm" onClick={onAddImage}>
+      <Button 
+        type="button" 
+        variant="ghost" 
+        size="sm" 
+        onClick={onAddImage}
+        title="Add Image"
+      >
         <ImageIcon className="h-4 w-4" />
       </Button>
 
-      <Button type="button" variant="ghost" size="sm" onClick={onAddTable}>
+      <Button 
+        type="button" 
+        variant="ghost" 
+        size="sm" 
+        onClick={onAddTable}
+        title="Add Table"
+      >
         <TableIcon className="h-4 w-4" />
       </Button>
 
-      <div className="w-px h-6 bg-border mx-1" />
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={() => editor.chain().focus().setHorizontalRule().run()}
+        title="Horizontal Rule"
+      >
+        <Divide className="h-4 w-4" />
+      </Button>
+
+      <div className="flex-1" />
 
       <Button
         type="button"
@@ -264,6 +355,7 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         size="sm"
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().undo()}
+        title="Undo (Ctrl+Z)"
       >
         <Undo className="h-4 w-4" />
       </Button>
@@ -274,6 +366,7 @@ function MenuBar({ editor, onAddLink, onAddImage, onAddTable }: MenuBarProps) {
         size="sm"
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().redo()}
+        title="Redo (Ctrl+Shift+Z)"
       >
         <Redo className="h-4 w-4" />
       </Button>

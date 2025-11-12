@@ -30,6 +30,7 @@ import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { toast } from "sonner";
+import { TiptapEditor } from "@/components/tiptap-editor";
 
 // ============================================================================
 // TYPES
@@ -810,15 +811,12 @@ function ContentDialog({
 
               <div className="space-y-2">
                 <Label htmlFor="content">Nội dung</Label>
-                <textarea
-                  id="content"
-                  value={formData.content}
-                  onChange={(e) =>
-                    setFormData({ ...formData, content: e.target.value })
+                <TiptapEditor
+                  content={formData.content}
+                  onChange={(content) =>
+                    setFormData({ ...formData, content })
                   }
-                  placeholder="Nhập nội dung"
-                  rows={6}
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm resize-none"
+                  placeholder="Bắt đầu viết nội dung... (Nhấn '/' để xem lệnh)"
                 />
               </div>
             </TabsContent>
