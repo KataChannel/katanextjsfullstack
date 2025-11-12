@@ -56,6 +56,14 @@ export async function GET(
   }
 }
 
+// PUT /api/pages/[id] - Update page (alias for PATCH)
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  return PATCH(request, { params });
+}
+
 // PATCH /api/pages/[id] - Update page
 export async function PATCH(
   request: NextRequest,

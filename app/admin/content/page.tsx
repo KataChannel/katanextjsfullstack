@@ -81,6 +81,7 @@ export default function ContentManagementPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [editingContent, setEditingContent] = useState<ContentItem | null>(null);
   const [createType, setCreateType] = useState<ContentType>("page");
+  const [authorId, setAuthorId] = useState<string>("");
   const [formData, setFormData] = useState<FormData>({
     title: "",
     slug: "",
@@ -155,21 +156,50 @@ export default function ContentManagementPage() {
     }
 
     try {
+      // Use cached authorId or get from first content item
+      let userId = authorId;
+      
+      if (!userId && contents.length > 0) {
+        // Get authorId from existing content by fetching full data
+        const firstItem = contents[0];
+        const endpoint = firstItem.type === "page" 
+          ? `/api/pages/${firstItem.id}`
+          : `/api/posts/${firstItem.id}`;
+        const itemRes = await fetch(endpoint);
+        const itemData = await itemRes.json();
+        userId = itemData.data?.authorId || itemData.authorId;
+      }
+
+      if (!userId) {
+        toast.error("Không tìm thấy user. Vui lòng tạo user trước hoặc có ít nhất 1 content để lấy authorId.");
+        return;
+      }
+
       const endpoint = createType === "page" ? "/api/pages" : "/api/posts";
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          authorId: userId,
+        }),
       });
 
-      if (!res.ok) throw new Error("Failed to create");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API Error:", errorData);
+        throw new Error(errorData.error || errorData.message || "Failed to create");
+      }
+
+      const result = await res.json();
+      setAuthorId(userId); // Cache for next time
 
       toast.success(`✅ Đã tạo ${createType === "page" ? "trang" : "bài viết"} thành công!`);
       await fetchAllContent();
       closeDialog();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating:", error);
-      toast.error("Lỗi khi tạo nội dung");
+      toast.error(error.message || "Lỗi khi tạo nội dung");
     }
   };
 
@@ -192,14 +222,18 @@ export default function ContentManagementPage() {
         body: JSON.stringify(formData),
       });
 
-      if (!res.ok) throw new Error("Failed to update");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API Error:", errorData);
+        throw new Error(errorData.error || errorData.message || "Failed to update");
+      }
 
       toast.success("✅ Đã cập nhật thành công!");
       await fetchAllContent();
       closeDialog();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating:", error);
-      toast.error("Lỗi khi cập nhật");
+      toast.error(error.message || "Lỗi khi cập nhật");
     }
   };
 
@@ -214,13 +248,18 @@ export default function ContentManagementPage() {
           : `/api/posts/${item.id}`;
 
       const res = await fetch(endpoint, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete");
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API Error:", errorData);
+        throw new Error(errorData.error || errorData.message || "Failed to delete");
+      }
 
       toast.success("✅ Đã xóa thành công!");
       await fetchAllContent();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting:", error);
-      toast.error("Lỗi khi xóa");
+      toast.error(error.message || "Lỗi khi xóa");
     }
   };
 
@@ -237,7 +276,11 @@ export default function ContentManagementPage() {
         body: JSON.stringify({ published: !item.published }),
       });
 
-      if (!res.ok) throw new Error("Failed to toggle");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
+        console.error("API Error:", errorData);
+        throw new Error(errorData.error || errorData.message || "Failed to toggle");
+      }
 
       toast.success(
         item.published
@@ -245,9 +288,9 @@ export default function ContentManagementPage() {
           : "✅ Đã xuất bản!"
       );
       await fetchAllContent();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error toggling:", error);
-      toast.error("Lỗi khi thay đổi trạng thái");
+      toast.error(error.message || "Lỗi khi thay đổi trạng thái");
     }
   };
 
@@ -681,7 +724,7 @@ function ContentDialog({
 }) {
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl p-4">
         <DialogHeader>
           <DialogTitle>
             {isEdit
