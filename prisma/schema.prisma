@@ -149,6 +149,10 @@ model SeoSettings {
   googleTagManager String?
   facebookPixel   String?
   
+  // Homepage Settings
+  homePageType String? // 'page' | 'post' | null (default static homepage)
+  homePageId   String? // ID of page or post to use as homepage
+  
   // Structured Data
   organizationSchema Json?
   websiteSchema      Json?

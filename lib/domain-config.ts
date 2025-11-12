@@ -84,7 +84,7 @@ export const DOMAIN_CONFIGS: Record<string, DomainConfig> = {
   },
   'innerbright.vn': {
     domain: 'innerbright.vn',
-    database: 'postgresql://postgres:postgres@116.118.48.208:5432/innerv2core',
+    database: 'postgresql://postgres:postgres@116.118.49.243:13003/innerv2core',
     description: 'InnerBright Training & Coaching, Cuộc sống của Bạn là do chính Bạn tạo ra và Lập Trình Ngôn Ngữ Tư Duy - NLP (Neuro Linguistic Programming)',
     address: 'TP. Hồ Chí Minh.',
     hotline: '0908370968',

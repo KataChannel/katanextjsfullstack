@@ -21,7 +21,7 @@ DATABASES=(
     [timona]="postgresql://postgres:postgres@116.118.49.243:13003/timona"
     [hderma]="postgresql://postgres:postgres@116.118.49.243:13003/hderma"
     [elasome]="postgresql://postgres:postgres@116.118.49.243:13003/elasome"
-    [innerbright]="postgresql://postgres:postgres@116.118.48.208:5432/innerv2core"
+    [innerbright]="postgresql://postgres:postgres@116.118.49.243:13003/innerv2core"
 )
 
 SUCCESS_COUNT=0

@@ -6,6 +6,7 @@ import { getPrisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { extractDomain } from "@/lib/database";
 import { Save } from "lucide-react";
+import { HomePageSelector } from "@/components/homepage-selector";
 
 export default async function SeoSettingsPage() {
   const headersList = await headers();
@@ -171,6 +172,22 @@ export default async function SeoSettingsPage() {
                 ID số gồm 15-16 chữ số
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Homepage Settings */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Cài đặt Trang chủ</CardTitle>
+            <CardDescription>
+              Chọn trang hoặc bài viết để hiển thị làm trang chủ
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <HomePageSelector 
+              defaultType={seoSettings.homePageType}
+              defaultId={seoSettings.homePageId}
+            />
           </CardContent>
         </Card>
 

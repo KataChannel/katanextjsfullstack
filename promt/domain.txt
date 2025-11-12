@@ -29,7 +29,7 @@ Hotline : 0911754299 - 02873092585
 Email : info@hderma.vn
 
 
-innerbright.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.48.208:5432/innerv2core"
+innerbright.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/innerv2core"
 Mô Tả : InnerBright Training & Coaching, Cuộc sống của Bạn là do chính Bạn tạo ra và Lập Trình Ngôn Ngữ Tư Duy - NLP (Neuro Linguistic Programming)
 Địa Chỉ Liên Hệ : TP. Hồ Chí Minh.
 Hotline : 0908370968

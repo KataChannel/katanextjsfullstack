@@ -2,12 +2,67 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { getPrisma } from "@/lib/prisma";
+import { headers } from "next/headers";
+import { extractDomain } from "@/lib/database";
 import Link from "next/link";
 import { ArrowRight, Sparkles, TrendingUp, Award, Clock } from "lucide-react";
+import { CustomHomePage } from "@/components/custom-homepage";
 
 export default async function Home() {
-  const prisma = await getPrisma('tazagroup.vn');
+  // Get current domain and SEO settings
+  const headersList = await headers();
+  const hostname = headersList.get("x-hostname") || "";
+  const domain = extractDomain(hostname);
   
+  const prisma = await getPrisma(domain || 'tazagroup.vn');
+  
+  // Check if a custom homepage is set
+  const seoSettings = await prisma.seoSettings.findUnique({
+    where: { domain: domain || 'tazagroup.vn' },
+    select: {
+      homePageType: true,
+      homePageId: true,
+    },
+  });
+
+  // If homepage is set to a page or post, render that instead
+  if (seoSettings?.homePageType && seoSettings?.homePageId) {
+    if (seoSettings.homePageType === "page") {
+      const page = await prisma.page.findUnique({
+        where: { id: seoSettings.homePageId },
+        include: {
+          author: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (page && page.published) {
+        return <CustomHomePage content={page} type="page" />;
+      }
+    } else if (seoSettings.homePageType === "post") {
+      const post = await prisma.post.findUnique({
+        where: { id: seoSettings.homePageId },
+        include: {
+          author: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (post && post.published) {
+        return <CustomHomePage content={post} type="post" />;
+      }
+    }
+  }
+
+  // Default homepage rendering
   const [featuredPosts, stats] = await Promise.all([
     prisma.post.findMany({
       where: { published: true },

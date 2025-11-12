@@ -11,6 +11,8 @@ const seoSettingsSchema = z.object({
   googleAnalytics: z.string().optional(),
   googleTagManager: z.string().optional(),
   facebookPixel: z.string().optional(),
+  homePageType: z.enum(["page", "post", ""]).optional(),
+  homePageId: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -34,6 +36,8 @@ export async function POST(request: NextRequest) {
         googleAnalytics: validated.googleAnalytics,
         googleTagManager: validated.googleTagManager,
         facebookPixel: validated.facebookPixel,
+        homePageType: validated.homePageType || null,
+        homePageId: validated.homePageId || null,
       },
       update: {
         siteName: validated.siteName || "",
@@ -43,6 +47,8 @@ export async function POST(request: NextRequest) {
         googleAnalytics: validated.googleAnalytics,
         googleTagManager: validated.googleTagManager,
         facebookPixel: validated.facebookPixel,
+        homePageType: validated.homePageType || null,
+        homePageId: validated.homePageId || null,
         updatedAt: new Date(),
       },
     });
