@@ -54,6 +54,16 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Multi-domain support for production
+  // Uncomment khi deploy production với nhiều domains
+  // async rewrites() {
+  //   return {
+  //     beforeFiles: [
+  //       // Rewrites cho từng domain nếu cần
+  //     ],
+  //   };
+  // },
 };
 
 export default nextConfig;

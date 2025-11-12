@@ -12,9 +12,12 @@
 ## ✨ Tính năng nổi bật
 
 ### 🌐 Multi-tenancy
-- Hỗ trợ **5 domains** với cùng một codebase
-- Tự động chuyển đổi database theo domain
+- Hỗ trợ **5 domains** với database riêng biệt
+- Tự động chuyển đổi database theo domain/port
 - Middleware intelligent domain detection
+- **Development**: Port-based routing (3000-3004)
+- **Production**: Domain-based automatic switching
+- Domains: tazagroup.vn, tazaskinclinic.com, timona.edu.vn, hderma.vn, elasome.com
 
 ### 📝 Page Builder Professional
 - **Drag & Drop** interface trực quan
@@ -84,20 +87,28 @@
 git clone <repository-url>
 cd kataseo
 
-# Install dependencies
-npm install
+# Install dependencies (using Bun)
+bun install
 
 # Setup environment
 cp .env.example .env
 # Edit .env với DATABASE_URL của bạn
 
 # Generate Prisma Client
-npm run db:generate
+bun run db:generate
 
 # Push schema to database
-npm run db:push
+bun run db:push
 
-# Start development server
+# Start development server (default: port 3000 - tazagroup.vn)
+bun run dev
+
+# Hoặc chạy domain cụ thể:
+bun run dev:tazagroup   # Port 3000 - tazagroup.vn
+bun run dev:tazaskin    # Port 3001 - tazaskinclinic.com
+bun run dev:timona      # Port 3002 - timona.edu.vn
+bun run dev:hderma      # Port 3003 - hderma.vn
+bun run dev:elasome     # Port 3004 - elasome.com
 npm run dev
 ```
 
@@ -105,6 +116,8 @@ Truy cập http://localhost:3000
 
 ## 📖 Documentation
 
+- **[MULTI_DOMAIN_CONFIG.md](./MULTI_DOMAIN_CONFIG.md)** - ⭐ Hướng dẫn cấu hình Multi-Domain
+- **[MULTI_DOMAIN_USAGE_EXAMPLES.md](./docs/MULTI_DOMAIN_USAGE_EXAMPLES.md)** - ⭐ Ví dụ sử dụng Multi-Domain
 - **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Chi tiết kiến trúc và implementation
 - **[QUICK_START.md](./QUICK_START.md)** - Hướng dẫn nhanh bắt đầu
 - **[API Documentation](#)** - API endpoints reference
@@ -124,10 +137,14 @@ kataseo/
 │   ├── page-builder.tsx     # Page Builder main
 │   └── tiptap-editor.tsx    # Tiptap editor wrapper
 ├── lib/                     # Utilities
+│   ├── domain-config.ts     # ⭐ Multi-domain configuration
+│   ├── domain-helpers.ts    # ⭐ Server-side domain helpers
+│   ├── domain-hooks.ts      # ⭐ Client-side domain hooks
 │   ├── database.ts          # Multi-tenant DB manager
 │   ├── prisma.ts            # Prisma client
 │   ├── seo.ts               # SEO utilities
 │   └── actions.ts           # Server actions
+├── middleware.ts            # ⭐ Domain detection middleware
 ├── prisma/                  # Database schema
 └── public/                  # Static assets
 ```
@@ -136,30 +153,51 @@ kataseo/
 
 ```bash
 # Development
-npm run dev              # Start dev server
-npm run build            # Build for production
-npm run start            # Start production server
+bun run dev              # Start dev server (port 3000)
+bun run dev:tazagroup    # Port 3000 - tazagroup.vn
+bun run dev:tazaskin     # Port 3001 - tazaskinclinic.com
+bun run dev:timona       # Port 3002 - timona.edu.vn
+bun run dev:hderma       # Port 3003 - hderma.vn
+bun run dev:elasome      # Port 3004 - elasome.com
+bun run build            # Build for production
+bun run start            # Start production server
 
 # Database
-npm run db:studio        # Open Prisma Studio
-npm run db:generate      # Generate Prisma Client
-npm run db:push          # Push schema changes
-npm run db:migrate       # Create migration
-npm run db:reset         # Reset database
+bun run db:studio        # Open Prisma Studio
+bun run db:generate      # Generate Prisma Client
+bun run db:push          # Push schema changes
+bun run db:migrate       # Create migration
+bun run db:reset         # Reset database
 
 # Code Quality
-npm run lint             # Run ESLint
+bun run lint             # Run ESLint
 ```
 
 ## 🌍 Supported Domains
 
-| Domain | Database | Purpose |
-|--------|----------|---------|
-| tazagroup.vn | tazagroupvn | Main corporate website |
-| tazaskinclinic.com | tazaskinclinic | Skin clinic website |
-| timona.edu.vn | tazagroupvn | Education portal |
-| hderma.vn | hderma | Dermatology clinic |
-| elasome.com | elasome | E-commerce platform |
+Hệ thống hỗ trợ 5 domains với database và cấu hình riêng biệt:
+
+| Domain | Database | Dev Port | Mô tả |
+|--------|----------|----------|-------|
+| **tazagroup.vn** | tazagroupvn | 3000 | Taza Group - Nâng tầm giá trị phụ nữ Việt |
+| **tazaskinclinic.com** | tazaskinclinic | 3001 | Taza Skin Clinic - Chuyên gia thẩm mỹ |
+| **timona.edu.vn** | timona | 3002 | Timona Academy - Đào tạo thẩm mỹ |
+| **hderma.vn** | hderma | 3003 | H.Derma - Khai phá vẻ đẹp riêng |
+| **elasome.com** | elasome | 3004 | Elasome - Giải pháp chăm sóc da |
+
+### 🔧 Multi-Domain Architecture
+
+```
+Request → Middleware (Domain Detection)
+    ↓
+Port/Domain → Domain Config Mapping
+    ↓
+Database Selection → Correct Database
+    ↓
+Render with Domain-specific Data
+```
+
+**Chi tiết:** Xem [MULTI_DOMAIN_CONFIG.md](./MULTI_DOMAIN_CONFIG.md)
 
 ## 📱 Features Walkthrough
 

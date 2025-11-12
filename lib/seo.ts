@@ -210,3 +210,51 @@ export function generateBreadcrumbSchema(items: Array<{ name: string; url: strin
     })),
   };
 }
+
+/**
+ * Generate domain-aware SEO metadata
+ * Import domain config để tự động lấy thông tin domain
+ */
+export async function generateDomainSEOMetadata(config: Partial<SEOConfig> = {}): Promise<Metadata> {
+  const { getCurrentDomainConfig } = await import('./domain-helpers');
+  const domainConfig = await getCurrentDomainConfig();
+  
+  return generateSEOMetadata({
+    siteName: domainConfig.siteName,
+    title: config.title || domainConfig.siteTitle,
+    description: config.description || domainConfig.description,
+    keywords: config.keywords,
+    ogImage: config.ogImage,
+    ogType: config.ogType,
+    canonicalUrl: config.canonicalUrl,
+    locale: config.locale,
+    twitterHandle: config.twitterHandle,
+  });
+}
+
+/**
+ * Generate domain-aware Organization schema
+ */
+export async function generateDomainOrganizationSchema() {
+  const { getDomainConfig, getBaseUrl } = await import('./domain-config');
+  const { getCurrentHostname } = await import('./domain-helpers');
+  
+  const hostname = await getCurrentHostname();
+  const domainConfig = getDomainConfig(hostname);
+  const baseUrl = getBaseUrl(domainConfig);
+  
+  return generateOrganizationSchema({
+    name: domainConfig.siteName,
+    url: baseUrl,
+    description: domainConfig.description,
+    address: {
+      streetAddress: domainConfig.address,
+      addressCountry: 'VN',
+    },
+    contactPoint: {
+      telephone: domainConfig.hotline,
+      email: domainConfig.email,
+      contactType: 'Customer Service',
+    },
+  });
+}

@@ -7,24 +7,24 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 /**
- * Lấy Prisma client dựa trên domain hiện tại
- * @param defaultDomain - Domain mặc định khi không có headers (build time)
+ * Lấy Prisma client dựa trên hostname hiện tại
+ * @param defaultHostname - Hostname mặc định khi không có headers (build time)
  */
-export async function getPrisma(defaultDomain?: string): Promise<PrismaClient> {
-  // Nếu có defaultDomain (build time), sử dụng trực tiếp
-  if (defaultDomain) {
-    return getPrismaClient(defaultDomain);
+export async function getPrisma(defaultHostname?: string): Promise<PrismaClient> {
+  // Nếu có defaultHostname (build time), sử dụng trực tiếp
+  if (defaultHostname) {
+    return getPrismaClient(defaultHostname);
   }
   
   // Ngược lại, lấy từ headers (runtime)
   try {
     const headersList = await headers();
-    const domain = headersList.get('x-domain') || 'tazagroup.vn';
-    return getPrismaClient(domain);
+    const hostname = headersList.get('x-hostname') || headersList.get('host') || 'localhost:3000';
+    return getPrismaClient(hostname);
   } catch (error) {
     // Fallback khi headers không khả dụng (build time)
-    console.warn('Headers not available, using default domain');
-    return getPrismaClient('tazagroup.vn');
+    console.warn('Headers not available, using default hostname');
+    return getPrismaClient('localhost:3000');
   }
 }
 

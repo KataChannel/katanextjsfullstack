@@ -1,49 +1,33 @@
 import { PrismaClient } from '@prisma/client';
+import { getDomainConfig, getDatabaseUrl as getDbUrl } from './domain-config';
 
-// Database configuration cho từng domain
-const databaseConfig: Record<string, string> = {
-  'tazagroup.vn': 'postgresql://postgres:postgres@116.118.49.243:13003/tazagroupvn',
-  'tazaskinclinic.com': 'postgresql://postgres:postgres@116.118.49.243:13003/tazaskinclinic',
-  'timona.edu.vn': 'postgresql://postgres:postgres@116.118.49.243:13003/tazagroupvn',
-  'hderma.vn': 'postgresql://postgres:postgres@116.118.49.243:13003/hderma',
-  'elasome.com': 'postgresql://postgres:postgres@116.118.49.243:13003/elasome',
-};
-
-// Cache Prisma clients cho mỗi database
+// Cache Prisma clients cho mỗi domain
 const prismaClients = new Map<string, PrismaClient>();
 
 /**
- * Lấy database URL dựa trên domain
+ * Lấy database URL dựa trên hostname
+ * Hỗ trợ cả development (localhost:port) và production (domain)
  */
-export function getDatabaseUrl(domain: string): string {
-  // Loại bỏ www. nếu có
-  const cleanDomain = domain.replace(/^www\./, '');
-  
-  // Tìm database URL tương ứng
-  const dbUrl = databaseConfig[cleanDomain];
-  
-  if (!dbUrl) {
-    // Mặc định sử dụng tazagroup.vn nếu không tìm thấy
-    console.warn(`Domain ${domain} không có cấu hình, sử dụng database mặc định`);
-    return databaseConfig['tazagroup.vn'];
-  }
-  
-  return dbUrl;
+export function getDatabaseUrl(hostname: string): string {
+  const config = getDomainConfig(hostname);
+  return getDbUrl(config);
 }
 
 /**
- * Lấy Prisma client cho domain cụ thể
+ * Lấy Prisma client cho hostname cụ thể
+ * @param hostname - Có thể là production domain hoặc localhost:port
  */
-export function getPrismaClient(domain: string): PrismaClient {
-  const cleanDomain = domain.replace(/^www\./, '');
+export function getPrismaClient(hostname: string): PrismaClient {
+  const config = getDomainConfig(hostname);
+  const cacheKey = config.domain;
   
   // Kiểm tra cache
-  if (prismaClients.has(cleanDomain)) {
-    return prismaClients.get(cleanDomain)!;
+  if (prismaClients.has(cacheKey)) {
+    return prismaClients.get(cacheKey)!;
   }
   
   // Tạo client mới
-  const databaseUrl = getDatabaseUrl(cleanDomain);
+  const databaseUrl = getDbUrl(config);
   const client = new PrismaClient({
     datasources: {
       db: {
@@ -61,7 +45,7 @@ export function getPrismaClient(domain: string): PrismaClient {
   });
   
   // Lưu vào cache
-  prismaClients.set(cleanDomain, client);
+  prismaClients.set(cacheKey, client);
   
   return client;
 }

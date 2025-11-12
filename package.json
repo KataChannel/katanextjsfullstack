@@ -4,6 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "./scripts/bun-wrapper.sh bun --bun next dev",
+    "dev:tazagroup": "./scripts/bun-wrapper.sh bun --bun next dev -p 3000",
+    "dev:tazaskin": "./scripts/bun-wrapper.sh bun --bun next dev -p 3001",
+    "dev:timona": "./scripts/bun-wrapper.sh bun --bun next dev -p 3002",
+    "dev:hderma": "./scripts/bun-wrapper.sh bun --bun next dev -p 3003",
+    "dev:elasome": "./scripts/bun-wrapper.sh bun --bun next dev -p 3004",
     "build": "bun --bun next build",
     "start": "bun --bun next start",
     "lint": "bun --bun eslint",
