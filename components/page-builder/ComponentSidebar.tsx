@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card } from '@/components/ui/card';
-import { Building2, Type, Image, Square, Heading } from 'lucide-react';
+import { Building2, Type, Image, Square, Heading, ImagePlay } from 'lucide-react';
 import { useBuilderStore, BuilderElement, ElementType } from '@/lib/page-builder/store';
 
 /**
@@ -152,6 +152,55 @@ const componentTemplates: Array<{
         type: 'fade',
         duration: 0.5,
         trigger: 'scroll',
+      },
+    },
+  },
+  {
+    type: 'carousel',
+    label: 'Carousel',
+    icon: <ImagePlay className="w-5 h-5" />,
+    defaultProps: {
+      width: 1200,
+      height: 500,
+      layout: {},
+      style: {
+        borderRadius: 0,
+      },
+      states: {
+        default: {},
+      },
+      animation: {
+        type: 'none',
+      },
+      carousel: {
+        slides: [
+          {
+            id: 'slide-1',
+            image: '/api/placeholder/1200/500',
+            title: 'Slide 1',
+            description: 'Mô tả slide 1',
+            alt: 'Slide 1',
+          },
+          {
+            id: 'slide-2',
+            image: '/api/placeholder/1200/500',
+            title: 'Slide 2',
+            description: 'Mô tả slide 2',
+            alt: 'Slide 2',
+          },
+          {
+            id: 'slide-3',
+            image: '/api/placeholder/1200/500',
+            title: 'Slide 3',
+            description: 'Mô tả slide 3',
+            alt: 'Slide 3',
+          },
+        ],
+        autoPlay: true,
+        interval: 5000,
+        showDots: true,
+        showArrows: true,
+        height: 500,
       },
     },
   },

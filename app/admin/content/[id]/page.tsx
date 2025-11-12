@@ -30,6 +30,7 @@ interface ContentData {
   metaKeywords: string;
   published?: boolean;
   type?: "page" | "post";
+  mode?: "content" | "builder"; // content = TipTap, builder = Page Builder
 }
 
 export default function ContentEditPage({ params }: PageParams) {
@@ -43,6 +44,9 @@ export default function ContentEditPage({ params }: PageParams) {
   const [contentType, setContentType] = useState<"page" | "post">(
     (searchParams.get("type") as "page" | "post") || "page"
   );
+  const [contentMode, setContentMode] = useState<"content" | "builder">(
+    (searchParams.get("mode") as "content" | "builder") || "content"
+  );
   const [formData, setFormData] = useState<ContentData>({
     title: "",
     slug: "",
@@ -51,6 +55,7 @@ export default function ContentEditPage({ params }: PageParams) {
     metaTitle: "",
     metaDescription: "",
     metaKeywords: "",
+    mode: "content",
   });
 
   useEffect(() => {
@@ -95,7 +100,13 @@ export default function ContentEditPage({ params }: PageParams) {
         metaKeywords: content.metaKeywords || "",
         published: content.published,
         type,
+        mode: content.blocks ? "builder" : "content",
       });
+      
+      // Set content mode based on blocks
+      if (content.blocks) {
+        setContentMode("builder");
+      }
     } catch (error) {
       console.error("Error fetching content:", error);
       toast.error("Không thể tải nội dung");
@@ -118,28 +129,103 @@ export default function ContentEditPage({ params }: PageParams) {
         // Create new - use contentType from state
         const type = contentType;
         
-        // Get authorId
-        const contentsRes = await fetch("/api/pages?limit=1");
-        const contentsData = await contentsRes.json();
-        const firstContent = contentsData.data?.[0] || contentsData[0];
+        // Get authorId - try multiple sources
+        let authorId: string | null = null;
         
-        if (!firstContent) {
-          toast.error("Cần có ít nhất 1 content để lấy authorId. Vui lòng chạy seed.");
+        try {
+          // Try 1: Get from existing content
+          const contentsRes = await fetch("/api/pages?limit=1");
+          const contentsData = await contentsRes.json();
+          const firstContent = contentsData.data?.[0] || contentsData[0];
+          
+          if (firstContent) {
+            const detailRes = await fetch(`/api/pages/${firstContent.id}`);
+            const detailData = await detailRes.json();
+            authorId = detailData.data?.authorId || detailData.authorId;
+          }
+        } catch (error) {
+          console.log("Could not get authorId from existing content");
+        }
+        
+        // Try 2: Get from users (first admin user)
+        if (!authorId) {
+          try {
+            const usersRes = await fetch("/api/users?limit=1&role=admin");
+            const usersData = await usersRes.json();
+            const firstUser = usersData.data?.[0] || usersData[0];
+            
+            if (firstUser) {
+              authorId = firstUser.id;
+            }
+          } catch (error) {
+            console.log("Could not get authorId from users");
+          }
+        }
+        
+        // Try 3: Ensure admin user exists (auto-create if needed)
+        if (!authorId) {
+          try {
+            const ensureRes = await fetch("/api/users/ensure-admin", {
+              method: "POST",
+            });
+            const ensureData = await ensureRes.json();
+            
+            if (ensureData.userId) {
+              authorId = ensureData.userId;
+              toast.success("Đã tạo admin user mặc định");
+            }
+          } catch (error) {
+            console.log("Could not ensure admin user");
+          }
+        }
+        
+        // Final fallback: Show error
+        if (!authorId) {
+          toast.error("Không thể tạo hoặc tìm thấy user. Vui lòng kiểm tra database.");
+          setSaving(false);
           return;
         }
 
-        const detailRes = await fetch(`/api/pages/${firstContent.id}`);
-        const detailData = await detailRes.json();
-        const authorId = detailData.data?.authorId || detailData.authorId;
-
         const endpoint = type === "page" ? "/api/pages" : "/api/posts";
+        
+        // Prepare data based on mode
+        const dataToSend: any = {
+          ...formData,
+          authorId,
+        };
+        
+        // If builder mode, create empty blocks structure
+        if (contentMode === "builder") {
+          dataToSend.blocks = {
+            canvas: {
+              width: 1440,
+              height: 900,
+              zoom: 1,
+              snapToGrid: true,
+              gridSize: 12,
+              showGrid: false,
+              magneticAlignment: true,
+              selectedIds: [],
+              currentBreakpoint: 'desktop',
+              elements: [],
+            },
+            elements: [],
+            history: {
+              past: [],
+              future: [],
+            },
+          };
+          // Don't send content for builder mode
+          delete dataToSend.content;
+        }
+        
+        // Remove mode field (not in database)
+        delete dataToSend.mode;
+        
         const res = await fetch(endpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...formData,
-            authorId,
-          }),
+          body: JSON.stringify(dataToSend),
         });
 
         if (!res.ok) {
@@ -148,8 +234,16 @@ export default function ContentEditPage({ params }: PageParams) {
         }
 
         const result = await res.json();
-        toast.success(`✅ Đã tạo ${type === "page" ? "trang" : "bài viết"} thành công!`);
-        router.push("/admin/content");
+        const newId = result.data?.id || result.id;
+        
+        toast.success(`Đã tạo ${type === "page" ? "trang" : "bài viết"} thành công!`);
+        
+        // If builder mode, redirect to page builder
+        if (contentMode === "builder") {
+          router.push(`/admin/page-builder/${newId}`);
+        } else {
+          router.push("/admin/content");
+        }
       } else {
         // Update existing
         const type = formData.type || "page";
@@ -166,7 +260,7 @@ export default function ContentEditPage({ params }: PageParams) {
           throw new Error(errorData.error || "Failed to update");
         }
 
-        toast.success("✅ Đã cập nhật thành công!");
+        toast.success("Đã cập nhật thành công!");
         router.push("/admin/content");
       }
     } catch (error: any) {
@@ -187,6 +281,7 @@ export default function ContentEditPage({ params }: PageParams) {
 
   const isNewContent = id === "new";
   const displayType = formData.type || contentType;
+  const displayMode = formData.mode || contentMode;
 
   return (
     <div className="space-y-6 pb-16">
@@ -201,14 +296,16 @@ export default function ContentEditPage({ params }: PageParams) {
             </Button>
             <h1 className="text-2xl sm:text-3xl font-bold">
               {isNewContent 
-                ? `Tạo ${displayType === "page" ? "trang" : "bài viết"} mới`
-                : `Chỉnh sửa ${displayType === "page" ? "trang" : "bài viết"}`
+                ? `Tạo ${displayMode === "builder" ? "Page Builder" : displayType === "page" ? "trang" : "bài viết"} mới`
+                : `Chỉnh sửa ${displayMode === "builder" ? "Page Builder" : displayType === "page" ? "trang" : "bài viết"}`
               }
             </h1>
           </div>
           <p className="text-sm text-muted-foreground ml-14">
             {isNewContent 
-              ? "Điền thông tin để tạo nội dung mới"
+              ? displayMode === "builder" 
+                ? "Tạo trang mới với Page Builder visual editor"
+                : "Điền thông tin để tạo nội dung mới"
               : "Cập nhật thông tin nội dung"
             }
           </p>
@@ -216,7 +313,7 @@ export default function ContentEditPage({ params }: PageParams) {
 
         <Button onClick={handleSave} disabled={saving}>
           <Save className="mr-2 h-4 w-4" />
-          {saving ? "Đang lưu..." : "Lưu"}
+          {saving ? "Đang lưu..." : displayMode === "builder" ? "Tạo & Mở Builder" : "Lưu"}
         </Button>
       </div>
 
@@ -227,27 +324,53 @@ export default function ContentEditPage({ params }: PageParams) {
             <div>
               <CardTitle>Thông tin nội dung</CardTitle>
               <CardDescription>
-                Điền đầy đủ thông tin và nội dung
+                {displayMode === "builder" 
+                  ? "Điền thông tin cơ bản, sau đó bạn sẽ chuyển sang Page Builder để thiết kế"
+                  : "Điền đầy đủ thông tin và nội dung"
+                }
               </CardDescription>
             </div>
             
-            {/* Type switcher - only for new content */}
+            {/* Type & Mode switcher - only for new content */}
             {isNewContent && (
-              <div className="flex gap-2">
-                <Button
-                  variant={contentType === "page" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setContentType("page")}
-                >
-                  📄 Page
-                </Button>
-                <Button
-                  variant={contentType === "post" ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setContentType("post")}
-                >
-                  📝 Post
-                </Button>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <Button
+                    variant={contentMode === "content" && contentType === "page" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setContentMode("content");
+                      setContentType("page");
+                    }}
+                  >
+                    📄 Page
+                  </Button>
+                  <Button
+                    variant={contentMode === "content" && contentType === "post" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setContentMode("content");
+                      setContentType("post");
+                    }}
+                  >
+                    📝 Post
+                  </Button>
+                  <Button
+                    variant={contentMode === "builder" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => {
+                      setContentMode("builder");
+                      setContentType("page"); // Builder chỉ cho pages
+                    }}
+                  >
+                    🎨 Builder
+                  </Button>
+                </div>
+                {contentMode === "builder" && (
+                  <p className="text-xs text-muted-foreground text-right">
+                    Page Builder chỉ hỗ trợ Pages
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -316,13 +439,27 @@ export default function ContentEditPage({ params }: PageParams) {
 
               <div className="space-y-2">
                 <Label htmlFor="content">Nội dung</Label>
-                <TiptapEditor
-                  content={formData.content}
-                  onChange={(content) =>
-                    setFormData({ ...formData, content })
-                  }
-                  placeholder="Bắt đầu viết nội dung... (Nhấn '/' để xem lệnh)"
-                />
+                {contentMode === "builder" ? (
+                  <div className="border border-dashed rounded-md p-8 text-center space-y-3">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                      🎨
+                    </div>
+                    <div>
+                      <p className="font-medium">Page Builder Mode</p>
+                      <p className="text-sm text-muted-foreground">
+                        Sau khi tạo, bạn sẽ được chuyển sang Page Builder để thiết kế visual
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <TiptapEditor
+                    content={formData.content}
+                    onChange={(content) =>
+                      setFormData({ ...formData, content })
+                    }
+                    placeholder="Bắt đầu viết nội dung... (Nhấn '/' để xem lệnh)"
+                  />
+                )}
               </div>
             </TabsContent>
 

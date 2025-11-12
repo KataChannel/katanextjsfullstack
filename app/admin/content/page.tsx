@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Plus,
   Edit2,
   Trash2,
@@ -18,6 +25,7 @@ import {
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 // ============================================================================
 // TYPES
@@ -57,6 +65,11 @@ export default function ContentManagementPage() {
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<ContentFilter>("all");
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    item: ContentItem | null;
+  }>({ open: false, item: null });
 
   // Load data on mount
   useEffect(() => {
@@ -115,9 +128,6 @@ export default function ContentManagementPage() {
   // ============================================================================
 
   const handleDelete = async (item: ContentItem) => {
-    const typeName = item.type === "page" ? "trang" : "bài viết";
-    if (!confirm(`Bạn chắc chắn muốn xóa ${typeName} này?`)) return;
-
     try {
       const endpoint =
         item.type === "page"
@@ -132,7 +142,8 @@ export default function ContentManagementPage() {
         throw new Error(errorData.error || errorData.message || "Failed to delete");
       }
 
-      toast.success("✅ Đã xóa thành công!");
+      toast.success("Đã xóa thành công!");
+      setDeleteDialog({ open: false, item: null });
       await fetchAllContent();
     } catch (error: any) {
       console.error("Error deleting:", error);
@@ -215,11 +226,9 @@ export default function ContentManagementPage() {
               Page Builder
             </Link>
           </Button>
-          <Button asChild>
-            <Link href="/admin/content/new">
-              <Plus className="mr-2 h-4 w-4" />
-              Tạo nội dung
-            </Link>
+          <Button onClick={() => setShowCreateDialog(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Tạo nội dung
           </Button>
         </div>
       </header>
@@ -277,12 +286,30 @@ export default function ContentManagementPage() {
             <ContentCard
               key={item.id}
               item={item}
-              onDelete={() => handleDelete(item)}
+              onDelete={() => setDeleteDialog({ open: true, item })}
               onTogglePublish={() => handleTogglePublish(item)}
             />
           ))}
         </div>
       )}
+
+      {/* Create Content Dialog */}
+      <CreateContentDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialog.open}
+        onOpenChange={(open) => setDeleteDialog({ open, item: null })}
+        title="Xác nhận xóa"
+        description={`Bạn chắc chắn muốn xóa ${deleteDialog.item?.type === "page" ? "trang" : "bài viết"} "${deleteDialog.item?.title}"? Hành động này không thể hoàn tác.`}
+        confirmText="Xóa"
+        cancelText="Hủy"
+        variant="destructive"
+        onConfirm={() => deleteDialog.item && handleDelete(deleteDialog.item)}
+      />
     </div>
   );
 }
@@ -363,17 +390,23 @@ function EmptyState({ filterType }: { filterType: ContentFilter }) {
       <Card>
         <CardContent className="py-12 text-center space-y-4">
           <p className="text-muted-foreground">Chưa có nội dung nào</p>
-          <div className="flex gap-2 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center">
             <Button asChild>
-              <Link href="/admin/content/new?type=page">
+              <Link href="/admin/content/new?type=page&mode=content">
                 <Plus className="mr-2 h-4 w-4" />
                 Tạo Page
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/admin/content/new?type=post">
+              <Link href="/admin/content/new?type=post&mode=content">
                 <Plus className="mr-2 h-4 w-4" />
                 Tạo Post
+              </Link>
+            </Button>
+            <Button variant="secondary" asChild>
+              <Link href="/admin/content/new?mode=builder">
+                <Palette className="mr-2 h-4 w-4" />
+                Tạo Page Builder
               </Link>
             </Button>
           </div>
@@ -523,5 +556,85 @@ function ContentCard({
     </Card>
   );
 }
+
+// ============================================================================
+// CREATE CONTENT DIALOG (Helper Component)
+// ============================================================================
+
+function CreateContentDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Tạo nội dung mới</DialogTitle>
+          <DialogDescription>
+            Chọn loại nội dung bạn muốn tạo
+          </DialogDescription>
+        </DialogHeader>
+        
+        <div className="grid gap-3 py-4">
+          {/* Page (Content Mode) */}
+          <Link
+            href="/admin/content/new?type=page&mode=content"
+            onClick={() => onOpenChange(false)}
+            className="flex items-start gap-4 p-4 border rounded-lg hover:bg-accent hover:border-primary transition-colors cursor-pointer group"
+          >
+            <div className="mt-1 p-2 rounded-md bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400">
+              <FileText className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold group-hover:text-primary">Page (Content)</h3>
+              <p className="text-sm text-muted-foreground">
+                Trang tĩnh với TipTap editor, phù hợp cho About, Contact
+              </p>
+            </div>
+          </Link>
+
+          {/* Post (Content Mode) */}
+          <Link
+            href="/admin/content/new?type=post&mode=content"
+            onClick={() => onOpenChange(false)}
+            className="flex items-start gap-4 p-4 border rounded-lg hover:bg-accent hover:border-primary transition-colors cursor-pointer group"
+          >
+            <div className="mt-1 p-2 rounded-md bg-pink-100 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold group-hover:text-primary">Post (Blog)</h3>
+              <p className="text-sm text-muted-foreground">
+                Bài viết blog với excerpt, phù hợp cho articles
+              </p>
+            </div>
+          </Link>
+
+          {/* Page Builder */}
+          <Link
+            href="/admin/content/new?mode=builder&type=page"
+            onClick={() => onOpenChange(false)}
+            className="flex items-start gap-4 p-4 border rounded-lg hover:bg-accent hover:border-primary transition-colors cursor-pointer group"
+          >
+            <div className="mt-1 p-2 rounded-md bg-indigo-100 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400">
+              <Palette className="h-5 w-5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold group-hover:text-primary">Page Builder (Visual)</h3>
+              <p className="text-sm text-muted-foreground">
+                Editor visual kéo thả, phù hợp cho landing pages, layouts phức tạp
+              </p>
+            </div>
+          </Link>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+
 
 

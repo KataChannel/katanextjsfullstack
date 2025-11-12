@@ -44,10 +44,19 @@ const seoSettingsSchema = z.object({
 ### 3. UI Admin - Trang SEO Settings
 **File**: `app/admin/seo-settings/page.tsx`
 
-Đã thêm section mới "Cài đặt Trang chủ" với:
-- Card riêng cho homepage settings
-- Import component `HomePageSelector`
-- Hiển thị trên giao diện admin
+Server Component để fetch data và render form.
+
+**File**: `components/seo-settings-form.tsx`
+
+Client Component với các tính năng:
+- ✅ Form submission với fetch API (không reload page)
+- ✅ Loading state khi đang lưu
+- ✅ Success message sau khi lưu thành công
+- ✅ Error handling và hiển thị lỗi
+- ✅ Auto-hide success message sau 3 giây
+- ✅ Refresh page data sau khi lưu (router.refresh)
+- ✅ Tất cả fields cho SEO settings
+- ✅ Section riêng cho homepage settings
 
 ### 4. Component Homepage Selector
 **File mới**: `components/homepage-selector.tsx`
@@ -166,12 +175,13 @@ app/
   │   └── page.tsx (logic render homepage)
   └── admin/
       └── seo-settings/
-          └── page.tsx (UI admin settings)
+          └── page.tsx (Server Component fetch data)
   └── api/
       └── seo-settings/
           └── route.ts (API handle save)
 
 components/
+  ├── seo-settings-form.tsx (Client Component form với fetch)
   ├── homepage-selector.tsx (UI chọn homepage)
   └── custom-homepage.tsx (Render custom homepage)
 ```

@@ -1,3 +1,5 @@
+import { CarouselComponent } from '@/components/page-builder/CarouselComponent';
+
 interface PageContent {
   id: string;
   title: string;
@@ -113,37 +115,180 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
   );
 }
 
+// Component to render Page Builder elements
+function PageBuilderRenderer({ blocks }: { blocks: any }) {
+  if (!blocks || typeof blocks !== 'object') {
+    return null;
+  }
+
+  // Get elements from blocks (support both formats)
+  const elements = blocks.elements || blocks.canvas?.elements || {};
+  
+  // Convert to array if object format
+  const elementsArray = Array.isArray(elements)
+    ? elements
+    : Object.values(elements);
+
+  if (elementsArray.length === 0) {
+    return null;
+  }
+
+  // Sort by y position (top to bottom)
+  const sortedElements = [...elementsArray].sort((a: any, b: any) => a.y - b.y);
+
+  return (
+    <div className="relative">
+      {sortedElements.map((element: any) => {
+        // Common styles
+        const elementStyle: React.CSSProperties = {
+          marginBottom: '1.5rem',
+        };
+
+        switch (element.type) {
+          case 'heading':
+            return (
+              <h2
+                key={element.id}
+                style={{
+                  ...elementStyle,
+                  fontSize: element.style?.fontSize || 32,
+                  fontWeight: element.style?.fontWeight || 700,
+                  color: element.style?.color || '#111827',
+                }}
+                className="leading-tight"
+              >
+                {element.content}
+              </h2>
+            );
+
+          case 'text':
+            return (
+              <div
+                key={element.id}
+                style={{
+                  ...elementStyle,
+                  fontSize: element.style?.fontSize || 16,
+                  fontWeight: element.style?.fontWeight || 400,
+                  color: element.style?.color || '#374151',
+                }}
+                className="leading-relaxed"
+              >
+                {element.content}
+              </div>
+            );
+
+          case 'button':
+            return (
+              <button
+                key={element.id}
+                style={{
+                  ...elementStyle,
+                  backgroundColor: element.style?.backgroundColor || '#2563eb',
+                  color: element.style?.color || '#ffffff',
+                  fontSize: element.style?.fontSize || 14,
+                  fontWeight: element.style?.fontWeight || 600,
+                  borderRadius: element.style?.borderRadius || 6,
+                  padding: '12px 24px',
+                }}
+                className="cursor-pointer border-0 hover:opacity-90 transition-opacity"
+              >
+                {element.content}
+              </button>
+            );
+
+          case 'image':
+            return (
+              <figure key={element.id} style={elementStyle}>
+                <img
+                  src={element.src || '/placeholder.jpg'}
+                  alt={element.name || ''}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: element.style?.borderRadius || 8,
+                  }}
+                  className="object-cover"
+                />
+              </figure>
+            );
+
+          case 'container':
+            return (
+              <div
+                key={element.id}
+                style={{
+                  ...elementStyle,
+                  backgroundColor: element.style?.backgroundColor || 'transparent',
+                  borderRadius: element.style?.borderRadius || 0,
+                  padding: element.layout?.padding || 16,
+                }}
+              >
+                {element.content}
+              </div>
+            );
+
+          case 'carousel':
+            if (!element.carousel?.slides) return null;
+            
+            return (
+              <div key={element.id} style={{ marginBottom: '2rem' }}>
+                <CarouselComponent
+                  slides={element.carousel.slides}
+                  autoPlay={element.carousel.autoPlay}
+                  interval={element.carousel.interval}
+                  showDots={element.carousel.showDots}
+                  showArrows={element.carousel.showArrows}
+                  height={element.carousel.height || element.height}
+                />
+              </div>
+            );
+
+          default:
+            return null;
+        }
+      })}
+    </div>
+  );
+}
+
 export function CustomHomePage({ content, type }: CustomHomePageProps) {
-  const hasBlocks = content.blocks && Array.isArray(content.blocks) && content.blocks.length > 0;
+  // Determine content format
+  const hasBlocks = content.blocks && typeof content.blocks === 'object';
+  const isPageBuilder = hasBlocks && (content.blocks.elements || content.blocks.canvas);
+  const isLegacyBlocks = hasBlocks && Array.isArray(content.blocks);
 
   return (
     <div className="min-h-screen">
-      {/* Header Section */}
-      <section className="bg-linear-to-b from-primary/5 to-background py-12 sm:py-16 border-b">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center space-y-4">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              {content.title}
-            </h1>
-            {"excerpt" in content && content.excerpt && (
-              <p className="text-lg text-muted-foreground">
-                {content.excerpt}
-              </p>
-            )}
-            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground pt-4">
-              <span>Bởi {content.author.name || content.author.email}</span>
-              <span>•</span>
-              <span>{new Date(content.updatedAt).toLocaleDateString("vi-VN")}</span>
+      {/* Header Section - Only show if not Page Builder (Page Builder renders its own layout) */}
+      {!isPageBuilder && (
+        <section className="bg-linear-to-b from-primary/5 to-background py-12 sm:py-16 border-b">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center space-y-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
+                {content.title}
+              </h1>
+              {"excerpt" in content && content.excerpt && (
+                <p className="text-lg text-muted-foreground">
+                  {content.excerpt}
+                </p>
+              )}
+              <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground pt-4">
+                <span>Bởi {content.author.name || content.author.email}</span>
+                <span>•</span>
+                <span>{new Date(content.updatedAt).toLocaleDateString("vi-VN")}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Content Section */}
-      <section className="py-12 sm:py-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            {hasBlocks ? (
+      <section className={isPageBuilder ? "" : "py-12 sm:py-16"}>
+        <div className={isPageBuilder ? "" : "container mx-auto px-4 sm:px-6 lg:px-8"}>
+          <div className={isPageBuilder ? "" : "max-w-4xl mx-auto"}>
+            {isPageBuilder ? (
+              <PageBuilderRenderer blocks={content.blocks} />
+            ) : isLegacyBlocks ? (
               <PageBlocksRenderer blocks={content.blocks} />
             ) : (
               <div 

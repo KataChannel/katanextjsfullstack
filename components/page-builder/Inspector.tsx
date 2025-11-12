@@ -69,10 +69,13 @@ export function Inspector() {
 
       {/* Tabs cho Style và Layout */}
       <div className="flex-1 overflow-y-auto p-4">
-        <Tabs defaultValue="style" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+        <Tabs defaultValue={selectedElement.type === 'carousel' ? 'carousel' : 'style'} className="w-full">
+          <TabsList className={`grid w-full ${selectedElement.type === 'carousel' ? 'grid-cols-3' : 'grid-cols-2'}`}>
             <TabsTrigger value="style">Style</TabsTrigger>
             <TabsTrigger value="layout">Layout</TabsTrigger>
+            {selectedElement.type === 'carousel' && (
+              <TabsTrigger value="carousel">Carousel</TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="style" className="space-y-4 mt-4">
@@ -279,6 +282,115 @@ export function Inspector() {
               </div>
             )}
           </TabsContent>
+
+          {/* Carousel Settings Tab */}
+          {selectedElement.type === 'carousel' && (
+            <TabsContent value="carousel" className="space-y-4 mt-4">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Auto Play</Label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedElement.carousel?.autoPlay !== false}
+                      onChange={(e) =>
+                        updateElement(selectedId, {
+                          carousel: {
+                            ...selectedElement.carousel!,
+                            autoPlay: e.target.checked,
+                          },
+                        })
+                      }
+                      className="w-4 h-4"
+                    />
+                    <span className="text-sm">Tự động chuyển slide</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="interval">Interval (ms)</Label>
+                  <Input
+                    id="interval"
+                    type="number"
+                    value={selectedElement.carousel?.interval || 5000}
+                    onChange={(e) =>
+                      updateElement(selectedId, {
+                        carousel: {
+                          ...selectedElement.carousel!,
+                          interval: parseInt(e.target.value),
+                        },
+                      })
+                    }
+                    min={1000}
+                    step={1000}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="carousel-height">Chiều cao</Label>
+                  <Input
+                    id="carousel-height"
+                    type="number"
+                    value={selectedElement.carousel?.height || 500}
+                    onChange={(e) =>
+                      updateElement(selectedId, {
+                        carousel: {
+                          ...selectedElement.carousel!,
+                          height: parseInt(e.target.value),
+                        },
+                      })
+                    }
+                    min={200}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Hiển thị</Label>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedElement.carousel?.showDots !== false}
+                        onChange={(e) =>
+                          updateElement(selectedId, {
+                            carousel: {
+                              ...selectedElement.carousel!,
+                              showDots: e.target.checked,
+                            },
+                          })
+                        }
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Dots</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedElement.carousel?.showArrows !== false}
+                        onChange={(e) =>
+                          updateElement(selectedId, {
+                            carousel: {
+                              ...selectedElement.carousel!,
+                              showArrows: e.target.checked,
+                            },
+                          })
+                        }
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Arrows</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Slides ({selectedElement.carousel?.slides?.length || 0})</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Chỉnh sửa slides trong Preview mode
+                  </p>
+                </div>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
 
         {/* Element Info */}

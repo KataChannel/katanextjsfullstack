@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Smartphone, Tablet, Monitor } from 'lucide-react';
-import { useBuilderStore, Breakpoint } from '@/lib/page-builder/store';
+import { useBuilderStore, Breakpoint, BuilderElement } from '@/lib/page-builder/store';
+import { CarouselComponent } from './CarouselComponent';
 
 /**
  * Breakpoint configurations
@@ -21,58 +22,90 @@ const breakpoints = {
 export function ResponsivePreview() {
   const canvas = useBuilderStore((state) => state.canvas);
   const setBreakpoint = useBuilderStore((state) => state.setBreakpoint);
-  const [previewHtml, setPreviewHtml] = useState<string>('');
 
   const currentBreakpoint = breakpoints[canvas.currentBreakpoint];
+  const elements = Object.values(canvas.elements);
 
-  // Generate preview HTML
-  const generatePreview = () => {
-    const elements = Object.values(canvas.elements);
-    
-    // Simple HTML generation for preview
-    let html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <script src="https://cdn.tailwindcss.com"></script>
-          <style>
-            body { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-          </style>
-        </head>
-        <body>
-    `;
+  // Render element as React component
+  const renderElement = (element: BuilderElement) => {
+    const commonStyle: React.CSSProperties = {
+      position: 'absolute',
+      left: element.x,
+      top: element.y,
+      width: element.width,
+      height: element.height,
+      backgroundColor: element.style?.backgroundColor,
+      color: element.style?.color,
+      fontSize: element.style?.fontSize,
+      fontWeight: element.style?.fontWeight,
+      borderRadius: element.style?.borderRadius,
+      opacity: element.style?.opacity,
+    };
 
-    elements.forEach((el) => {
-      const style = `
-        position: absolute;
-        left: ${el.x}px;
-        top: ${el.y}px;
-        width: ${el.width}px;
-        height: ${el.height}px;
-        background-color: ${el.style.backgroundColor || 'transparent'};
-        color: ${el.style.color || '#000'};
-        font-size: ${el.style.fontSize || 16}px;
-        border-radius: ${el.style.borderRadius || 0}px;
-        opacity: ${el.style.opacity || 1};
-      `;
+    switch (element.type) {
+      case 'container':
+        return (
+          <div key={element.id} style={commonStyle}>
+            {element.content}
+          </div>
+        );
 
-      if (el.type === 'text' || el.type === 'heading' || el.type === 'button') {
-        html += `<div style="${style}">${el.content || ''}</div>\n`;
-      } else if (el.type === 'container') {
-        html += `<div style="${style}"></div>\n`;
-      } else if (el.type === 'image') {
-        html += `<img src="${el.src || ''}" style="${style}" alt="" />\n`;
-      }
-    });
+      case 'text':
+        return (
+          <div key={element.id} style={commonStyle}>
+            {element.content}
+          </div>
+        );
 
-    html += `
-        </body>
-      </html>
-    `;
+      case 'heading':
+        return (
+          <h1 key={element.id} style={commonStyle}>
+            {element.content}
+          </h1>
+        );
 
-    setPreviewHtml(html);
+      case 'button':
+        return (
+          <button key={element.id} style={commonStyle}>
+            {element.content}
+          </button>
+        );
+
+      case 'image':
+        return (
+          <img
+            key={element.id}
+            src={element.src || '/placeholder.jpg'}
+            alt={element.name}
+            style={commonStyle}
+          />
+        );
+
+      case 'carousel':
+        return (
+          <div
+            key={element.id}
+            style={{
+              position: 'absolute',
+              left: element.x,
+              top: element.y,
+              width: element.width,
+            }}
+          >
+            <CarouselComponent
+              slides={element.carousel?.slides || []}
+              autoPlay={element.carousel?.autoPlay}
+              interval={element.carousel?.interval}
+              showDots={element.carousel?.showDots}
+              showArrows={element.carousel?.showArrows}
+              height={element.carousel?.height || element.height}
+            />
+          </div>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -99,16 +132,12 @@ export function ResponsivePreview() {
             }
           )}
         </div>
-
-        <Button onClick={generatePreview} variant="outline" size="sm">
-          Refresh Preview
-        </Button>
       </div>
 
       {/* Preview Area */}
-      <div className="flex-1 flex items-center justify-center p-8 overflow-auto">
+      <div className="flex-1 flex items-center justify-center p-8 overflow-auto bg-gray-100">
         <div
-          className="bg-white shadow-2xl transition-all duration-300"
+          className="bg-white shadow-2xl transition-all duration-300 overflow-auto relative"
           style={{
             width: currentBreakpoint.width,
             height: currentBreakpoint.height,
@@ -116,18 +145,7 @@ export function ResponsivePreview() {
             maxHeight: '100%',
           }}
         >
-          {previewHtml ? (
-            <iframe
-              srcDoc={previewHtml}
-              className="w-full h-full border-0"
-              title="Preview"
-              sandbox="allow-scripts"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              Click "Refresh Preview" để xem preview
-            </div>
-          )}
+          {elements.map(element => renderElement(element))}
         </div>
       </div>
     </div>

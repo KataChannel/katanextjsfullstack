@@ -143,6 +143,33 @@ export function Canvas() {
           />
         );
 
+      case 'carousel':
+        // Carousel hiển thị placeholder với text
+        return (
+          <React.Fragment key={element.id}>
+            <Rect
+              {...commonProps}
+              fill="#1e40af"
+              stroke={selectedIds.includes(element.id) ? '#0066ff' : '#2563eb'}
+              strokeWidth={2}
+              cornerRadius={0}
+            />
+            <KonvaText
+              x={element.x + element.width / 2}
+              y={element.y + element.height / 2}
+              text="🎠 CAROUSEL"
+              fontSize={24}
+              fontStyle="bold"
+              fill="#ffffff"
+              align="center"
+              verticalAlign="middle"
+              width={element.width}
+              offsetX={element.width / 2}
+              offsetY={12}
+            />
+          </React.Fragment>
+        );
+
       default:
         return null;
     }

@@ -4,7 +4,7 @@ import { devtools } from 'zustand/middleware';
 /**
  * Element types trong page builder
  */
-export type ElementType = 'container' | 'text' | 'button' | 'image' | 'heading';
+export type ElementType = 'container' | 'text' | 'button' | 'image' | 'heading' | 'carousel';
 
 /**
  * Layout properties sử dụng Flexbox/Grid
@@ -48,6 +48,30 @@ export interface AnimationProps {
 }
 
 /**
+ * Carousel slide
+ */
+export interface CarouselSlide {
+  id: string;
+  image: string;
+  title?: string;
+  description?: string;
+  link?: string;
+  alt?: string;
+}
+
+/**
+ * Carousel settings
+ */
+export interface CarouselSettings {
+  slides: CarouselSlide[];
+  autoPlay?: boolean;
+  interval?: number; // milliseconds
+  showDots?: boolean;
+  showArrows?: boolean;
+  height?: number;
+}
+
+/**
  * State variations (hover, focus, active)
  */
 export interface StateVariations {
@@ -66,6 +90,7 @@ export interface BuilderElement {
   name: string;
   content?: string; // Text content for text/button/heading
   src?: string; // Image source
+  carousel?: CarouselSettings; // Carousel specific settings
   x: number;
   y: number;
   width: number;

@@ -43,6 +43,20 @@ export async function GET(
       );
     }
 
+    // Debug logging for blocks
+    if (page.blocks) {
+      const blocks = page.blocks as any;
+      console.log('📂 Loading page blocks:', {
+        pageId: id,
+        hasCanvas: !!blocks.canvas,
+        hasElements: !!blocks.elements,
+        hasCanvasElements: !!blocks.canvas?.elements,
+        elementsCount: blocks.elements 
+          ? (Array.isArray(blocks.elements) ? blocks.elements.length : Object.keys(blocks.elements).length)
+          : 0,
+      });
+    }
+
     return NextResponse.json({
       success: true,
       data: page,
@@ -73,6 +87,19 @@ export async function PATCH(
     const { id } = await params;
     const body = await request.json();
     const validatedData = pageUpdateSchema.parse(body);
+
+    // Debug logging for blocks
+    if (validatedData.blocks) {
+      console.log('📦 Updating page blocks:', {
+        pageId: id,
+        hasCanvas: !!validatedData.blocks.canvas,
+        hasElements: !!validatedData.blocks.elements,
+        hasCanvasElements: !!validatedData.blocks.canvas?.elements,
+        elementsCount: validatedData.blocks.elements 
+          ? Object.keys(validatedData.blocks.elements).length 
+          : 0,
+      });
+    }
 
     const prisma = await getPrisma();
 

@@ -9,10 +9,9 @@ import { ArrowRight, Sparkles, TrendingUp, Award, Clock } from "lucide-react";
 import { CustomHomePage } from "@/components/custom-homepage";
 
 export default async function Home() {
-  // Get current domain and SEO settings
+  // Get current domain from proxy middleware (x-domain header)
   const headersList = await headers();
-  const hostname = headersList.get("x-hostname") || "";
-  const domain = extractDomain(hostname);
+  const domain = headersList.get("x-domain") || '';
   
   const prisma = await getPrisma(domain || 'tazagroup.vn');
   

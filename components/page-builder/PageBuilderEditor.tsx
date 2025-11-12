@@ -7,7 +7,8 @@ import { ComponentSidebar } from '@/components/page-builder/ComponentSidebar';
 import { Inspector } from '@/components/page-builder/Inspector';
 import { ResponsivePreview } from '@/components/page-builder/ResponsivePreview';
 import { Button } from '@/components/ui/button';
-import { Download, Eye, Save, Menu, X, Layers, Settings2, ArrowLeft, Smartphone, Tablet, Monitor } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Download, Eye, Save, Menu, X, Layers, Settings2, ArrowLeft, Smartphone, Tablet, Monitor, Globe } from 'lucide-react';
 import { exportToHTML, downloadHTML } from '@/lib/page-builder/export-html';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -19,6 +20,7 @@ interface PageBuilderEditorProps {
     title: string;
     slug: string;
     blocks: any;
+    published: boolean;
   };
 }
 
@@ -34,14 +36,27 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
   const [showLeftSidebar, setShowLeftSidebar] = useState(false);
   const [showRightSidebar, setShowRightSidebar] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [published, setPublished] = useState(initialData.published);
 
   // Load data từ database vào store
   useEffect(() => {
+    console.log('📂 Loading Page Builder data:', {
+      pageId,
+      hasBlocks: !!initialData.blocks,
+      blocksKeys: initialData.blocks ? Object.keys(initialData.blocks) : [],
+    });
+    
     if (initialData.blocks) {
       // Load canvas state
       if (initialData.blocks.canvas) {
         const { setZoom, setGridSize, toggleSnapToGrid, toggleShowGrid, toggleMagneticAlignment } = useBuilderStore.getState();
         const canvasData = initialData.blocks.canvas;
+        
+        console.log('🎨 Loading canvas settings:', {
+          zoom: canvasData.zoom,
+          gridSize: canvasData.gridSize,
+          snapToGrid: canvasData.snapToGrid,
+        });
         
         setZoom(canvasData.zoom || 1);
         if (canvasData.gridSize) setGridSize(canvasData.gridSize);
@@ -52,16 +67,73 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
         if (canvasData.magneticAlignment !== canvas.magneticAlignment) toggleMagneticAlignment();
       }
 
-      // Load elements
+      // Load elements - support both array and object format
       if (initialData.blocks.elements) {
         const { canvas: currentCanvas } = useBuilderStore.getState();
+        let elementsObject: Record<string, any> = {};
+        
+        console.log('🧩 Loading elements:', {
+          type: Array.isArray(initialData.blocks.elements) ? 'array' : 'object',
+          count: Array.isArray(initialData.blocks.elements) 
+            ? initialData.blocks.elements.length 
+            : Object.keys(initialData.blocks.elements).length,
+        });
+        
+        // Convert array to object if needed
+        if (Array.isArray(initialData.blocks.elements)) {
+          // Array format (old seed data or new format with array)
+          initialData.blocks.elements.forEach((el: any) => {
+            elementsObject[el.id] = el;
+          });
+          console.log('✅ Converted array to object:', Object.keys(elementsObject).length, 'elements');
+        } else if (typeof initialData.blocks.elements === 'object') {
+          // Object format (current store format)
+          elementsObject = initialData.blocks.elements;
+          console.log('✅ Using object format:', Object.keys(elementsObject).length, 'elements');
+        }
+        
         useBuilderStore.setState({
           canvas: {
             ...currentCanvas,
-            elements: initialData.blocks.elements,
+            elements: elementsObject,
           },
         });
+        
+        console.log('✅ Elements loaded into store');
       }
+      
+      // Load from canvas.elements if exists (backup)
+      else if (initialData.blocks.canvas?.elements) {
+        const { canvas: currentCanvas } = useBuilderStore.getState();
+        let elementsObject: Record<string, any> = {};
+        
+        console.log('🧩 Loading elements from canvas.elements:', {
+          type: Array.isArray(initialData.blocks.canvas.elements) ? 'array' : 'object',
+        });
+        
+        if (Array.isArray(initialData.blocks.canvas.elements)) {
+          initialData.blocks.canvas.elements.forEach((el: any) => {
+            elementsObject[el.id] = el;
+          });
+          console.log('✅ Converted canvas.elements array to object');
+        } else if (typeof initialData.blocks.canvas.elements === 'object') {
+          elementsObject = initialData.blocks.canvas.elements;
+          console.log('✅ Using canvas.elements object');
+        }
+        
+        useBuilderStore.setState({
+          canvas: {
+            ...currentCanvas,
+            elements: elementsObject,
+          },
+        });
+        
+        console.log('✅ Elements loaded from canvas.elements');
+      } else {
+        console.log('⚠️ No elements found in blocks data');
+      }
+    } else {
+      console.log('⚠️ No blocks data found');
     }
   }, [pageId]);
 
@@ -70,9 +142,24 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
     setIsSaving(true);
     try {
       const state = useBuilderStore.getState();
+      
+      // Convert elements object to format for saving
+      const elementsObject = state.canvas.elements;
+      
+      // Debug: Log current state
+      console.log('💾 Saving Page Builder:', {
+        elementsCount: Object.keys(elementsObject).length,
+        elementIds: Object.keys(elementsObject),
+      });
+      
       const blocks = {
-        canvas: state.canvas,
-        elements: state.canvas.elements,
+        canvas: {
+          ...state.canvas,
+          // Ensure elements are in the canvas object
+          elements: elementsObject,
+        },
+        // Also keep elements at root level for backward compatibility
+        elements: elementsObject,
         history: {
           past: [],
           future: [],
@@ -86,15 +173,19 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
         },
         body: JSON.stringify({
           blocks,
+          published,
         }),
       });
 
       if (!response.ok) throw new Error('Failed to save');
+      
+      const result = await response.json();
+      console.log('✅ Save successful:', result);
 
-      toast.success('✅ Đã lưu page thành công!');
+      toast.success('Đã lưu page thành công!');
     } catch (error) {
-      console.error('Save error:', error);
-      toast.error('❌ Lỗi khi lưu page');
+      console.error('❌ Save error:', error);
+      toast.error('Lỗi khi lưu page');
     } finally {
       setIsSaving(false);
     }
@@ -104,7 +195,7 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
   const handleExport = () => {
     const html = exportToHTML(canvas.elements);
     downloadHTML(html, `${initialData.slug}.html`);
-    toast.success('✅ Đã export HTML thành công!');
+    toast.success('Đã export HTML thành công!');
   };
 
   return (
@@ -249,6 +340,21 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
               >
                 <Eye className="w-4 h-4" />
               </Button>
+
+              {/* Published Toggle */}
+              <div className="flex items-center gap-2 px-3 py-2 rounded-md border bg-background">
+                <Globe className={cn(
+                  "w-4 h-4 shrink-0",
+                  published ? "text-green-600" : "text-muted-foreground"
+                )} />
+                <span className="hidden lg:inline text-xs font-medium">
+                  {published ? 'Công khai' : 'Nháp'}
+                </span>
+                <Switch
+                  checked={published}
+                  onCheckedChange={setPublished}
+                />
+              </div>
 
               {/* Export */}
               <Button

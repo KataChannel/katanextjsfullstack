@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Trash2, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
+import { useState } from "react";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 
 export function MediaCard({
   media,
@@ -20,21 +22,20 @@ export function MediaCard({
     createdAt: Date;
   };
 }) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isImage = media.mimeType.startsWith("image/");
   const isVideo = media.mimeType.startsWith("video/");
 
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(media.url);
-      toast.success("✅ Đã copy URL vào clipboard!");
+      toast.success("Đã copy URL vào clipboard!");
     } catch (error) {
       toast.error("Lỗi khi copy URL");
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm("Bạn chắc chắn muốn xóa file này?")) return;
-
     try {
       const res = await fetch(`/api/media/${media.id}`, {
         method: "DELETE",
@@ -42,7 +43,8 @@ export function MediaCard({
 
       if (!res.ok) throw new Error("Failed to delete");
 
-      toast.success("✅ Đã xóa media!");
+      toast.success("Đã xóa media thành công!");
+      setShowDeleteDialog(false);
       window.location.reload();
     } catch (error) {
       console.error("Error deleting media:", error);
@@ -82,7 +84,7 @@ export function MediaCard({
             <Button
               size="sm"
               variant="destructive"
-              onClick={handleDelete}
+              onClick={() => setShowDeleteDialog(true)}
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -104,6 +106,17 @@ export function MediaCard({
           )}
         </div>
       </CardContent>
+
+      <ConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Xác nhận xóa"
+        description="Bạn chắc chắn muốn xóa file này? Hành động này không thể hoàn tác."
+        confirmText="Xóa"
+        cancelText="Hủy"
+        variant="destructive"
+        onConfirm={handleDelete}
+      />
     </Card>
   );
 }
