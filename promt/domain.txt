@@ -1,0 +1,29 @@
+tazagroup.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/tazagroupvn"
+Mô tả : Nâng tầm giá trị và mang lại 1 cuộc sống tốt đẹp hơn cho phụ nữ Việt Nam với sứ mệnh 3T,Thay đổi,Tự tin,Tốt hơn
+Địa Chỉ Liên Hệ : Tầng 6 Tòa nhà Thành Đô,14-16 Bình Lợi - Phường 13 - Bình Thạnh
+Hotline : 02873003689
+Email : nhansu@tazagroup.vn
+
+tazaskinclinic.com : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/tazaskinclinic"
+Mô Tả : 10 năm kinh nghiệm trong ngành thẩm mỹ, Taza Skin Clinic quy tụ đội ngũ bác sĩ chuyên khoa, chuyên gia tư vấn, kỹ thuật viên hùng hậu có tay nghề cao, giỏi
+Địa Chỉ Liên Hệ : 169 Quang Trung, P, Gò Vấp, Hồ Chí Minh
+Hotline : 19002664
+Email : info@tazaskinclinic.com
+
+timona.edu.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/timona"
+Mô Tả : Với tinh thần “Thay Đổi – Tự Tin – Tốt Hơn”, Timona Academy là một trong những học viện hàng đầu trong lĩnh vực đào tạo thẩm mỹ, spa chuyên nghiệp tại Việt Nam.
+Địa Chỉ Liên Hệ : 283/68+70 Cách Mạng Tháng Tám, P. Hòa Hưng, Tp. Hồ Chí Minh
+Hotline : 19002109
+Email : info@timona.edu.vn
+
+hderma.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/hderma"
+Mô Tả : Vẻ đẹp cốt lõi bắt nguồn từ sự phù hợp và hài hòa với chính bạn,H.Derma luôn đồng hành cùng bạn trên con đường khai phá vẻ đẹp riêng của chính bạn.
+Địa Chỉ Liên Hệ : 1012-1014 Quang Trung, Phường 8, Quận Gò Vấp, TP. Hồ Chí Minh.
+Hotline : 0911754299 - 02873092585
+Email : info@hderma.vn
+
+elasome.com : DATABASE_URL="postgresql://postgres:postgres@116.118.49.243:13003/elasome"
+Mô Tả : Elasome mang đến giải pháp chăm sóc toàn diện, nhẹ nhàng nhưng đạt hiệu quả tối ưu. Làn da được trị liệu và hỗ trợ quá trình phục hồi một cách đồng thời, giúp bạn cảm nhận sự cải thiện rõ rệt.
+Địa Chỉ Liên Hệ : 1012-1014 Quang Trung, Phường 8, Quận Gò Vấp, TP. Hồ Chí Minh.
+Hotline : 0911754299 - 02873092585
+Email : info@hderma.vn
