@@ -3,6 +3,39 @@ import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
 /**
+ * Get restricted routes based on user role
+ * Returns array of route prefixes that the role CANNOT access
+ */
+function getRestrictedRoutes(role: string): string[] {
+  switch (role) {
+    case 'admin':
+      // Admin has access to everything
+      return [];
+    
+    case 'manager':
+      // Manager cannot access: users management, analytics, seo settings
+      return [
+        '/admin/users',
+        '/admin/analytics',
+        '/admin/seo-settings',
+      ];
+    
+    case 'editor':
+      // Editor can only access: content, page-builder, media
+      // Cannot access: users, analytics, seo-settings
+      return [
+        '/admin/users',
+        '/admin/analytics',
+        '/admin/seo-settings',
+      ];
+    
+    default:
+      // Unknown roles cannot access anything
+      return ['/admin'];
+  }
+}
+
+/**
  * Proxy để xử lý multi-tenancy và authentication
  * Thêm thông tin domain vào headers và bảo vệ routes
  */
@@ -20,6 +53,7 @@ export async function proxy(request: NextRequest) {
   // Protected admin routes
   const isAdminRoute = pathname.startsWith('/admin');
   const isAuthRoute = pathname.startsWith('/auth');
+  const isUnauthorizedPage = pathname === '/auth/unauthorized';
 
   // Redirect to login if accessing admin without authentication
   if (isAdminRoute && !token) {
@@ -28,18 +62,27 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Redirect to admin if authenticated user tries to access auth pages
-  if (isAuthRoute && token) {
+  // Redirect to admin if authenticated user tries to access auth pages (except unauthorized)
+  if (isAuthRoute && token && !isUnauthorizedPage) {
     return NextResponse.redirect(new URL('/admin', request.url));
   }
 
-  // Check admin role for admin routes
+  // Check admin role for admin routes with granular permissions
   if (isAdminRoute && token) {
     const userRole = token.role as string;
     
-    // Only admin and editor can access admin panel
-    if (userRole !== 'admin' && userRole !== 'editor') {
-      return NextResponse.redirect(new URL('/', request.url));
+    // Define allowed roles for admin panel
+    const allowedRoles = ['admin', 'manager', 'editor'];
+    
+    if (!allowedRoles.includes(userRole)) {
+      return NextResponse.redirect(new URL('/auth/unauthorized', request.url));
+    }
+    
+    // Role-based route restrictions
+    const restrictedRoutes = getRestrictedRoutes(userRole);
+    
+    if (restrictedRoutes.some(route => pathname.startsWith(route))) {
+      return NextResponse.redirect(new URL('/auth/unauthorized', request.url));
     }
   }
 

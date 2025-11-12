@@ -15,7 +15,7 @@ model User {
   email         String    @unique
   name          String?
   password      String?   // Hashed password (nullable for OAuth users)
-  role          String    @default("user") // user, editor, admin
+  role          String    @default("user") // user, editor, manager, admin
   emailVerified DateTime? // Email verification timestamp
   image         String?   // Profile image URL
   
