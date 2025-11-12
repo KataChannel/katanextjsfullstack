@@ -3,17 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogBody,
-} from "@/components/ui/dialog";
 import {
   Plus,
   Edit2,
@@ -27,10 +16,8 @@ import {
   User,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { toast } from "sonner";
-import { TiptapEditor } from "@/components/tiptap-editor";
 
 // ============================================================================
 // TYPES
@@ -61,16 +48,6 @@ interface ContentItem {
   pageType?: PageType;
 }
 
-interface FormData {
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  metaTitle: string;
-  metaDescription: string;
-  metaKeywords: string;
-}
-
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -79,20 +56,6 @@ export default function ContentManagementPage() {
   // State
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editingContent, setEditingContent] = useState<ContentItem | null>(null);
-  const [createType, setCreateType] = useState<ContentType>("page");
-  const [authorId, setAuthorId] = useState<string>("");
-  const [formData, setFormData] = useState<FormData>({
-    title: "",
-    slug: "",
-    content: "",
-    excerpt: "",
-    metaTitle: "",
-    metaDescription: "",
-    metaKeywords: "",
-  });
-  const [activeTab, setActiveTab] = useState("general");
   const [filterType, setFilterType] = useState<ContentFilter>("all");
 
   // Load data on mount
@@ -149,94 +112,6 @@ export default function ContentManagementPage() {
   // ============================================================================
   // CRUD OPERATIONS
   // ============================================================================
-
-  const handleCreate = async () => {
-    if (!formData.title.trim() || !formData.slug.trim()) {
-      toast.error("Vui lòng điền tiêu đề và slug");
-      return;
-    }
-
-    try {
-      // Use cached authorId or get from first content item
-      let userId = authorId;
-      
-      if (!userId && contents.length > 0) {
-        // Get authorId from existing content by fetching full data
-        const firstItem = contents[0];
-        const endpoint = firstItem.type === "page" 
-          ? `/api/pages/${firstItem.id}`
-          : `/api/posts/${firstItem.id}`;
-        const itemRes = await fetch(endpoint);
-        const itemData = await itemRes.json();
-        userId = itemData.data?.authorId || itemData.authorId;
-      }
-
-      if (!userId) {
-        toast.error("Không tìm thấy user. Vui lòng tạo user trước hoặc có ít nhất 1 content để lấy authorId.");
-        return;
-      }
-
-      const endpoint = createType === "page" ? "/api/pages" : "/api/posts";
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          authorId: userId,
-        }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
-        console.error("API Error:", errorData);
-        throw new Error(errorData.error || errorData.message || "Failed to create");
-      }
-
-      const result = await res.json();
-      setAuthorId(userId); // Cache for next time
-
-      toast.success(`✅ Đã tạo ${createType === "page" ? "trang" : "bài viết"} thành công!`);
-      await fetchAllContent();
-      closeDialog();
-    } catch (error: any) {
-      console.error("Error creating:", error);
-      toast.error(error.message || "Lỗi khi tạo nội dung");
-    }
-  };
-
-  const handleUpdate = async () => {
-    if (!editingContent) return;
-    if (!formData.title.trim() || !formData.slug.trim()) {
-      toast.error("Vui lòng điền tiêu đề và slug");
-      return;
-    }
-
-    try {
-      const endpoint =
-        editingContent.type === "page"
-          ? `/api/pages/${editingContent.id}`
-          : `/api/posts/${editingContent.id}`;
-
-      const res = await fetch(endpoint, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: "Unknown error" }));
-        console.error("API Error:", errorData);
-        throw new Error(errorData.error || errorData.message || "Failed to update");
-      }
-
-      toast.success("✅ Đã cập nhật thành công!");
-      await fetchAllContent();
-      closeDialog();
-    } catch (error: any) {
-      console.error("Error updating:", error);
-      toast.error(error.message || "Lỗi khi cập nhật");
-    }
-  };
 
   const handleDelete = async (item: ContentItem) => {
     const typeName = item.type === "page" ? "trang" : "bài viết";
@@ -295,42 +170,7 @@ export default function ContentManagementPage() {
     }
   };
 
-  // ============================================================================
-  // DIALOG MANAGEMENT
-  // ============================================================================
 
-  const openCreateDialog = (type: ContentType) => {
-    setCreateType(type);
-    setIsCreateOpen(true);
-  };
-
-  const openEditDialog = (item: ContentItem) => {
-    setEditingContent(item);
-    setFormData({
-      title: item.title,
-      slug: item.slug,
-      content: item.content || "",
-      excerpt: item.excerpt || "",
-      metaTitle: item.metaTitle || "",
-      metaDescription: item.metaDescription || "",
-      metaKeywords: item.metaKeywords || "",
-    });
-  };
-
-  const closeDialog = () => {
-    setIsCreateOpen(false);
-    setEditingContent(null);
-    setFormData({
-      title: "",
-      slug: "",
-      content: "",
-      excerpt: "",
-      metaTitle: "",
-      metaDescription: "",
-      metaKeywords: "",
-    });
-    setActiveTab("general");
-  };
 
   // ============================================================================
   // COMPUTED VALUES
@@ -374,9 +214,11 @@ export default function ContentManagementPage() {
               Page Builder
             </Link>
           </Button>
-          <Button onClick={() => openCreateDialog("page")}>
-            <Plus className="mr-2 h-4 w-4" />
-            Tạo nội dung
+          <Button asChild>
+            <Link href="/admin/content/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Tạo nội dung
+            </Link>
           </Button>
         </div>
       </header>
@@ -427,34 +269,19 @@ export default function ContentManagementPage() {
       {loading ? (
         <LoadingState />
       ) : filteredContents.length === 0 ? (
-        <EmptyState filterType={filterType} onCreatePage={() => openCreateDialog("page")} onCreatePost={() => openCreateDialog("post")} />
+        <EmptyState filterType={filterType} />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredContents.map((item) => (
             <ContentCard
               key={item.id}
               item={item}
-              onEdit={() => openEditDialog(item)}
               onDelete={() => handleDelete(item)}
               onTogglePublish={() => handleTogglePublish(item)}
             />
           ))}
         </div>
       )}
-
-      {/* Create/Edit Dialog */}
-      <ContentDialog
-        open={isCreateOpen || !!editingContent}
-        onClose={closeDialog}
-        isEdit={!!editingContent}
-        contentType={editingContent?.type || createType}
-        formData={formData}
-        setFormData={setFormData}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onSubmit={editingContent ? handleUpdate : handleCreate}
-        onTypeChange={setCreateType}
-      />
     </div>
   );
 }
@@ -529,28 +356,24 @@ function LoadingState() {
   );
 }
 
-function EmptyState({
-  filterType,
-  onCreatePage,
-  onCreatePost,
-}: {
-  filterType: ContentFilter;
-  onCreatePage: () => void;
-  onCreatePost: () => void;
-}) {
+function EmptyState({ filterType }: { filterType: ContentFilter }) {
   if (filterType === "all") {
     return (
       <Card>
         <CardContent className="py-12 text-center space-y-4">
           <p className="text-muted-foreground">Chưa có nội dung nào</p>
           <div className="flex gap-2 justify-center">
-            <Button onClick={onCreatePage}>
-              <Plus className="mr-2 h-4 w-4" />
-              Tạo Page
+            <Button asChild>
+              <Link href="/admin/content/new?type=page">
+                <Plus className="mr-2 h-4 w-4" />
+                Tạo Page
+              </Link>
             </Button>
-            <Button variant="outline" onClick={onCreatePost}>
-              <Plus className="mr-2 h-4 w-4" />
-              Tạo Post
+            <Button variant="outline" asChild>
+              <Link href="/admin/content/new?type=post">
+                <Plus className="mr-2 h-4 w-4" />
+                Tạo Post
+              </Link>
             </Button>
           </div>
         </CardContent>
@@ -571,12 +394,10 @@ function EmptyState({
 
 function ContentCard({
   item,
-  onEdit,
   onDelete,
   onTogglePublish,
 }: {
   item: ContentItem;
-  onEdit: () => void;
   onDelete: () => void;
   onTogglePublish: () => void;
 }) {
@@ -673,9 +494,11 @@ function ContentCard({
             </>
           ) : (
             <>
-              <Button variant="outline" size="sm" onClick={onEdit}>
-                <Edit2 className="h-3 w-3 mr-1" />
-                Sửa
+              <Button variant="outline" size="sm" asChild className="flex-1">
+                <Link href={`/admin/content/${item.id}`}>
+                  <Edit2 className="h-3 w-3 mr-1" />
+                  Sửa
+                </Link>
               </Button>
               <Button variant="outline" size="sm" onClick={onTogglePublish}>
                 {item.published ? (
@@ -700,187 +523,4 @@ function ContentCard({
   );
 }
 
-function ContentDialog({
-  open,
-  onClose,
-  isEdit,
-  contentType,
-  formData,
-  setFormData,
-  activeTab,
-  setActiveTab,
-  onSubmit,
-  onTypeChange,
-}: {
-  open: boolean;
-  onClose: () => void;
-  isEdit: boolean;
-  contentType: ContentType;
-  formData: FormData;
-  setFormData: (data: FormData) => void;
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  onSubmit: () => void;
-  onTypeChange: (type: ContentType) => void;
-}) {
-  return (
-    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl p-4">
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit
-              ? `Chỉnh sửa ${contentType === "post" ? "bài viết" : "trang"}`
-              : `Tạo ${contentType === "post" ? "bài viết" : "trang"} mới`}
-          </DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? "Cập nhật thông tin nội dung"
-              : `Tạo một ${contentType === "post" ? "bài viết blog" : "trang tĩnh"} mới`}
-          </DialogDescription>
-        </DialogHeader>
 
-        {/* Type Selector - Only when creating */}
-        {!isEdit && (
-          <div className="flex gap-2 border-b pb-4">
-            <Button
-              variant={contentType === "page" ? "default" : "outline"}
-              size="sm"
-              onClick={() => onTypeChange("page")}
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              Page
-            </Button>
-            <Button
-              variant={contentType === "post" ? "default" : "outline"}
-              size="sm"
-              onClick={() => onTypeChange("post")}
-            >
-              <BookOpen className="mr-2 h-4 w-4" />
-              Post
-            </Button>
-          </div>
-        )}
-
-        <DialogBody>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="general">Thông tin chung</TabsTrigger>
-              <TabsTrigger value="seo">SEO</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="general" className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">Tiêu đề</Label>
-                <Input
-                  id="title"
-                  value={formData.title}
-                  onChange={(e) =>
-                    setFormData({ ...formData, title: e.target.value })
-                  }
-                  placeholder="Tiêu đề nội dung"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="slug">URL Slug</Label>
-                <Input
-                  id="slug"
-                  value={formData.slug}
-                  onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
-                  }
-                  placeholder="url-slug-tuy-chinh"
-                />
-              </div>
-
-              {contentType === "post" && (
-                <div className="space-y-2">
-                  <Label htmlFor="excerpt">Mô tả ngắn</Label>
-                  <textarea
-                    id="excerpt"
-                    value={formData.excerpt}
-                    onChange={(e) =>
-                      setFormData({ ...formData, excerpt: e.target.value })
-                    }
-                    placeholder="Mô tả ngắn về bài viết"
-                    rows={2}
-                    className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm resize-none"
-                  />
-                </div>
-              )}
-
-              <div className="space-y-2">
-                <Label htmlFor="content">Nội dung</Label>
-                <TiptapEditor
-                  content={formData.content}
-                  onChange={(content) =>
-                    setFormData({ ...formData, content })
-                  }
-                  placeholder="Bắt đầu viết nội dung... (Nhấn '/' để xem lệnh)"
-                />
-              </div>
-            </TabsContent>
-
-            <TabsContent value="seo" className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="metaTitle">Meta Title</Label>
-                <Input
-                  id="metaTitle"
-                  value={formData.metaTitle}
-                  onChange={(e) =>
-                    setFormData({ ...formData, metaTitle: e.target.value })
-                  }
-                  placeholder="Tiêu đề trong tìm kiếm (max 60)"
-                  maxLength={60}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {formData.metaTitle.length}/60
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="metaDescription">Meta Description</Label>
-                <textarea
-                  id="metaDescription"
-                  value={formData.metaDescription}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      metaDescription: e.target.value,
-                    })
-                  }
-                  placeholder="Mô tả trong tìm kiếm (max 160)"
-                  maxLength={160}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-input rounded-md bg-background text-sm resize-none"
-                />
-                <p className="text-xs text-muted-foreground">
-                  {formData.metaDescription.length}/160
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="metaKeywords">Meta Keywords</Label>
-                <Input
-                  id="metaKeywords"
-                  value={formData.metaKeywords}
-                  onChange={(e) =>
-                    setFormData({ ...formData, metaKeywords: e.target.value })
-                  }
-                  placeholder="Từ khóa phân cách bằng dấu phẩy"
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </DialogBody>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Hủy
-          </Button>
-          <Button onClick={onSubmit}>{isEdit ? "Cập nhật" : "Tạo"}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-}
