@@ -6,18 +6,21 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-6-2D3748)](https://www.prisma.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8)](https://tailwindcss.com/)
+[![Bun](https://img.shields.io/badge/Bun-Runtime-orange)](https://bun.sh/)
 
 **Hệ thống website SEO-optimized multi-tenant với Page Builder, Tiptap Editor và quản lý nội dung toàn diện.**
+
+> **⚡ Latest Update:** Migrated to Next.js 16 with `proxy.ts` (replaced deprecated `middleware.ts`)
 
 ## ✨ Tính năng nổi bật
 
 ### 🌐 Multi-tenancy
-- Hỗ trợ **5 domains** với database riêng biệt
+- Hỗ trợ **6 domains** với database riêng biệt
 - Tự động chuyển đổi database theo domain/port
-- Middleware intelligent domain detection
-- **Development**: Port-based routing (3000-3004)
+- **proxy.ts** intelligent domain detection (Next.js 16+)
+- **Development**: Port-based routing (3000-3005)
 - **Production**: Domain-based automatic switching
-- Domains: tazagroup.vn, tazaskinclinic.com, timona.edu.vn, hderma.vn, elasome.com
+- Domains: tazagroup.vn, tazaskinclinic.com, timona.edu.vn, hderma.vn, elasome.com, innerbright.vn
 
 ### 📝 Page Builder Professional
 - **Drag & Drop** interface trực quan
@@ -100,7 +103,10 @@ bun run db:generate
 # Push schema to database
 bun run db:push
 
-# Start development server (default: port 3000 - tazagroup.vn)
+# Verify Next.js 16 migration (optional)
+bun run verify
+
+# Start development server - Interactive menu
 bun run dev
 
 # Hoặc chạy domain cụ thể:
@@ -109,13 +115,18 @@ bun run dev:tazaskin    # Port 3001 - tazaskinclinic.com
 bun run dev:timona      # Port 3002 - timona.edu.vn
 bun run dev:hderma      # Port 3003 - hderma.vn
 bun run dev:elasome     # Port 3004 - elasome.com
-npm run dev
+bun run dev:innerbright # Port 3005 - innerbright.vn
+
+# Hoặc chạy tất cả domains cùng lúc:
+bun run dev:all
 ```
 
 Truy cập http://localhost:3000
 
 ## 📖 Documentation
 
+- **[HOW_TO_ADD_DOMAIN.md](./HOW_TO_ADD_DOMAIN.md)** - 🆕 **Hướng dẫn thêm domain mới** (Quick guide!)
+- **[NEXT16_MIGRATION.md](./NEXT16_MIGRATION.md)** - 🆕 **Next.js 16 Migration Guide** (middleware → proxy)
 - **[TONG_HOP_MULTI_DOMAIN.md](./TONG_HOP_MULTI_DOMAIN.md)** - 🎯 **TỔNG HỢP MULTI-DOMAIN** (Đọc đầu tiên!)
 - **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - 🚀 Hướng dẫn Deploy Production (Tất cả domains)
 - **[DEPLOYMENT_PER_DOMAIN.md](./DEPLOYMENT_PER_DOMAIN.md)** - 🔧 Deploy Từng Domain Riêng Lẻ
@@ -145,6 +156,17 @@ kataseo/
 │   ├── database.ts          # Multi-tenant DB manager
 │   ├── prisma.ts            # Prisma client
 │   ├── seo.ts               # SEO utilities
+│   └── auth.ts              # NextAuth configuration
+├── prisma/                  # Database
+│   ├── schema.prisma        # Database schema
+│   └── migrations/          # DB migrations
+├── scripts/                 # Automation scripts
+│   ├── dev-multi-domain.sh  # 🆕 Interactive dev menu
+│   ├── check-migration.sh   # 🆕 Verify Next.js 16 migration
+│   └── per-domain/          # Per-domain deployment scripts
+├── proxy.ts                 # 🆕 Next.js 16 Proxy (replaces middleware.ts)
+├── .env.example             # Environment template
+└── package.json             # Dependencies
 │   └── actions.ts           # Server actions
 ├── middleware.ts            # ⭐ Domain detection middleware
 ├── prisma/                  # Database schema

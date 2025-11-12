@@ -40,6 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# deprecated files (Next.js 16+)
+middleware.ts
+middleware.js
+
 # prisma
 /lib/generated/prisma
 /prisma/dev.db

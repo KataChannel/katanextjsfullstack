@@ -27,3 +27,10 @@ Mô Tả : Elasome mang đến giải pháp chăm sóc toàn diện, nhẹ nhàn
 Địa Chỉ Liên Hệ : 1012-1014 Quang Trung, Phường 8, Quận Gò Vấp, TP. Hồ Chí Minh.
 Hotline : 0911754299 - 02873092585
 Email : info@hderma.vn
+
+
+innerbright.vn : DATABASE_URL="postgresql://postgres:postgres@116.118.48.208:5432/innerv2core"
+Mô Tả : InnerBright Training & Coaching, Cuộc sống của Bạn là do chính Bạn tạo ra và Lập Trình Ngôn Ngữ Tư Duy - NLP (Neuro Linguistic Programming)
+Địa Chỉ Liên Hệ : TP. Hồ Chí Minh.
+Hotline : 0908370968
+Email : info@innerbright.vn

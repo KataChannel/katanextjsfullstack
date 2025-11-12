@@ -82,6 +82,18 @@ export const DOMAIN_CONFIGS: Record<string, DomainConfig> = {
     devDomain: 'localhost',
     devPort: 3004,
   },
+  'innerbright.vn': {
+    domain: 'innerbright.vn',
+    database: 'postgresql://postgres:postgres@116.118.48.208:5432/innerv2core',
+    description: 'InnerBright Training & Coaching, Cuộc sống của Bạn là do chính Bạn tạo ra và Lập Trình Ngôn Ngữ Tư Duy - NLP (Neuro Linguistic Programming)',
+    address: 'TP. Hồ Chí Minh.',
+    hotline: '0908370968',
+    email: 'info@innerbright.vn',
+    siteName: 'InnerBright',
+    siteTitle: 'InnerBright - Training & Coaching NLP',
+    devDomain: 'localhost',
+    devPort: 3005,
+  },
 };
 
 /**
@@ -107,6 +119,7 @@ export function getDomainConfig(hostname: string): DomainConfig {
       '3002': 'timona.edu.vn',
       '3003': 'hderma.vn',
       '3004': 'elasome.com',
+      '3005': 'innerbright.vn',
     };
     
     const mappedDomain = port ? portMap[port] : 'tazagroup.vn';

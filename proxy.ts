@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
+import { getDomainConfig } from './lib/domain-config';
 
 /**
  * Get restricted routes based on user role
@@ -87,13 +88,19 @@ export async function proxy(request: NextRequest) {
   }
 
   // ============ MULTI-TENANCY ============
-  // Lấy domain từ hostname
-  const domain = extractDomainFromHostname(hostname);
+  // Lấy cấu hình domain từ hostname
+  const config = getDomainConfig(hostname);
   
   // Clone headers và thêm domain info
   const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-domain', domain);
   requestHeaders.set('x-hostname', hostname);
+  requestHeaders.set('x-domain', config.domain);
+  requestHeaders.set('x-site-name', config.siteName);
+  
+  // Log trong development
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[Proxy] Hostname: ${hostname} -> Domain: ${config.domain}`);
+  }
   
   // Tạo response với headers mới
   const response = NextResponse.next({
@@ -102,30 +109,14 @@ export async function proxy(request: NextRequest) {
     },
   });
   
-  // Thêm security headers
+  // Set response headers cho SEO và security
+  response.headers.set('x-domain', config.domain);
+  response.headers.set('x-powered-by', config.siteName);
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   
   return response;
-}
-
-/**
- * Lấy domain từ hostname
- */
-function extractDomainFromHostname(hostname: string): string {
-  // Loại bỏ port nếu có
-  const withoutPort = hostname.split(':')[0];
-  
-  // Loại bỏ www. nếu có
-  const withoutWww = withoutPort.replace(/^www\./, '');
-  
-  // Xử lý localhost
-  if (withoutWww.includes('localhost') || withoutWww.includes('127.0.0.1')) {
-    return 'tazagroup.vn'; // Mặc định cho development
-  }
-  
-  return withoutWww;
 }
 
 // Cấu hình matcher cho proxy
@@ -138,6 +129,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public files (images, etc)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2)$).*)',
   ],
 };
