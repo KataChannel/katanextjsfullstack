@@ -116,11 +116,13 @@ Truy cập http://localhost:3000
 
 ## 📖 Documentation
 
+- **[TONG_HOP_MULTI_DOMAIN.md](./TONG_HOP_MULTI_DOMAIN.md)** - 🎯 **TỔNG HỢP MULTI-DOMAIN** (Đọc đầu tiên!)
+- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - 🚀 Hướng dẫn Deploy Production (Tất cả domains)
+- **[DEPLOYMENT_PER_DOMAIN.md](./DEPLOYMENT_PER_DOMAIN.md)** - 🔧 Deploy Từng Domain Riêng Lẻ
 - **[MULTI_DOMAIN_CONFIG.md](./MULTI_DOMAIN_CONFIG.md)** - ⭐ Hướng dẫn cấu hình Multi-Domain
 - **[MULTI_DOMAIN_USAGE_EXAMPLES.md](./docs/MULTI_DOMAIN_USAGE_EXAMPLES.md)** - ⭐ Ví dụ sử dụng Multi-Domain
 - **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Chi tiết kiến trúc và implementation
 - **[QUICK_START.md](./QUICK_START.md)** - Hướng dẫn nhanh bắt đầu
-- **[API Documentation](#)** - API endpoints reference
 
 ## 🗂️ Project Structure
 
