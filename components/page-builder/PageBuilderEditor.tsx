@@ -108,21 +108,21 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="flex h-screen w-screen fixed inset-0 bg-background overflow-hidden">
       {/* Mobile Left Sidebar Overlay */}
       {showLeftSidebar && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
           onClick={() => setShowLeftSidebar(false)}
         >
           <div 
-            className="w-80 h-full bg-white shadow-2xl overflow-y-auto"
+            className="w-full max-w-sm h-full bg-background shadow-2xl overflow-y-auto border-r"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between z-10">
               <div className="flex items-center gap-2">
-                <Layers className="w-5 h-5 text-blue-600" />
-                <h2 className="font-semibold text-gray-900">Thành Phần</h2>
+                <Layers className="w-5 h-5 text-primary" />
+                <h2 className="font-semibold">Thành Phần</h2>
               </div>
               <Button
                 variant="ghost"
@@ -140,17 +140,17 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
       {/* Mobile Right Sidebar Overlay */}
       {showRightSidebar && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 lg:hidden"
           onClick={() => setShowRightSidebar(false)}
         >
           <div 
-            className="ml-auto w-80 h-full bg-white shadow-2xl overflow-y-auto"
+            className="ml-auto w-full max-w-sm h-full bg-background shadow-2xl overflow-y-auto border-l"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-background border-b p-4 flex items-center justify-between z-10">
               <div className="flex items-center gap-2">
-                <Settings2 className="w-5 h-5 text-purple-600" />
-                <h2 className="font-semibold text-gray-900">Thuộc Tính</h2>
+                <Settings2 className="w-5 h-5 text-primary" />
+                <h2 className="font-semibold">Thuộc Tính</h2>
               </div>
               <Button
                 variant="ghost"
@@ -166,48 +166,51 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
       )}
 
       {/* Desktop Left Sidebar */}
-      <div className="hidden lg:block w-64 bg-white border-r border-gray-200 overflow-y-auto shadow-sm">
-        <div className="sticky top-0 bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 border-b border-gray-200 p-4 z-10">
+      <aside className="hidden lg:flex lg:flex-col w-64 xl:w-80 bg-background border-r overflow-hidden">
+        <div className="border-b p-4 bg-muted/50">
           <div className="flex items-center gap-2">
-            <Layers className="w-5 h-5 text-blue-600" />
-            <h2 className="font-semibold text-gray-900">Thành Phần</h2>
+            <Layers className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold">Thành Phần</h2>
           </div>
         </div>
-        <ComponentSidebar />
-      </div>
+        <div className="flex-1 overflow-y-auto">
+          <ComponentSidebar />
+        </div>
+      </aside>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Toolbar */}
-        <div className="bg-white border-b border-gray-200 shadow-sm">
-          {/* Header Row */}
-          <div className="flex items-center justify-between px-3 md:px-6 py-3">
-            {/* Left: Back + Title */}
-            <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
-              <Link href="/admin/pages-management">
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Header Toolbar */}
+        <header className="border-b bg-background shrink-0">
+          {/* Top Row */}
+          <div className="flex items-center justify-between px-3 md:px-4 lg:px-6 py-3">
+            {/* Left: Navigation + Title */}
+            <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+              <Link href="/admin/content">
                 <Button variant="ghost" size="icon" className="shrink-0">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
               
               <div className="min-w-0 flex-1">
-                <h1 className="text-sm md:text-lg font-semibold text-gray-900 truncate">
+                <h1 className="text-sm md:text-base lg:text-lg font-semibold truncate">
                   {initialData.title}
                 </h1>
-                <p className="text-xs md:text-sm text-gray-500 truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   /{initialData.slug}
                 </p>
               </div>
             </div>
 
-            {/* Right: Actions */}
+            {/* Right: Action Buttons */}
             <div className="flex items-center gap-1 md:gap-2 shrink-0">
-              {/* Mobile Sidebars Toggle */}
+              {/* Mobile: Sidebars Toggle */}
               <Button
                 variant="outline"
                 size="icon"
                 className="lg:hidden"
                 onClick={() => setShowLeftSidebar(true)}
+                title="Thành phần"
               >
                 <Layers className="w-4 h-4" />
               </Button>
@@ -217,6 +220,7 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
                 size="icon"
                 className="lg:hidden"
                 onClick={() => setShowRightSidebar(true)}
+                title="Thuộc tính"
               >
                 <Settings2 className="w-4 h-4" />
               </Button>
@@ -226,11 +230,11 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
                 variant={showPreview ? "default" : "outline"}
                 size="sm"
                 onClick={() => setShowPreview(!showPreview)}
-                className="hidden md:flex"
+                className="hidden sm:flex"
               >
-                <Eye className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">
-                  {showPreview ? 'Chỉnh Sửa' : 'Xem Trước'}
+                <Eye className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">
+                  {showPreview ? 'Chỉnh sửa' : 'Xem trước'}
                 </span>
               </Button>
 
@@ -238,7 +242,8 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
                 variant={showPreview ? "default" : "outline"}
                 size="icon"
                 onClick={() => setShowPreview(!showPreview)}
-                className="md:hidden"
+                className="sm:hidden"
+                title={showPreview ? 'Chỉnh sửa' : 'Xem trước'}
               >
                 <Eye className="w-4 h-4" />
               </Button>
@@ -248,7 +253,7 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
                 variant="outline"
                 size="sm"
                 onClick={handleExport}
-                className="hidden sm:flex"
+                className="hidden md:flex"
               >
                 <Download className="w-4 h-4 md:mr-2" />
                 <span className="hidden md:inline">Export</span>
@@ -259,9 +264,8 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
                 size="sm"
                 onClick={handleSave}
                 disabled={isSaving}
-                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:via-indigo-700 hover:to-blue-700"
               >
-                <Save className="w-4 h-4 md:mr-2" />
+                <Save className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">
                   {isSaving ? 'Đang lưu...' : 'Lưu'}
                 </span>
@@ -269,92 +273,96 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
             </div>
           </div>
 
-          {/* Preview Mode Selector (when preview is active) */}
+          {/* Preview Mode Selector */}
           {showPreview && (
-            <div className="flex items-center justify-center gap-2 px-3 md:px-6 pb-3 border-t border-gray-100">
+            <div className="flex items-center justify-center gap-2 px-3 md:px-4 lg:px-6 pb-3 pt-2 border-t">
               <Button
                 variant={previewMode === 'mobile' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setPreviewMode('mobile')}
               >
-                <Smartphone className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">Mobile</span>
+                <Smartphone className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Mobile</span>
               </Button>
               <Button
                 variant={previewMode === 'tablet' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setPreviewMode('tablet')}
               >
-                <Tablet className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">Tablet</span>
+                <Tablet className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Tablet</span>
               </Button>
               <Button
                 variant={previewMode === 'desktop' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setPreviewMode('desktop')}
               >
-                <Monitor className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">Desktop</span>
+                <Monitor className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Desktop</span>
               </Button>
+            </div>
+          )}
+        </header>
+
+        {/* Canvas / Preview Area */}
+        <div className="flex-1 overflow-hidden">
+          {showPreview ? (
+            <div className="h-full overflow-auto bg-muted/30 p-2 md:p-4 lg:p-6">
+              <div 
+                className={cn(
+                  "mx-auto bg-background shadow-xl rounded-lg overflow-hidden transition-all duration-300",
+                  previewMode === 'mobile' && "max-w-sm",
+                  previewMode === 'tablet' && "max-w-3xl",
+                  previewMode === 'desktop' && "max-w-full"
+                )}
+              >
+                <ResponsivePreview />
+              </div>
+            </div>
+          ) : (
+            <div className="h-full bg-muted/20">
+              <Canvas />
             </div>
           )}
         </div>
 
-        {/* Canvas hoặc Preview */}
-        {showPreview ? (
-          <div className="flex-1 overflow-auto bg-gray-100 p-2 md:p-6">
-            <div 
-              className={cn(
-                "mx-auto bg-white shadow-xl rounded-lg overflow-hidden transition-all duration-300",
-                previewMode === 'mobile' && "max-w-sm",
-                previewMode === 'tablet' && "max-w-3xl",
-                previewMode === 'desktop' && "max-w-7xl"
-              )}
-            >
-              <ResponsivePreview />
-            </div>
-          </div>
-        ) : (
-          <div className="flex-1 bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100">
-            <Canvas />
-          </div>
-        )}
-
-        {/* Bottom Status Bar */}
-        <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-white text-xs flex items-center justify-between px-3 md:px-6 py-2 shadow-lg">
-          <div className="flex items-center gap-3 md:gap-6">
-            <span className="flex items-center gap-1">
-              <span className="font-semibold">Elements:</span>
-              <span className="text-blue-300">{Array.isArray(canvas.elements) ? canvas.elements.length : 0}</span>
+        {/* Status Bar */}
+        <footer className="bg-muted border-t text-xs flex items-center justify-between px-3 md:px-4 lg:px-6 py-2 shrink-0">
+          <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
+            <span className="flex items-center gap-1.5">
+              <span className="font-medium text-muted-foreground">Elements:</span>
+              <span className="font-semibold text-primary">{Array.isArray(canvas.elements) ? canvas.elements.length : 0}</span>
             </span>
-            <span className="hidden sm:flex items-center gap-1">
-              <span className="font-semibold">Selected:</span>
-              <span className="text-purple-300">{Array.isArray(canvas.selectedIds) ? canvas.selectedIds.length : 0}</span>
+            <span className="hidden sm:flex items-center gap-1.5">
+              <span className="font-medium text-muted-foreground">Selected:</span>
+              <span className="font-semibold text-primary">{Array.isArray(canvas.selectedIds) ? canvas.selectedIds.length : 0}</span>
             </span>
           </div>
-          <div className="flex items-center gap-3 md:gap-6">
-            <span className="hidden md:flex items-center gap-1">
-              <span className="font-semibold">Zoom:</span>
-              <span className="text-green-300">{Math.round(canvas.zoom * 100)}%</span>
+          <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
+            <span className="hidden md:flex items-center gap-1.5">
+              <span className="font-medium text-muted-foreground">Zoom:</span>
+              <span className="font-semibold text-primary">{Math.round(canvas.zoom * 100)}%</span>
             </span>
-            <span className="hidden sm:flex items-center gap-1">
-              <span className="font-semibold">Grid:</span>
-              <span className="text-yellow-300">{canvas.gridSize}px</span>
+            <span className="hidden sm:flex items-center gap-1.5">
+              <span className="font-medium text-muted-foreground">Grid:</span>
+              <span className="font-semibold text-primary">{canvas.gridSize}px</span>
             </span>
           </div>
-        </div>
-      </div>
+        </footer>
+      </main>
 
       {/* Desktop Right Sidebar */}
-      <div className="hidden lg:block w-80 bg-white border-l border-gray-200 overflow-y-auto shadow-sm">
-        <div className="sticky top-0 bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-b border-gray-200 p-4 z-10">
+      <aside className="hidden lg:flex lg:flex-col w-64 xl:w-80 bg-background border-l overflow-hidden">
+        <div className="border-b p-4 bg-muted/50">
           <div className="flex items-center gap-2">
-            <Settings2 className="w-5 h-5 text-purple-600" />
-            <h2 className="font-semibold text-gray-900">Thuộc Tính</h2>
+            <Settings2 className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold">Thuộc Tính</h2>
           </div>
         </div>
-        <Inspector />
-      </div>
+        <div className="flex-1 overflow-y-auto">
+          <Inspector />
+        </div>
+      </aside>
     </div>
   );
 }

@@ -230,7 +230,7 @@ export default function PagesManagementPage() {
               {editingPage ? 'Cập nhật thông tin trang' : 'Tạo một trang tĩnh mới'}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-4 p-4">
             <div>
               <Label htmlFor="title">Tiêu đề</Label>
               <Input
