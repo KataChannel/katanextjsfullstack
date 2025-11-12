@@ -1,13 +1,49 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 /**
- * Proxy để xử lý multi-tenancy
- * Thêm thông tin domain vào headers để sử dụng trong app
+ * Proxy để xử lý multi-tenancy và authentication
+ * Thêm thông tin domain vào headers và bảo vệ routes
  */
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
+  const { pathname } = request.nextUrl;
   
+  // ============ AUTHENTICATION MIDDLEWARE ============
+  // Get the token from the request
+  const token = await getToken({ 
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET 
+  });
+
+  // Protected admin routes
+  const isAdminRoute = pathname.startsWith('/admin');
+  const isAuthRoute = pathname.startsWith('/auth');
+
+  // Redirect to login if accessing admin without authentication
+  if (isAdminRoute && !token) {
+    const url = new URL('/auth/login', request.url);
+    url.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(url);
+  }
+
+  // Redirect to admin if authenticated user tries to access auth pages
+  if (isAuthRoute && token) {
+    return NextResponse.redirect(new URL('/admin', request.url));
+  }
+
+  // Check admin role for admin routes
+  if (isAdminRoute && token) {
+    const userRole = token.role as string;
+    
+    // Only admin and editor can access admin panel
+    if (userRole !== 'admin' && userRole !== 'editor') {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
+
+  // ============ MULTI-TENANCY ============
   // Lấy domain từ hostname
   const domain = extractDomainFromHostname(hostname);
   
@@ -54,12 +90,11 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public files (images, etc)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
