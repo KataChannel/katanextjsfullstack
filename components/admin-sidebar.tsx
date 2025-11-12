@@ -22,13 +22,12 @@ import { cn } from '@/lib/utils';
 
 const menuItems = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/admin', exact: true },
-  { title: 'Quản lý Trang', icon: Layout, href: '/admin/pages-management' },
-  { title: 'Quản lý Blog', icon: FileText, href: '/admin/posts-management' },
-  { title: 'Thư viện Media', icon: Image, href: '/admin/media' },
+  { title: 'Quản lý Nội dung', icon: FileText, href: '/admin/content' },
   { title: 'Page Builder', icon: Palette, href: '/admin/page-builder' },
+  { title: 'Thư viện Media', icon: Image, href: '/admin/media' },
   { title: 'Analytics', icon: BarChart3, href: '/admin/analytics' },
   { title: 'Cài đặt SEO', icon: Settings, href: '/admin/seo-settings' },
-  { title: 'Người dùng', icon: Users, href: '/users' },
+  { title: 'Người dùng', icon: Users, href: '/admin/users' },
 ];
 
 export function AdminSidebar() {
