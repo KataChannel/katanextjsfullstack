@@ -8,11 +8,15 @@ import { Inspector } from '@/components/page-builder/Inspector';
 import { ResponsivePreview } from '@/components/page-builder/ResponsivePreview';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Download, Eye, Save, Menu, X, Layers, Settings2, ArrowLeft, Smartphone, Tablet, Monitor, Globe } from 'lucide-react';
+import { Download, Eye, Save, Menu, X, Layers, Settings2, ArrowLeft, Smartphone, Tablet, Monitor, Globe, Blocks } from 'lucide-react';
 import { exportToHTML, downloadHTML } from '@/lib/page-builder/export-html';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Combobox } from '@/components/ui/combobox';
 
 interface PageBuilderEditorProps {
   pageId: string;
@@ -37,6 +41,22 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
   const [showRightSidebar, setShowRightSidebar] = useState(false);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [published, setPublished] = useState(initialData.published);
+  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
+  const [templateData, setTemplateData] = useState({
+    name: '',
+    description: '',
+    category: 'general',
+  });
+
+  const CATEGORIES = [
+    { value: 'general', label: 'Chung' },
+    { value: 'hero', label: 'Hero Section' },
+    { value: 'content', label: 'Nội dung' },
+    { value: 'cta', label: 'Call to Action' },
+    { value: 'testimonial', label: 'Đánh giá' },
+    { value: 'pricing', label: 'Bảng giá' },
+    { value: 'footer', label: 'Footer' },
+  ];
 
   // Load data từ database vào store
   useEffect(() => {
@@ -196,6 +216,48 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
     const html = exportToHTML(canvas.elements);
     downloadHTML(html, `${initialData.slug}.html`);
     toast.success('Đã export HTML thành công!');
+  };
+
+  // Save as template
+  const handleSaveAsTemplate = async () => {
+    if (!templateData.name) {
+      toast.error('Vui lòng nhập tên template');
+      return;
+    }
+
+    const selectedElements = canvas.selectedIds.length > 0
+      ? canvas.selectedIds.map((id: string) => canvas.elements[id]).filter(Boolean)
+      : Object.values(canvas.elements);
+
+    if (selectedElements.length === 0) {
+      toast.error('Không có element nào để lưu');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/block-templates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: templateData.name,
+          description: templateData.description,
+          category: templateData.category,
+          elements: selectedElements,
+          published: true,
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to save template');
+
+      toast.success('Đã lưu template thành công!');
+      setShowSaveTemplateDialog(false);
+      setTemplateData({ name: '', description: '', category: 'general' });
+    } catch (error) {
+      console.error('Error saving template:', error);
+      toast.error('Lỗi khi lưu template');
+    }
   };
 
   return (
@@ -367,6 +429,18 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
                 <span className="hidden md:inline">Export</span>
               </Button>
 
+              {/* Save as Template */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowSaveTemplateDialog(true)}
+                className="hidden lg:flex"
+                title="Lưu làm template"
+              >
+                <Blocks className="w-4 h-4 lg:mr-2" />
+                <span className="hidden lg:inline">Template</span>
+              </Button>
+
               {/* Save */}
               <Button
                 size="sm"
@@ -471,6 +545,77 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
           <Inspector />
         </div>
       </aside>
+
+      {/* Dialog Lưu Template */}
+      <Dialog open={showSaveTemplateDialog} onOpenChange={setShowSaveTemplateDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle>Lưu làm Template</DialogTitle>
+            <DialogDescription>
+              {canvas.selectedIds.length > 0
+                ? `Lưu ${canvas.selectedIds.length} element đã chọn làm template`
+                : `Lưu tất cả ${Object.keys(canvas.elements).length} elements làm template`}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="template-name">Tên template *</Label>
+              <Input
+                id="template-name"
+                value={templateData.name}
+                onChange={(e) => setTemplateData({ ...templateData, name: e.target.value })}
+                placeholder="VD: Hero Banner Hiện Đại"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="template-description">Mô tả</Label>
+              <Input
+                id="template-description"
+                value={templateData.description}
+                onChange={(e) => setTemplateData({ ...templateData, description: e.target.value })}
+                placeholder="Mô tả ngắn gọn về template"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="template-category">Danh mục</Label>
+              <Combobox
+                options={CATEGORIES}
+                value={templateData.category}
+                onValueChange={(value: string) => setTemplateData({ ...templateData, category: value })}
+                placeholder="Chọn danh mục"
+                searchPlaceholder="Tìm danh mục..."
+                emptyText="Không tìm thấy"
+              />
+            </div>
+
+            <div className="p-4 bg-muted rounded-lg space-y-2">
+              <h4 className="font-medium text-sm">Thông tin</h4>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>
+                  • {canvas.selectedIds.length > 0
+                    ? `${canvas.selectedIds.length} element đã chọn`
+                    : `Tất cả ${Object.keys(canvas.elements).length} elements`}
+                </li>
+                <li>• Template sẽ được công khai và hiển thị trong tab Templates</li>
+                <li>• Có thể chỉnh sửa hoặc xóa sau trong quản lý templates</li>
+              </ul>
+            </div>
+          </div>
+
+          <DialogFooter className="border-t pt-4">
+            <Button variant="outline" onClick={() => setShowSaveTemplateDialog(false)}>
+              Hủy
+            </Button>
+            <Button onClick={handleSaveAsTemplate}>
+              <Blocks className="w-4 h-4 mr-2" />
+              Lưu template
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

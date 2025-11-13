@@ -69,6 +69,7 @@ model User {
   accounts Account[]
   sessions Session[]
   menuPermissions MenuPermission[]
+  blockTemplates  BlockTemplate[]
 
   @@map("users")
 }
@@ -246,4 +247,27 @@ model Media {
   updatedAt DateTime @updatedAt
 
   @@map("media")
+}
+
+// Block Templates - Saved blocks for Page Builder
+model BlockTemplate {
+  id          String   @id @default(uuid())
+  name        String   // Tên template (VD: "Mạng trong mình Khát vọng")
+  description String?  // Mô tả ngắn
+  thumbnail   String?  // URL preview image
+  elements    Json     // Array of page builder elements
+  category    String   @default("general") // general, hero, content, cta, etc.
+  published   Boolean  @default(true)
+  
+  // Author
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("block_templates")
+  @@index([category])
+  @@index([published])
+  @@index([authorId])
 }

@@ -1,9 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import { Building2, Type, Image, Square, Heading, ImagePlay } from 'lucide-react';
+import { Building2, Type, Image, Square, Heading, ImagePlay, Blocks } from 'lucide-react';
 import { useBuilderStore, BuilderElement, ElementType } from '@/lib/page-builder/store';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 
 /**
  * Component templates để kéo vào canvas
@@ -207,10 +210,30 @@ const componentTemplates: Array<{
 ];
 
 /**
- * Sidebar với component palette
+ * Sidebar với component palette và block templates
  */
 export function ComponentSidebar() {
   const addElement = useBuilderStore((state) => state.addElement);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [loadingTemplates, setLoadingTemplates] = useState(true);
+
+  useEffect(() => {
+    fetchTemplates();
+  }, []);
+
+  const fetchTemplates = async () => {
+    try {
+      const res = await fetch('/api/block-templates');
+      if (res.ok) {
+        const data = await res.json();
+        setTemplates(data);
+      }
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+    } finally {
+      setLoadingTemplates(false);
+    }
+  };
 
   const handleAddComponent = (template: typeof componentTemplates[0]) => {
     const newElement: BuilderElement = {
@@ -225,34 +248,153 @@ export function ComponentSidebar() {
     addElement(newElement);
   };
 
-  return (
-    <div className="w-full h-full bg-white border-r border-gray-200 p-4 overflow-y-auto">
-      <h2 className="text-lg font-semibold mb-4">Components</h2>
-      
-      <div className="space-y-2">
-        {componentTemplates.map((template) => (
-          <Card
-            key={template.type}
-            className="p-3 cursor-pointer hover:bg-gray-50 transition-colors"
-            onClick={() => handleAddComponent(template)}
-          >
-            <div className="flex items-center gap-3">
-              <div className="text-gray-600">{template.icon}</div>
-              <span className="text-sm font-medium">{template.label}</span>
-            </div>
-          </Card>
-        ))}
-      </div>
+  const handleAddTemplate = (template: any) => {
+    if (!template.elements || template.elements.length === 0) {
+      toast.error('Template không có elements');
+      return;
+    }
 
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <h3 className="text-sm font-semibold mb-2 text-gray-600">Hướng dẫn</h3>
-        <ul className="text-xs text-gray-500 space-y-1">
-          <li>• Click component để thêm vào canvas</li>
-          <li>• Kéo để di chuyển</li>
-          <li>• Ctrl/Cmd + Click để chọn nhiều</li>
-          <li>• Kéo góc để resize</li>
-        </ul>
-      </div>
+    console.log('🎨 Adding template:', template.name);
+    console.log('📦 Elements count:', template.elements.length);
+    console.log('🔍 First element:', template.elements[0]);
+
+    // Tìm bounding box của template để center
+    const minX = Math.min(...template.elements.map((el: any) => el.x || 0));
+    const minY = Math.min(...template.elements.map((el: any) => el.y || 0));
+    
+    // Offset để đặt template ở vị trí nhìn thấy được (top-left của viewport)
+    const offsetX = 50 - minX;  // Đặt ở x=50
+    const offsetY = 50 - minY;  // Đặt ở y=50
+
+    // Thêm tất cả elements từ template vào canvas
+    let successCount = 0;
+    template.elements.forEach((element: BuilderElement, index: number) => {
+      try {
+        const newElement: BuilderElement = {
+          ...element,
+          id: `${element.type}-${Date.now()}-${index}`,
+          x: (element.x || 0) + offsetX,
+          y: (element.y || 0) + offsetY,
+        };
+        addElement(newElement);
+        successCount++;
+        console.log(`✅ Added element ${index + 1}:`, newElement.name || newElement.type, `at (${newElement.x}, ${newElement.y})`);
+      } catch (error) {
+        console.error(`❌ Error adding element ${index}:`, error);
+      }
+    });
+
+    console.log(`🎉 Template added! ${successCount}/${template.elements.length} elements`);
+    toast.success(`Đã thêm template "${template.name}" (${successCount}/${template.elements.length} elements)`);
+  };
+
+  return (
+    <div className="w-full h-full bg-white border-r border-gray-200 overflow-hidden flex flex-col">
+      <Tabs defaultValue="components" className="flex-1 flex flex-col">
+        <div className="px-4 pt-4">
+          <h2 className="text-lg font-semibold mb-3">Library</h2>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="components">Components</TabsTrigger>
+            <TabsTrigger value="templates">
+              Templates
+              {templates.length > 0 && (
+                <Badge variant="secondary" className="ml-2">
+                  {templates.length}
+                </Badge>
+              )}
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent value="components" className="flex-1 overflow-y-auto px-4 mt-4">
+          <div className="space-y-2">
+            {componentTemplates.map((template) => (
+              <Card
+                key={template.type}
+                className="p-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => handleAddComponent(template)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="text-gray-600">{template.icon}</div>
+                  <span className="text-sm font-medium">{template.label}</span>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <h3 className="text-sm font-semibold mb-2 text-gray-600">Hướng dẫn</h3>
+            <ul className="text-xs text-gray-500 space-y-1">
+              <li>• Click component để thêm vào canvas</li>
+              <li>• Kéo để di chuyển</li>
+              <li>• Ctrl/Cmd + Click để chọn nhiều</li>
+              <li>• Kéo góc để resize</li>
+            </ul>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="templates" className="flex-1 overflow-y-auto px-4 mt-4">
+          {loadingTemplates ? (
+            <div className="text-center py-8 text-sm text-gray-500">Đang tải...</div>
+          ) : templates.length === 0 ? (
+            <div className="text-center py-8">
+              <Blocks className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+              <p className="text-sm text-gray-500">Chưa có template nào</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {templates.map((template) => (
+                <Card
+                  key={template.id}
+                  className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => handleAddTemplate(template)}
+                >
+                  {/* Preview Thumbnail */}
+                  <div className="relative h-32 bg-linear-to-br from-blue-50 to-indigo-100">
+                    {template.thumbnail ? (
+                      <img
+                        src={template.thumbnail}
+                        alt={template.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <Blocks className="h-8 w-8 text-gray-300" />
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2">
+                      <Badge variant="outline" className="text-xs bg-white/90 backdrop-blur-sm">
+                        {template.elements.length} elements
+                      </Badge>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-3">
+                    <h3 className="font-medium text-sm line-clamp-1 mb-1">
+                      {template.name}
+                    </h3>
+                    {template.description && (
+                      <p className="text-xs text-gray-500 line-clamp-2">
+                        {template.description}
+                      </p>
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-6 pt-6 border-t border-gray-200 pb-4">
+            <h3 className="text-sm font-semibold mb-2 text-gray-600">Templates</h3>
+            <ul className="text-xs text-gray-500 space-y-1">
+              <li>• Click template để thêm vào canvas</li>
+              <li>• Template sẽ giữ nguyên layout gốc</li>
+              <li>• Có thể chỉnh sửa sau khi thêm</li>
+            </ul>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
