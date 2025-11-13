@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { Analytics } from "@/components/analytics";
+import { Providers } from "@/components/providers";
 import { headers } from "next/headers";
 import { extractDomain } from "@/lib/database";
 import { getPrisma } from "@/lib/prisma";
@@ -115,8 +116,9 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* Admin routes sẽ có layout riêng, không dùng root layout này */}
-        {children}
+        <Providers>
+          {children}
+        </Providers>
         <Toaster />
         
         {/* Analytics Scripts - Only for public website */}

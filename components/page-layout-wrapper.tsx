@@ -1,26 +1,24 @@
 'use client';
 
-import { Header } from './header';
-import { Footer } from './footer';
-
 interface PageLayoutWrapperProps {
   children: React.ReactNode;
   showHeader?: boolean;
   showFooter?: boolean;
 }
 
+/**
+ * PageLayoutWrapper - chỉ wrap content
+ * Không render Header/Footer vì page đã nằm trong (public) layout
+ * showHeader và showFooter props được giữ lại để tương thích nhưng không sử dụng
+ */
 export function PageLayoutWrapper({ 
   children, 
   showHeader = true, 
   showFooter = true 
 }: PageLayoutWrapperProps) {
   return (
-    <div className="flex flex-col min-h-screen">
-      {showHeader && <Header />}
-      <main className={showHeader ? "flex-1" : "flex-1 pt-0"}>
-        {children}
-      </main>
-      {showFooter && <Footer />}
-    </div>
+    <>
+      {children}
+    </>
   );
 }
