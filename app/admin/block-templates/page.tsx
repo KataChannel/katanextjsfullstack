@@ -410,10 +410,23 @@ export default function BlockTemplatesPage() {
                 {formData.elements.length} elements
               </p>
               {selectedTemplate && formData.elements.length > 0 && (
-                <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                  <p className="text-xs text-blue-800">
-                    💡 <strong>Để chỉnh sửa elements:</strong> Vào Page Builder, chọn tab "Templates", 
-                    click vào template này để add vào canvas, sau đó chỉnh sửa và lưu lại làm template mới.
+                <div className="mt-2 p-4 bg-blue-50 border border-blue-200 rounded-md space-y-2">
+                  <p className="text-sm font-semibold text-blue-900">
+                    💡 Cách chỉnh sửa template:
+                  </p>
+                  <ol className="text-xs text-blue-800 space-y-1 ml-4 list-decimal">
+                    <li>Vào <strong>Page Builder</strong> (tạo page mới hoặc dùng page test)</li>
+                    <li>Click tab <strong>"Templates"</strong> trong sidebar trái</li>
+                    <li>Click vào template <strong>"{selectedTemplate.name}"</strong> để add vào canvas</li>
+                    <li>Chỉnh sửa elements (position, style, content, thêm/xóa elements)</li>
+                    <li>Click button <strong>"Template"</strong> trên toolbar</li>
+                    <li>Chọn tất cả elements hoặc chỉ chọn elements cần update</li>
+                    <li>Nhập tên: <strong>"{selectedTemplate.name} v2"</strong> (tạo phiên bản mới)</li>
+                    <li>Hoặc dùng tên cũ để ghi đè (không khuyến khích)</li>
+                  </ol>
+                  <p className="text-xs text-blue-700 mt-2 italic">
+                    ⚠️ Lưu ý: Không thể edit trực tiếp elements trong admin page này. 
+                    Chỉ có thể edit metadata (tên, mô tả, danh mục).
                   </p>
                 </div>
               )}
@@ -425,7 +438,7 @@ export default function BlockTemplatesPage() {
               Hủy
             </Button>
             <Button onClick={handleSaveTemplate}>
-              {selectedTemplate ? "Cập nhật" : "Tạo template"}
+              {selectedTemplate ? "Cập nhật metadata" : "Tạo template"}
             </Button>
           </DialogFooter>
         </DialogContent>

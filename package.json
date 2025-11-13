@@ -29,6 +29,9 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hello-pangea/dnd": "^18.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.19.0",
@@ -78,6 +81,7 @@
     "nodemailer": "^7.0.10",
     "prisma": "^6.19.0",
     "react": "19.2.0",
+    "react-contenteditable": "^3.3.7",
     "react-dom": "19.2.0",
     "react-hook-form": "^7.66.0",
     "react-icons": "^5.5.0",

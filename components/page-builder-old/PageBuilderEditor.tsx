@@ -42,6 +42,8 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
   const [previewMode, setPreviewMode] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
   const [published, setPublished] = useState(initialData.published);
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
+  const [existingTemplates, setExistingTemplates] = useState<any[]>([]);
+  const [selectedExistingTemplate, setSelectedExistingTemplate] = useState<string>('');
   const [templateData, setTemplateData] = useState({
     name: '',
     description: '',
@@ -57,6 +59,25 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
     { value: 'pricing', label: 'Bảng giá' },
     { value: 'footer', label: 'Footer' },
   ];
+
+  // Load existing templates khi mở dialog
+  useEffect(() => {
+    if (showSaveTemplateDialog) {
+      fetchExistingTemplates();
+    }
+  }, [showSaveTemplateDialog]);
+
+  const fetchExistingTemplates = async () => {
+    try {
+      const res = await fetch('/api/admin/block-templates');
+      if (res.ok) {
+        const data = await res.json();
+        setExistingTemplates(data);
+      }
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+    }
+  };
 
   // Load data từ database vào store
   useEffect(() => {
@@ -220,6 +241,12 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
 
   // Save as template
   const handleSaveAsTemplate = async () => {
+    // Nếu chọn template có sẵn -> Update
+    if (selectedExistingTemplate) {
+      return handleUpdateTemplate();
+    }
+
+    // Nếu không -> Create new
     if (!templateData.name) {
       toast.error('Vui lòng nhập tên template');
       return;
@@ -251,12 +278,64 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
 
       if (!response.ok) throw new Error('Failed to save template');
 
-      toast.success('Đã lưu template thành công!');
+      toast.success('Đã lưu template mới thành công!');
       setShowSaveTemplateDialog(false);
       setTemplateData({ name: '', description: '', category: 'general' });
+      setSelectedExistingTemplate('');
     } catch (error) {
       console.error('Error saving template:', error);
       toast.error('Lỗi khi lưu template');
+    }
+  };
+
+  // Update existing template
+  const handleUpdateTemplate = async () => {
+    if (!selectedExistingTemplate) {
+      toast.error('Vui lòng chọn template cần update');
+      return;
+    }
+
+    const selectedElements = canvas.selectedIds.length > 0
+      ? canvas.selectedIds.map((id: string) => canvas.elements[id]).filter(Boolean)
+      : Object.values(canvas.elements);
+
+    if (selectedElements.length === 0) {
+      toast.error('Không có element nào để lưu');
+      return;
+    }
+
+    const existingTemplate = existingTemplates.find(t => t.id === selectedExistingTemplate);
+    if (!existingTemplate) {
+      toast.error('Không tìm thấy template');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/block-templates', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: selectedExistingTemplate,
+          name: existingTemplate.name,
+          description: existingTemplate.description,
+          category: existingTemplate.category,
+          published: existingTemplate.published,
+          thumbnail: existingTemplate.thumbnail,
+          elements: selectedElements, // Update elements
+        }),
+      });
+
+      if (!response.ok) throw new Error('Failed to update template');
+
+      toast.success(`Đã cập nhật template "${existingTemplate.name}"!`);
+      setShowSaveTemplateDialog(false);
+      setTemplateData({ name: '', description: '', category: 'general' });
+      setSelectedExistingTemplate('');
+    } catch (error) {
+      console.error('Error updating template:', error);
+      toast.error('Lỗi khi cập nhật template');
     }
   };
 
@@ -558,38 +637,99 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto py-4 space-y-4 px-4">
+            {/* Option: Update existing hoặc Create new */}
             <div className="space-y-2">
-              <Label htmlFor="template-name">Tên template *</Label>
-              <Input
-                id="template-name"
-                value={templateData.name}
-                onChange={(e) => setTemplateData({ ...templateData, name: e.target.value })}
-                placeholder="VD: Hero Banner Hiện Đại"
-              />
+              <Label>Chế độ</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={selectedExistingTemplate ? 'outline' : 'default'}
+                  size="sm"
+                  onClick={() => {
+                    setSelectedExistingTemplate('');
+                    setTemplateData({ name: '', description: '', category: 'general' });
+                  }}
+                  className="flex-1"
+                >
+                  Tạo mới
+                </Button>
+                <Button
+                  type="button"
+                  variant={selectedExistingTemplate ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => {
+                    if (existingTemplates.length > 0) {
+                      setSelectedExistingTemplate(existingTemplates[0].id);
+                    }
+                  }}
+                  className="flex-1"
+                >
+                  Cập nhật có sẵn
+                </Button>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="template-description">Mô tả</Label>
-              <Input
-                id="template-description"
-                value={templateData.description}
-                onChange={(e) => setTemplateData({ ...templateData, description: e.target.value })}
-                placeholder="Mô tả ngắn gọn về template"
-              />
-            </div>
+            {/* Nếu chọn Update existing */}
+            {selectedExistingTemplate ? (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="existing-template">Chọn template cần update</Label>
+                  <Combobox
+                    options={existingTemplates.map(t => ({ value: t.id, label: t.name }))}
+                    value={selectedExistingTemplate}
+                    onValueChange={(value: string) => setSelectedExistingTemplate(value)}
+                    placeholder="Chọn template"
+                    searchPlaceholder="Tìm template..."
+                    emptyText="Không tìm thấy"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="template-category">Danh mục</Label>
-              <Combobox
-                options={CATEGORIES}
-                value={templateData.category}
-                onValueChange={(value: string) => setTemplateData({ ...templateData, category: value })}
-                placeholder="Chọn danh mục"
-                searchPlaceholder="Tìm danh mục..."
-                emptyText="Không tìm thấy"
-              />
-            </div>
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+                  <h4 className="font-medium text-sm text-amber-900">⚠️ Cảnh báo</h4>
+                  <ul className="text-xs text-amber-800 space-y-1">
+                    <li>• Elements hiện tại sẽ <strong>GHI ĐÈ</strong> elements của template đã chọn</li>
+                    <li>• Metadata (tên, mô tả, danh mục) sẽ được giữ nguyên</li>
+                    <li>• Không thể hoàn tác sau khi update</li>
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              /* Nếu chọn Create new */
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="template-name">Tên template *</Label>
+                  <Input
+                    id="template-name"
+                    value={templateData.name}
+                    onChange={(e) => setTemplateData({ ...templateData, name: e.target.value })}
+                    placeholder="VD: Hero Banner Hiện Đại"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="template-description">Mô tả</Label>
+                  <Input
+                    id="template-description"
+                    value={templateData.description}
+                    onChange={(e) => setTemplateData({ ...templateData, description: e.target.value })}
+                    placeholder="Mô tả ngắn gọn về template"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="template-category">Danh mục</Label>
+                  <Combobox
+                    options={CATEGORIES}
+                    value={templateData.category}
+                    onValueChange={(value: string) => setTemplateData({ ...templateData, category: value })}
+                    placeholder="Chọn danh mục"
+                    searchPlaceholder="Tìm danh mục..."
+                    emptyText="Không tìm thấy"
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="p-4 bg-muted rounded-lg space-y-2">
               <h4 className="font-medium text-sm">Thông tin</h4>
@@ -599,19 +739,26 @@ export function PageBuilderEditor({ pageId, initialData }: PageBuilderEditorProp
                     ? `${canvas.selectedIds.length} element đã chọn`
                     : `Tất cả ${Object.keys(canvas.elements).length} elements`}
                 </li>
-                <li>• Template sẽ được công khai và hiển thị trong tab Templates</li>
-                <li>• Có thể chỉnh sửa hoặc xóa sau trong quản lý templates</li>
+                {!selectedExistingTemplate && (
+                  <>
+                    <li>• Template mới sẽ được công khai</li>
+                    <li>• Hiển thị trong tab Templates của Page Builder</li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
 
-          <DialogFooter className="border-t pt-4">
-            <Button variant="outline" onClick={() => setShowSaveTemplateDialog(false)}>
+          <DialogFooter className="border-t pt-4 px-4">
+            <Button variant="outline" onClick={() => {
+              setShowSaveTemplateDialog(false);
+              setSelectedExistingTemplate('');
+            }}>
               Hủy
             </Button>
             <Button onClick={handleSaveAsTemplate}>
               <Blocks className="w-4 h-4 mr-2" />
-              Lưu template
+              {selectedExistingTemplate ? 'Cập nhật template' : 'Tạo template mới'}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,4 +1,4 @@
-import { CarouselComponent } from '@/components/page-builder/CarouselComponent';
+import { CarouselComponent } from "./page-builder-old/CarouselComponent";
 
 interface PageContent {
   id: string;

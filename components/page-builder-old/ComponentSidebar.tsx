@@ -256,36 +256,93 @@ export function ComponentSidebar() {
 
     console.log('🎨 Adding template:', template.name);
     console.log('📦 Elements count:', template.elements.length);
-    console.log('🔍 First element:', template.elements[0]);
 
-    // Tìm bounding box của template để center
+    // Tìm bounding box của template
     const minX = Math.min(...template.elements.map((el: any) => el.x || 0));
     const minY = Math.min(...template.elements.map((el: any) => el.y || 0));
+    const maxX = Math.max(...template.elements.map((el: any) => (el.x || 0) + (el.width || 0)));
+    const maxY = Math.max(...template.elements.map((el: any) => (el.y || 0) + (el.height || 0)));
     
-    // Offset để đặt template ở vị trí nhìn thấy được (top-left của viewport)
-    const offsetX = 50 - minX;  // Đặt ở x=50
-    const offsetY = 50 - minY;  // Đặt ở y=50
+    const templateWidth = maxX - minX;
+    const templateHeight = maxY - minY;
 
-    // Thêm tất cả elements từ template vào canvas
+    // Tạo container wrapper cho template
+    const containerId = `template-container-${Date.now()}`;
+    const containerElement: BuilderElement = {
+      id: containerId,
+      type: 'container',
+      name: `Template: ${template.name}`,
+      x: 100,
+      y: 100,
+      width: templateWidth + 40, // Thêm padding
+      height: templateHeight + 40,
+      layout: {
+        display: 'block',
+        padding: 20,
+      },
+      style: {
+        backgroundColor: 'transparent',
+        border: '1px dashed #e5e7eb',
+      },
+      states: {
+        default: {
+          backgroundColor: 'transparent',
+        },
+      },
+      animation: {
+        type: 'none',
+      },
+      children: [],
+    };
+
+    // Add container trước
+    addElement(containerElement);
+    console.log('✅ Created container:', containerId);
+
+    // Thêm tất cả elements vào container với position relative
     let successCount = 0;
+    const childIds: string[] = [];
+    
     template.elements.forEach((element: BuilderElement, index: number) => {
       try {
+        const childId = `${element.type}-${Date.now()}-${index}`;
         const newElement: BuilderElement = {
           ...element,
-          id: `${element.type}-${Date.now()}-${index}`,
-          x: (element.x || 0) + offsetX,
-          y: (element.y || 0) + offsetY,
+          id: childId,
+          // Position relative to container
+          x: (element.x || 0) - minX + 20, // 20px padding
+          y: (element.y || 0) - minY + 20,
+          parentId: containerId,
         };
         addElement(newElement);
+        childIds.push(childId);
         successCount++;
-        console.log(`✅ Added element ${index + 1}:`, newElement.name || newElement.type, `at (${newElement.x}, ${newElement.y})`);
+        console.log(`✅ Added child ${index + 1}:`, newElement.name || newElement.type);
       } catch (error) {
         console.error(`❌ Error adding element ${index}:`, error);
       }
     });
 
-    console.log(`🎉 Template added! ${successCount}/${template.elements.length} elements`);
-    toast.success(`Đã thêm template "${template.name}" (${successCount}/${template.elements.length} elements)`);
+    // Update container children
+    if (childIds.length > 0) {
+      const { canvas } = useBuilderStore.getState();
+      const updatedContainer = {
+        ...canvas.elements[containerId],
+        children: childIds,
+      };
+      useBuilderStore.setState({
+        canvas: {
+          ...canvas,
+          elements: {
+            ...canvas.elements,
+            [containerId]: updatedContainer,
+          },
+        },
+      });
+    }
+
+    console.log(`🎉 Template added! ${successCount}/${template.elements.length} elements in container`);
+    toast.success(`Đã thêm template "${template.name}" (${successCount} elements)`);
   };
 
   return (

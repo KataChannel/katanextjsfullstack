@@ -12,35 +12,35 @@ datasource db {
 
 // Menu Items
 model Menu {
-  id        String   @id @default(uuid())
-  label     String   // Tên hiển thị menu
-  url       String   // URL path
-  icon      String?  // Icon name (lucide-react)
-  order     Int      @default(0) // Thứ tự hiển thị
-  published Boolean  @default(true) // Hiện/ẩn menu
-  parentId  String?  // Parent menu ID (cho submenu)
-  
+  id        String  @id @default(uuid())
+  label     String // Tên hiển thị menu
+  url       String // URL path
+  icon      String? // Icon name (lucide-react)
+  order     Int     @default(0) // Thứ tự hiển thị
+  published Boolean @default(true) // Hiện/ẩn menu
+  parentId  String? // Parent menu ID (cho submenu)
+
   // Self-relation cho submenu
   parent   Menu?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
   children Menu[] @relation("MenuHierarchy")
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("menus")
   @@index([order])
   @@index([published])
   @@index([parentId])
+  @@map("menus")
 }
 
 // Menu Permissions - must be before User due to relation
 model MenuPermission {
-  id              String   @id @default(uuid())
-  userId          String
-  allowedMenus    Json     // Array of menu URLs user can access: ["/nlp", "/khoa-hoc"]
-  
+  id           String @id @default(uuid())
+  userId       String
+  allowedMenus Json // Array of menu URLs user can access: ["/nlp", "/khoa-hoc"]
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -52,24 +52,25 @@ model User {
   id            String    @id @default(uuid())
   email         String    @unique
   name          String?
-  password      String?   // Hashed password (nullable for OAuth users)
+  password      String? // Hashed password (nullable for OAuth users)
   role          String    @default("user") // user, editor, manager, admin
   emailVerified DateTime? // Email verification timestamp
-  image         String?   // Profile image URL
-  
+  image         String? // Profile image URL
+
   // OTP for verification
-  otp           String?
-  otpExpiresAt  DateTime?
-  
+  otp          String?
+  otpExpiresAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  posts    Post[]
-  pages    Page[]
-  accounts Account[]
-  sessions Session[]
-  menuPermissions MenuPermission[]
-  blockTemplates  BlockTemplate[]
+  posts            Post[]
+  pages            Page[]
+  accounts         Account[]
+  sessions         Session[]
+  menuPermissions  MenuPermission[]
+  blockTemplates   BlockTemplate[]
+  blockTemplatesV2 BlockTemplateV2[] @relation("BlockTemplatesV2")
 
   @@map("users")
 }
@@ -78,8 +79,8 @@ model User {
 model Account {
   id                String  @id @default(uuid())
   userId            String
-  type              String  // oauth, email, credentials
-  provider          String  // google, facebook, credentials
+  type              String // oauth, email, credentials
+  provider          String // google, facebook, credentials
   providerAccountId String
   refresh_token     String? @db.Text
   access_token      String? @db.Text
@@ -109,9 +110,9 @@ model Session {
 // Email verification and password reset tokens
 model VerificationToken {
   id         String   @id @default(uuid())
-  identifier String   // email or user id
+  identifier String // email or user id
   token      String   @unique
-  type       String   // email_verification, password_reset
+  type       String // email_verification, password_reset
   expires    DateTime
   createdAt  DateTime @default(now())
 
@@ -120,91 +121,99 @@ model VerificationToken {
 }
 
 model Post {
-  id          String   @id @default(uuid())
-  title       String
-  slug        String   @unique
-  content     String?
-  excerpt     String?
-  published   Boolean  @default(false)
-  
+  id        String  @id @default(uuid())
+  title     String
+  slug      String  @unique
+  content   String?
+  excerpt   String?
+  published Boolean @default(false)
+
   // Page Builder JSON
-  blocks      Json?
-  
+  blocks Json?
+
   // SEO Fields
   metaTitle       String?
   metaDescription String?
   metaKeywords    String?
   ogImage         String?
-  ogType          String?  @default("article")
+  ogType          String? @default("article")
   canonicalUrl    String?
-  
+
   // Layout Options
   showHeader Boolean @default(true)
   showFooter Boolean @default(true)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
-  @@map("posts")
   @@index([slug])
   @@index([published])
+  @@map("posts")
 }
 
 model Page {
-  id          String   @id @default(uuid())
-  title       String
-  slug        String   @unique
-  content     String?  @db.Text
-  published   Boolean  @default(false)
-  
-  // Page Builder JSON
-  blocks      Json?
-  
+  id        String  @id @default(uuid())
+  title     String
+  slug      String  @unique
+  content   String? @db.Text
+  published Boolean @default(false)
+
+  // Page Builder JSON (V1 - Legacy, keep for backward compatibility)
+  blocks Json?
+
+  // Page Builder V2 - Block-based
+  blocksV2 Json? // Array of Block objects with Tailwind classes
+  version  Int   @default(1) // 1 = old canvas, 2 = new blocks
+
   // SEO Fields
   metaTitle       String?
   metaDescription String?
   metaKeywords    String?
   ogImage         String?
-  ogType          String?  @default("website")
+  ogType          String? @default("website")
   canonicalUrl    String?
-  
+
   // Layout Options
   showHeader Boolean @default(true)
   showFooter Boolean @default(true)
-  
+
+  // Publishing
+  publishedAt DateTime?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
-  @@map("pages")
   @@index([slug])
   @@index([published])
+  @@index([version])
+  @@map("pages")
 }
 
 model SeoSettings {
-  id              String   @id @default(uuid())
-  domain          String   @unique
-  siteName        String
-  siteDescription String?
-  defaultOgImage  String?
-  twitterHandle   String?
-  googleAnalytics String?
+  id               String  @id @default(uuid())
+  domain           String  @unique
+  siteName         String
+  siteDescription  String?
+  defaultOgImage   String?
+  twitterHandle    String?
+  googleAnalytics  String?
   googleTagManager String?
-  facebookPixel   String?
-  
+  facebookPixel    String?
+
   // Homepage Settings
   homePageType String? // 'page' | 'post' | null (default static homepage)
   homePageId   String? // ID of page or post to use as homepage
-  
+
   // Structured Data
   organizationSchema Json?
   websiteSchema      Json?
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -212,20 +221,20 @@ model SeoSettings {
 }
 
 model WebsiteSettings {
-  id              String   @id @default(uuid())
-  domain          String   @unique
-  
+  id     String @id @default(uuid())
+  domain String @unique
+
   // Header Settings
-  logo            String?
-  logoAlt         String?
-  headerHtml      String?  @db.Text
-  navigationMenu  Json?    // Array of menu items: [{label, url, children}]
-  
+  logo           String?
+  logoAlt        String?
+  headerHtml     String? @db.Text
+  navigationMenu Json? // Array of menu items: [{label, url, children}]
+
   // Footer Settings
-  footerHtml      String?  @db.Text
-  footerText      String?
-  socialLinks     Json?    // Array: [{platform, url, icon}]
-  
+  footerHtml  String? @db.Text
+  footerText  String?
+  socialLinks Json? // Array: [{platform, url, icon}]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -233,41 +242,71 @@ model WebsiteSettings {
 }
 
 model Media {
-  id        String   @id @default(uuid())
-  filename  String
-  url       String
-  alt       String?
-  caption   String?
-  mimeType  String
-  size      Int
-  width     Int?
-  height    Int?
-  
+  id       String  @id @default(uuid())
+  filename String
+  url      String
+  alt      String?
+  caption  String?
+  mimeType String
+  size     Int
+  width    Int?
+  height   Int?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("media")
 }
 
-// Block Templates - Saved blocks for Page Builder
+// Block Templates V1 - Legacy (Canvas-based)
 model BlockTemplate {
-  id          String   @id @default(uuid())
-  name        String   // Tên template (VD: "Mạng trong mình Khát vọng")
-  description String?  // Mô tả ngắn
-  thumbnail   String?  // URL preview image
-  elements    Json     // Array of page builder elements
-  category    String   @default("general") // general, hero, content, cta, etc.
-  published   Boolean  @default(true)
-  
+  id          String  @id @default(uuid())
+  name        String // Tên template (VD: "Mạng trong mình Khát vọng")
+  description String? // Mô tả ngắn
+  thumbnail   String? // URL preview image
+  elements    Json // Array of page builder elements (V1)
+  category    String  @default("general") // general, hero, content, cta, etc.
+  published   Boolean @default(true)
+
   // Author
   authorId String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("block_templates")
   @@index([category])
   @@index([published])
   @@index([authorId])
+  @@map("block_templates")
+}
+
+// Block Templates V2 - New block-based system
+model BlockTemplateV2 {
+  id          String  @id @default(uuid())
+  name        String // Template name
+  description String? // Short description
+  thumbnail   String? // Preview image URL
+  category    String // 'element' | 'template' | 'custom'
+
+  // Block data with Tailwind classes
+  block Json // Single Block object (can have children)
+
+  // Metadata
+  published Boolean  @default(true)
+  downloads Int      @default(0) // Usage tracking
+  tags      String[] // For search/filter
+
+  // Author
+  authorId String
+  author   User   @relation("BlockTemplatesV2", fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@index([published])
+  @@index([authorId])
+  @@index([tags])
+  @@map("block_templates_v2")
 }
