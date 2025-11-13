@@ -10,6 +10,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Menu Items
+model Menu {
+  id        String   @id @default(uuid())
+  label     String   // Tên hiển thị menu
+  url       String   // URL path
+  icon      String?  // Icon name (lucide-react)
+  order     Int      @default(0) // Thứ tự hiển thị
+  published Boolean  @default(true) // Hiện/ẩn menu
+  parentId  String?  // Parent menu ID (cho submenu)
+  
+  // Self-relation cho submenu
+  parent   Menu?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children Menu[] @relation("MenuHierarchy")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("menus")
+  @@index([order])
+  @@index([published])
+  @@index([parentId])
+}
+
+// Menu Permissions - must be before User due to relation
+model MenuPermission {
+  id              String   @id @default(uuid())
+  userId          String
+  allowedMenus    Json     // Array of menu URLs user can access: ["/nlp", "/khoa-hoc"]
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId])
+  @@map("menu_permissions")
+}
+
 model User {
   id            String    @id @default(uuid())
   email         String    @unique
@@ -30,6 +68,7 @@ model User {
   pages    Page[]
   accounts Account[]
   sessions Session[]
+  menuPermissions MenuPermission[]
 
   @@map("users")
 }
@@ -98,6 +137,10 @@ model Post {
   ogType          String?  @default("article")
   canonicalUrl    String?
   
+  // Layout Options
+  showHeader Boolean @default(true)
+  showFooter Boolean @default(true)
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -126,6 +169,10 @@ model Page {
   ogImage         String?
   ogType          String?  @default("website")
   canonicalUrl    String?
+  
+  // Layout Options
+  showHeader Boolean @default(true)
+  showFooter Boolean @default(true)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -161,6 +208,27 @@ model SeoSettings {
   updatedAt DateTime @updatedAt
 
   @@map("seo_settings")
+}
+
+model WebsiteSettings {
+  id              String   @id @default(uuid())
+  domain          String   @unique
+  
+  // Header Settings
+  logo            String?
+  logoAlt         String?
+  headerHtml      String?  @db.Text
+  navigationMenu  Json?    // Array of menu items: [{label, url, children}]
+  
+  // Footer Settings
+  footerHtml      String?  @db.Text
+  footerText      String?
+  socialLinks     Json?    // Array: [{platform, url, icon}]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("website_settings")
 }
 
 model Media {

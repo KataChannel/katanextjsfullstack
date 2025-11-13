@@ -17,6 +17,9 @@ import {
   Home,
   Palette,
   X,
+  Shield,
+  Globe,
+  Menu as MenuIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +30,9 @@ const menuItems = [
   { title: 'Thư viện Media', icon: Image, href: '/admin/media' },
   { title: 'Analytics', icon: BarChart3, href: '/admin/analytics' },
   { title: 'Cài đặt SEO', icon: Settings, href: '/admin/seo-settings' },
+  { title: 'Website Settings', icon: Globe, href: '/admin/website-settings' },
+  { title: 'Quản lý Menu', icon: MenuIcon, href: '/admin/menus' },
+  { title: 'Quyền Menu', icon: Shield, href: '/admin/menu-permissions' },
   { title: 'Người dùng', icon: Users, href: '/admin/users' },
 ];
 

@@ -1,19 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Menu, X, Home, FileText, Mail, Info } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Menu, X, Home } from "lucide-react";
 import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
 
-const navigation = [
-  { name: "Trang chủ", href: "/", icon: Home },
-  { name: "Blog", href: "/posts", icon: FileText },
-  { name: "Về chúng tôi", href: "/ve-chung-toi", icon: Info },
-  { name: "Liên hệ", href: "/lien-he", icon: Mail },
-];
+interface MenuItem {
+  id: string;
+  label: string;
+  url: string;
+  icon?: string | null;
+  order: number;
+  published: boolean;
+}
+
+interface WebsiteSettings {
+  logo?: string;
+  logoAlt?: string;
+}
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [settings, setSettings] = useState<WebsiteSettings | null>(null);
+  const [menus, setMenus] = useState<MenuItem[]>([]);
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    // Fetch website settings (logo)
+    fetch('/api/website-settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Error loading header settings:', err));
+
+    // Fetch menus (đã filter theo permissions)
+    fetch('/api/menus')
+      .then(res => res.json())
+      .then(data => setMenus(data))
+      .catch(err => console.error('Error loading menus:', err));
+  }, [status, session]);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -21,22 +46,31 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex lg:flex-1">
-            <Link href="/" className="-m-1.5 p-1.5">
-              <span className="text-xl sm:text-2xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Taza Group
-              </span>
+            <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2">
+              {settings?.logo && (
+                <img 
+                  src={settings.logo} 
+                  alt={settings.logoAlt || 'Logo'} 
+                  className="h-8 sm:h-10 w-auto"
+                />
+              )}
+              {!settings?.logo && (
+                <span className="text-xl sm:text-2xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  Taza Group
+                </span>
+              )}
             </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex md:gap-x-6 lg:gap-x-8">
-            {navigation.map((item) => (
+            {menus.map((item) => (
               <Link
-                key={item.name}
-                href={item.href}
+                key={item.id}
+                href={item.url}
                 className="text-sm lg:text-base font-medium text-muted-foreground hover:text-primary transition-colors"
               >
-                {item.name}
+                {item.label}
               </Link>
             ))}
           </div>
@@ -68,20 +102,17 @@ export function Header() {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 space-y-2 border-t">
-            {navigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-muted-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Icon className="h-5 w-5" />
-                  {item.name}
-                </Link>
-              );
-            })}
+            {menus.map((item) => (
+              <Link
+                key={item.id}
+                href={item.url}
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-muted-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Home className="h-5 w-5" />
+                {item.label}
+              </Link>
+            ))}
             <div className="px-4 pt-2">
               <Button asChild className="w-full">
                 <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>

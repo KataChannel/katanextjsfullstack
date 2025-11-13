@@ -31,6 +31,8 @@ interface ContentData {
   published?: boolean;
   type?: "page" | "post";
   mode?: "content" | "builder"; // content = TipTap, builder = Page Builder
+  showHeader?: boolean;
+  showFooter?: boolean;
 }
 
 export default function ContentEditPage({ params }: PageParams) {
@@ -56,6 +58,8 @@ export default function ContentEditPage({ params }: PageParams) {
     metaDescription: "",
     metaKeywords: "",
     mode: "content",
+    showHeader: true,
+    showFooter: true,
   });
 
   useEffect(() => {
@@ -99,6 +103,8 @@ export default function ContentEditPage({ params }: PageParams) {
         metaDescription: content.metaDescription || "",
         metaKeywords: content.metaKeywords || "",
         published: content.published,
+        showHeader: content.showHeader !== false, // default true
+        showFooter: content.showFooter !== false, // default true
         type,
         mode: content.blocks ? "builder" : "content",
       });
@@ -436,6 +442,44 @@ export default function ContentEditPage({ params }: PageParams) {
                   />
                 </div>
               )}
+
+              {/* Layout Options */}
+              <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
+                <Label className="text-sm font-semibold">Tùy chọn hiển thị</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="showHeader"
+                      checked={formData.showHeader !== false}
+                      onChange={(e) =>
+                        setFormData({ ...formData, showHeader: e.target.checked })
+                      }
+                      className="h-4 w-4 rounded border-input"
+                    />
+                    <Label htmlFor="showHeader" className="text-sm font-normal cursor-pointer">
+                      Hiển thị Header
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="showFooter"
+                      checked={formData.showFooter !== false}
+                      onChange={(e) =>
+                        setFormData({ ...formData, showFooter: e.target.checked })
+                      }
+                      className="h-4 w-4 rounded border-input"
+                    />
+                    <Label htmlFor="showFooter" className="text-sm font-normal cursor-pointer">
+                      Hiển thị Footer
+                    </Label>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Bỏ chọn nếu bạn muốn trang này không có header/footer (ví dụ: landing page)
+                </p>
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="content">Nội dung</Label>

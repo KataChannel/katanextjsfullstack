@@ -3,6 +3,7 @@ import { getPrisma } from '@/lib/prisma';
 import { generateSEOMetadata, generateArticleSchema } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { PageLayoutWrapper } from '@/components/page-layout-wrapper';
 
 interface PageProps {
   params: Promise<{
@@ -119,7 +120,7 @@ export default async function PageDetail({ params }: PageProps) {
 
     // If post found and published, render it directly (no redirect)
     if (post && post.published) {
-      return renderContent(post, 'post');
+      return renderContent(post, 'post', post.showHeader, post.showFooter);
     }
 
     // Neither page nor post found
@@ -127,11 +128,11 @@ export default async function PageDetail({ params }: PageProps) {
   }
 
   // At this point, page is guaranteed to exist and be published
-  return renderContent(page, 'page');
+  return renderContent(page, 'page', page.showHeader, page.showFooter);
 }
 
 // Helper function to render page or post content
-async function renderContent(content: any, type: 'page' | 'post') {
+async function renderContent(content: any, type: 'page' | 'post', showHeader = true, showFooter = true) {
   // Parse blocks - Handle both old format (array) and new PageBuilder format (object with canvas)
   let blocks: any[] | null = null;
   let isPageBuilder = false;
@@ -194,8 +195,9 @@ async function renderContent(content: any, type: 'page' | 'post') {
         />
       )}
 
-      <div className="container mx-auto px-4 py-8">
-      <article className="max-w-4xl mx-auto">
+      <PageLayoutWrapper showHeader={showHeader} showFooter={showFooter}>
+        <div className="container mx-auto px-4 py-8">
+        <article className="max-w-4xl mx-auto">
         {/* Header */}
         <header className="mb-8">
           {/* Featured Image (for posts) */}
@@ -260,7 +262,8 @@ async function renderContent(content: any, type: 'page' | 'post') {
           )}
         </div>
       </article>
-    </div>
+      </div>
+      </PageLayoutWrapper>
     </>
   );
 }

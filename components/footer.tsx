@@ -1,5 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
+
+interface SocialLink {
+  platform: string;
+  url: string;
+  icon: string;
+}
+
+interface WebsiteSettings {
+  footerText?: string;
+  footerHtml?: string;
+  socialLinks?: SocialLink[];
+}
 
 const footerLinks = {
   about: [
@@ -21,16 +36,47 @@ const footerLinks = {
   ],
 };
 
-const socialLinks = [
+const defaultSocialLinks = [
   { name: "Facebook", href: "https://facebook.com/tazagroup", icon: Facebook },
   { name: "Instagram", href: "https://instagram.com/tazagroup", icon: Instagram },
   { name: "Youtube", href: "https://youtube.com/@tazagroup", icon: Youtube },
 ];
 
+const iconMap: Record<string, any> = {
+  facebook: Facebook,
+  instagram: Instagram,
+  youtube: Youtube,
+};
+
 export function Footer() {
+  const [settings, setSettings] = useState<WebsiteSettings | null>(null);
+
+  useEffect(() => {
+    fetch('/api/website-settings')
+      .then(res => res.json())
+      .then(data => setSettings(data))
+      .catch(err => console.error('Error loading footer settings:', err));
+  }, []);
+
+  const socialLinks = settings?.socialLinks && settings.socialLinks.length > 0
+    ? settings.socialLinks.map(link => ({
+        name: link.platform,
+        href: link.url,
+        icon: iconMap[link.icon.toLowerCase()] || Facebook,
+      }))
+    : defaultSocialLinks;
+
   return (
     <footer className="border-t bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        {/* Custom Footer HTML */}
+        {settings?.footerHtml && (
+          <div 
+            className="mb-8" 
+            dangerouslySetInnerHTML={{ __html: settings.footerHtml }} 
+          />
+        )}
+
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
@@ -140,7 +186,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>© {new Date().getFullYear()} Taza Group. Bảo lưu mọi quyền.</p>
+            <p>{settings?.footerText || `© ${new Date().getFullYear()} Taza Group. Bảo lưu mọi quyền.`}</p>
             <p className="text-center sm:text-right">
               Thiết kế bởi{" "}
               <Link href="/" className="text-primary hover:underline">
