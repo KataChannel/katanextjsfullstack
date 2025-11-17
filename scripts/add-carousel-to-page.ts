@@ -21,7 +21,7 @@ async function addCarousel() {
       slides: [
         {
           id: 'slide-1',
-          image: '/images/carousel-1.jpg', // Placeholder - thay bằng URL thực
+          image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop',
           title: 'CÂU CHUYỆN',
           subtitle: 'Về INNERBRIGHT',
           description: 'InnerBright Training & Coaching được thành lập từ năm 2020',
@@ -30,7 +30,7 @@ async function addCarousel() {
         },
         {
           id: 'slide-2',
-          image: '/images/carousel-2.jpg',
+          image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&h=600&fit=crop',
           title: 'TRAINING',
           subtitle: 'Professional Coaching',
           description: 'Đào tạo chuyên nghiệp với phương pháp hiện đại',
@@ -39,7 +39,7 @@ async function addCarousel() {
         },
         {
           id: 'slide-3',
-          image: '/images/carousel-3.jpg',
+          image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&h=600&fit=crop',
           title: 'COACHING',
           subtitle: 'Personal Development',
           description: 'Phát triển bản thân toàn diện',
