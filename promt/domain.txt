@@ -34,3 +34,10 @@ Mô Tả : InnerBright Training & Coaching, Cuộc sống của Bạn là do ch�
 Địa Chỉ Liên Hệ : TP. Hồ Chí Minh.
 Hotline : 0908370968
 Email : info@innerbright.vn
+
+MINIO_ENDPOINT=116.118.49.243
+MINIO_PORT=12007
+MINIO_ACCESS_KEY=minio-admin
+MINIO_SECRET_KEY=minio-secret-2025
+MINIO_USE_SSL=false
+MINIO_BUCKET_NAME=innerbright

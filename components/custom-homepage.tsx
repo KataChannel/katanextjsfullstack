@@ -92,11 +92,12 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
             const textContent = typeof block.content === 'string'
               ? block.content
               : block.content?.text || '';
+            const textStyles = block.styles?.element || '';
             
             return (
               <div
                 key={block.id}
-                className="prose prose-lg max-w-none"
+                className={textStyles || 'prose prose-lg max-w-none'}
                 dangerouslySetInnerHTML={{ __html: textContent }}
               />
             );
@@ -107,13 +108,14 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
               ? block.content 
               : block.content?.url || '';
             const imageAlt = block.content?.alt || block.alt || '';
+            const imageStyles = block.styles?.element || 'w-full h-auto rounded-lg';
             
             return (
               <figure key={block.id} className="my-8">
                 <img
                   src={imageSrc}
                   alt={imageAlt}
-                  className="w-full h-auto rounded-lg"
+                  className={imageStyles}
                 />
                 {block.caption && (
                   <figcaption className="text-center text-sm text-muted-foreground mt-2">
@@ -170,28 +172,22 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
             );
 
           case 'container':
-            // V2 container block - can contain text or nested children blocks
-            const containerContent = block.content?.text || '';
-            const containerLayout = block.content?.layout || 'flex';
-            const containerDirection = block.content?.direction || 'column';
-            const containerGap = block.content?.gap || 4;
-            const containerChildren = block.content?.children || [];
-            
-            // Build container classes based on layout
-            const containerClasses = [
-              'my-6',
-              containerLayout === 'flex' ? 'flex' : 'block',
-              containerDirection === 'column' ? 'flex-col' : 'flex-row',
-              `gap-${containerGap}`,
-            ].join(' ');
+            // V2 container block - render with styles and nested children
+            const containerStyles = block.styles?.container || '';
+            const elementStyles = block.styles?.element || '';
+            const children = block.children || [];
             
             return (
-              <div key={block.id} className={containerClasses}>
-                {containerContent && (
-                  <div dangerouslySetInnerHTML={{ __html: containerContent }} />
+              <div key={block.id} className={containerStyles}>
+                {elementStyles && (
+                  <div className={elementStyles}>
+                    {children.length > 0 && (
+                      <PageBlocksRenderer blocks={children} />
+                    )}
+                  </div>
                 )}
-                {Array.isArray(containerChildren) && containerChildren.length > 0 && (
-                  <PageBlocksRenderer blocks={containerChildren} />
+                {!elementStyles && children.length > 0 && (
+                  <PageBlocksRenderer blocks={children} />
                 )}
               </div>
             );

@@ -16,6 +16,14 @@ export interface DomainConfig {
   // Development settings
   devDomain?: string;
   devPort?: number;
+  // MinIO storage settings
+  storage?: {
+    type: 'minio' | 'local';
+    endpoint?: string;
+    port?: number;
+    useSSL?: boolean;
+    bucketName?: string;
+  };
 }
 
 /**
@@ -93,6 +101,13 @@ export const DOMAIN_CONFIGS: Record<string, DomainConfig> = {
     siteTitle: 'InnerBright - Training & Coaching NLP',
     devDomain: 'localhost',
     devPort: 3005,
+    storage: {
+      type: 'minio',
+      endpoint: '116.118.49.243',
+      port: 12007,
+      useSSL: false,
+      bucketName: 'innerbright',
+    },
   },
 };
 

@@ -280,7 +280,7 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
         )}
         
         <div className="container mx-auto px-4 py-8">
-        <article className="max-w-4xl mx-auto">
+        <article className="mx-auto">
         {/* Header - Only show for posts or pages without V2 blocks/Page Builder */}
         {(type === 'post' || (!blocksV2 && !isPageBuilder)) && (
           <header className="mb-8">
@@ -512,10 +512,11 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
           case 'text':
             // V2 text block with rich content
             const textContent = block.content?.text || block.content || '';
+            const textStyles = block.styles?.element || '';
             return (
               <div
                 key={blockId}
-                className="prose prose-lg max-w-none"
+                className={textStyles || 'prose prose-lg max-w-none'}
                 dangerouslySetInnerHTML={{ __html: textContent }}
               />
             );
@@ -524,12 +525,13 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             // V2 image block
             const imageUrl = block.content?.url || block.content || '';
             const imageAlt = block.content?.alt || block.name || '';
+            const imageStyles = block.styles?.element || 'w-full h-auto rounded-lg';
             return (
               <figure key={blockId} className="my-8">
                 <img
                   src={imageUrl}
                   alt={imageAlt}
-                  className="w-full h-auto rounded-lg"
+                  className={imageStyles}
                 />
               </figure>
             );
@@ -556,28 +558,22 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             );
 
           case 'container':
-            // V2 container block - can contain text or nested children blocks
-            const containerContent = block.content?.text || '';
-            const containerLayout = block.content?.layout || 'flex';
-            const containerDirection = block.content?.direction || 'column';
-            const containerGap = block.content?.gap || 4;
-            const containerChildren = block.content?.children || [];
-            
-            // Build container classes based on layout
-            const containerClasses = [
-              'my-6',
-              containerLayout === 'flex' ? 'flex' : 'block',
-              containerDirection === 'column' ? 'flex-col' : 'flex-row',
-              `gap-${containerGap}`,
-            ].join(' ');
+            // V2 container block - render with styles and nested children
+            const containerStyles = block.styles?.container || '';
+            const elementStyles = block.styles?.element || '';
+            const children = block.children || [];
             
             return (
-              <div key={blockId} className={containerClasses}>
-                {containerContent && (
-                  <div dangerouslySetInnerHTML={{ __html: containerContent }} />
+              <div key={blockId} className={containerStyles}>
+                {elementStyles && (
+                  <div className={elementStyles}>
+                    {children.length > 0 && (
+                      <BlocksV2Renderer blocks={children} />
+                    )}
+                  </div>
                 )}
-                {Array.isArray(containerChildren) && containerChildren.length > 0 && (
-                  <BlocksV2Renderer blocks={containerChildren} />
+                {!elementStyles && children.length > 0 && (
+                  <BlocksV2Renderer blocks={children} />
                 )}
               </div>
             );

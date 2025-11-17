@@ -4,6 +4,8 @@ import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import { z } from 'zod';
+import { getDomainConfig } from '@/lib/domain-config';
+import { getMinioClient, uploadToMinio, MINIO_CONFIGS } from '@/lib/minio';
 
 const mediaSchema = z.object({
   filename: z.string(),
@@ -86,24 +88,62 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create upload directory if it doesn't exist
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
-
+    // Get domain config để xác định storage type
+    const hostname = request.headers.get('host') || 'localhost:3005';
+    const domainConfig = getDomainConfig(hostname);
+    
     // Generate unique filename
     const timestamp = Date.now();
     const fileExt = file.name.split('.').pop();
     const filename = `${timestamp}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-    const filepath = join(uploadDir, filename);
-
-    // Write file to disk
+    
+    // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
 
-    const url = `/uploads/${filename}`;
+    let url: string;
+    
+    // Upload dựa vào storage type
+    if (domainConfig.storage?.type === 'minio') {
+      // Upload lên MinIO
+      const minioConfig = MINIO_CONFIGS[domainConfig.domain];
+      
+      if (!minioConfig) {
+        return NextResponse.json(
+          { success: false, error: 'MinIO config không tồn tại cho domain này' },
+          { status: 500 }
+        );
+      }
+
+      const minioClient = getMinioClient(domainConfig.domain);
+      
+      url = await uploadToMinio(
+        minioClient,
+        minioConfig.bucketName,
+        filename,
+        buffer,
+        file.type,
+        {
+          'alt': formData.get('alt') as string || '',
+          'caption': formData.get('caption') as string || '',
+          'original-filename': file.name,
+        }
+      );
+      
+      console.log(`✅ Uploaded to MinIO: ${url}`);
+    } else {
+      // Upload local filesystem (default)
+      const uploadDir = join(process.cwd(), 'public', 'uploads');
+      if (!existsSync(uploadDir)) {
+        await mkdir(uploadDir, { recursive: true });
+      }
+
+      const filepath = join(uploadDir, filename);
+      await writeFile(filepath, buffer);
+      url = `/uploads/${filename}`;
+      
+      console.log(`✅ Uploaded to local: ${url}`);
+    }
     
     // Get image dimensions if it's an image
     let width: number | undefined;
@@ -133,7 +173,7 @@ export async function POST(request: NextRequest) {
       {
         success: true,
         data: media,
-        message: 'File đã được tải lên thành công',
+        message: `File đã được tải lên thành công (${domainConfig.storage?.type || 'local'})`,
       },
       { status: 201 }
     );
