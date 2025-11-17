@@ -21,13 +21,15 @@ import {
   Smartphone,
   Grid3x3,
   Settings,
+  Bookmark,
 } from 'lucide-react';
 
 interface BlockToolbarProps {
   onSave?: () => void;
+  onSaveAsTemplate?: () => void;
 }
 
-export function BlockToolbar({ onSave }: BlockToolbarProps) {
+export function BlockToolbar({ onSave, onSaveAsTemplate }: BlockToolbarProps) {
   const {
     undo,
     redo,
@@ -35,6 +37,7 @@ export function BlockToolbar({ onSave }: BlockToolbarProps) {
     setViewMode,
     canvasSettings,
     updateCanvasSettings,
+    selectedBlockId,
   } = useBlockEditorStore();
   
   const canUndo = useBlockEditorStore(selectCanUndo);
@@ -107,6 +110,18 @@ export function BlockToolbar({ onSave }: BlockToolbarProps) {
 
       {/* Right section */}
       <div className="flex items-center gap-2">
+        {onSaveAsTemplate && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onSaveAsTemplate}
+            disabled={!selectedBlockId}
+            title="Save selected block as template"
+          >
+            <Bookmark className="w-4 h-4 mr-2" />
+            Save as Template
+          </Button>
+        )}
         <Button variant="ghost" size="sm" title="Preview">
           <Eye className="w-4 h-4 mr-2" />
           Preview

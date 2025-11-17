@@ -22,7 +22,10 @@
     "db:migrate": "bunx prisma migrate dev",
     "db:reset": "bunx prisma migrate reset",
     "db:seed": "bun run prisma/seed.ts",
-    "db:seed-pagebuilder": "bun run prisma/seed-pagebuilder.ts"
+    "db:seed-pagebuilder": "bun run prisma/seed-pagebuilder.ts",
+    "seed:menus": "bun scripts/seed-all-menus.ts",
+    "seed:menus:innerbright": "bun scripts/seed-innerbright-menus.ts",
+    "seed:admin-menus": "bun scripts/seed-admin-menus.ts"
   },
   "prisma": {
     "seed": "bun run prisma/seed.ts"

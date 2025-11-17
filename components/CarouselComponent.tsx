@@ -3,7 +3,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { CarouselSlide } from '@/lib/page-builder/store';
+
+export interface CarouselSlide {
+  id: string;
+  image: string;
+  title?: string;
+  description?: string;
+  alt?: string;
+}
 
 interface CarouselComponentProps {
   slides: CarouselSlide[];
@@ -65,36 +72,24 @@ export function CarouselComponent({
   }, [isTransitioning, currentIndex]);
 
   if (!slides || slides.length === 0) {
-    return (
-      <div 
-        className={cn("relative w-full bg-gray-200 flex items-center justify-center", className)}
-        style={{ height: `${height}px` }}
-      >
-        <p className="text-gray-500">Chưa có slides</p>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div 
-      className={cn("relative w-full overflow-hidden group", className)}
+    <div
+      className={cn('relative w-full overflow-hidden bg-gray-900', className)}
       style={{ height: `${height}px` }}
     >
-      {/* Slides */}
-      <div className="relative w-full h-full">
+      {/* Slides Container */}
+      <div
+        className="flex transition-transform duration-500 ease-in-out h-full"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+      >
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={cn(
-              "absolute inset-0 w-full h-full transition-all duration-500 ease-in-out",
-              index === currentIndex
-                ? "opacity-100 translate-x-0"
-                : index < currentIndex
-                ? "opacity-0 -translate-x-full"
-                : "opacity-0 translate-x-full"
-            )}
+            className="min-w-full h-full relative shrink-0"
           >
-            {/* Image */}
             <img
               src={slide.image}
               alt={slide.alt || slide.title || `Slide ${index + 1}`}
@@ -116,14 +111,6 @@ export function CarouselComponent({
                         {slide.description}
                       </p>
                     )}
-                    {slide.link && (
-                      <a
-                        href={slide.link}
-                        className="inline-block mt-4 sm:mt-6 px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-colors animate-fade-in animation-delay-400"
-                      >
-                        Tìm hiểu thêm
-                      </a>
-                    )}
                   </div>
                 </div>
               </div>
@@ -132,63 +119,45 @@ export function CarouselComponent({
         ))}
       </div>
 
-      {/* Arrow Controls - Hidden on mobile, visible on hover desktop */}
+      {/* Navigation Arrows */}
       {showArrows && slides.length > 1 && (
         <>
           <button
             onClick={handlePrevious}
-            className={cn(
-              "absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10",
-              "w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/80 hover:bg-white",
-              "flex items-center justify-center shadow-lg",
-              "transition-all duration-300",
-              "opacity-0 group-hover:opacity-100",
-              "disabled:opacity-30 disabled:cursor-not-allowed"
-            )}
             disabled={isTransitioning}
+            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 sm:p-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed z-10"
             aria-label="Previous slide"
           >
-            <ChevronLeft className="w-6 h-6 text-gray-900" />
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
-
           <button
             onClick={handleNext}
-            className={cn(
-              "absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10",
-              "w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/80 hover:bg-white",
-              "flex items-center justify-center shadow-lg",
-              "transition-all duration-300",
-              "opacity-0 group-hover:opacity-100",
-              "disabled:opacity-30 disabled:cursor-not-allowed"
-            )}
             disabled={isTransitioning}
+            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white rounded-full p-2 sm:p-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed z-10"
             aria-label="Next slide"
           >
-            <ChevronRight className="w-6 h-6 text-gray-900" />
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </>
       )}
 
-      {/* Dots Indicator */}
+      {/* Dots Navigation */}
       {showDots && slides.length > 1 && (
-        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-10">
-          <div className="flex items-center gap-2">
-            {slides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                className={cn(
-                  "transition-all duration-300",
-                  "rounded-full",
-                  index === currentIndex
-                    ? "w-8 sm:w-10 h-2 bg-white"
-                    : "w-2 h-2 bg-white/60 hover:bg-white/80"
-                )}
-                aria-label={`Go to slide ${index + 1}`}
-                aria-current={index === currentIndex}
-              />
-            ))}
-          </div>
+        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 sm:gap-3 z-10">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              disabled={isTransitioning}
+              className={cn(
+                'w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 disabled:cursor-not-allowed',
+                index === currentIndex
+                  ? 'bg-white w-6 sm:w-8'
+                  : 'bg-white/50 hover:bg-white/70'
+              )}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       )}
     </div>

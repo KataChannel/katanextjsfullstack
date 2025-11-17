@@ -1,15 +1,30 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+import { headers } from 'next/headers';
 
-// GET /api/menus - Lấy menu published, filter theo permissions
-export async function GET() {
+// GET /api/menus?position=HEADER - Lấy menu published, filter theo position và permissions
+export async function GET(request: Request) {
   try {
+    const headersList = await headers();
+    const domain = headersList.get('x-domain') || 'tazagroup.vn';
+    const prisma = await getPrisma(domain);
+    
+    // Lấy position từ query parameter
+    const { searchParams } = new URL(request.url);
+    const position = searchParams.get('position'); // HEADER, FOOTER, ADMIN, SIDEBAR
+    
     const session = await auth();
 
-    // Lấy tất cả menu published
+    // Build where clause
+    const whereClause: any = { published: true };
+    if (position) {
+      whereClause.position = position;
+    }
+
+    // Lấy menu published với position filter
     const allMenus = await prisma.menu.findMany({
-      where: { published: true },
+      where: whereClause,
       orderBy: { order: 'asc' },
     });
 

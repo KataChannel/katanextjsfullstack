@@ -10,31 +10,20 @@ interface SocialLink {
   icon: string;
 }
 
+interface MenuItem {
+  id: string;
+  label: string;
+  url: string;
+  icon?: string | null;
+  order: number;
+  published: boolean;
+}
+
 interface WebsiteSettings {
   footerText?: string;
   footerHtml?: string;
   socialLinks?: SocialLink[];
 }
-
-const footerLinks = {
-  about: [
-    { name: "Về chúng tôi", href: "/ve-chung-toi" },
-    { name: "Dịch vụ", href: "/dich-vu" },
-    { name: "Blog", href: "/posts" },
-    { name: "Liên hệ", href: "/lien-he" },
-  ],
-  services: [
-    { name: "Chăm sóc da", href: "/dich-vu#cham-soc-da" },
-    { name: "Thẩm mỹ", href: "/dich-vu#tham-my" },
-    { name: "Spa & Massage", href: "/dich-vu#spa" },
-    { name: "Tư vấn", href: "/lien-he" },
-  ],
-  legal: [
-    { name: "Chính sách bảo mật", href: "/chinh-sach-bao-mat" },
-    { name: "Điều khoản sử dụng", href: "/dieu-khoan-su-dung" },
-    { name: "Chính sách hoàn tiền", href: "/chinh-sach-hoan-tien" },
-  ],
-};
 
 const defaultSocialLinks = [
   { name: "Facebook", href: "https://facebook.com/tazagroup", icon: Facebook },
@@ -50,12 +39,30 @@ const iconMap: Record<string, any> = {
 
 export function Footer() {
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
+  const [footerMenus, setFooterMenus] = useState<MenuItem[]>([]);
 
   useEffect(() => {
     fetch('/api/website-settings')
       .then(res => res.json())
       .then(data => setSettings(data))
       .catch(err => console.error('Error loading footer settings:', err));
+
+    // Fetch footer menus
+    fetch('/api/menus?position=FOOTER')
+      .then(res => res.json())
+      .then(data => {
+        // ✅ Fix: Ensure data is array before setting
+        if (Array.isArray(data)) {
+          setFooterMenus(data);
+        } else {
+          setFooterMenus([]);
+          console.error('Footer menus data is not an array:', data);
+        }
+      })
+      .catch(err => {
+        console.error('Error loading footer menus:', err);
+        setFooterMenus([]); // ✅ Fallback to empty array on error
+      });
   }, []);
 
   const socialLinks = settings?.socialLinks && settings.socialLinks.length > 0
@@ -109,76 +116,44 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="text-base font-semibold">Về chúng tôi</h3>
-            <ul className="space-y-2">
-              {footerLinks.about.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div className="space-y-4">
-            <h3 className="text-base font-semibold">Dịch vụ</h3>
-            <ul className="space-y-2">
-              {footerLinks.services.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal & Social */}
-          <div className="space-y-4">
-            <h3 className="text-base font-semibold">Pháp lý</h3>
-            <ul className="space-y-2">
-              {footerLinks.legal.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
-            {/* Social Links */}
-            <div className="pt-4">
-              <h4 className="text-sm font-semibold mb-3">Theo dõi chúng tôi</h4>
-              <div className="flex gap-3">
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <a
-                      key={social.name}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-9 h-9 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors"
-                      aria-label={social.name}
+          {/* Footer Menus (Dynamic from Database) */}
+          {footerMenus.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-base font-semibold">Menu</h3>
+              <ul className="space-y-2">
+                {footerMenus.map((menu) => (
+                  <li key={menu.id}>
+                    <Link
+                      href={menu.url}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
                     >
-                      <Icon className="h-4 w-4" />
-                    </a>
-                  );
-                })}
-              </div>
+                      {menu.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Social Media */}
+          <div className="space-y-4">
+            <h3 className="text-base font-semibold">Theo dõi chúng tôi</h3>
+            <div className="flex gap-3">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label={social.name}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

@@ -20,14 +20,23 @@ interface Menu {
   icon?: string | null;
   order: number;
   published: boolean;
+  position: string; // HEADER, FOOTER, ADMIN, SIDEBAR
   parentId?: string | null;
   parent?: Menu | null;
   children?: Menu[];
 }
 
+const POSITION_OPTIONS = [
+  { value: "HEADER", label: "Header (Navigation chính)" },
+  { value: "FOOTER", label: "Footer" },
+  { value: "ADMIN", label: "Admin Sidebar" },
+  { value: "SIDEBAR", label: "Sidebar phụ" },
+];
+
 export default function MenuManagementPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const [selectedDomain, setSelectedDomain] = useState<string>("");
   const [menus, setMenus] = useState<Menu[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -39,25 +48,51 @@ export default function MenuManagementPage() {
     icon: "",
     order: 0,
     published: true,
+    position: "HEADER",
     parentId: "",
   });
+
+  // Detect current domain from port
+  useEffect(() => {
+    const detectDomain = () => {
+      const port = window.location.port || "3000";
+      const portMap: Record<string, string> = {
+        "3000": "tazagroup.vn",
+        "3001": "tazaskinclinic.com",
+        "3002": "timona.edu.vn",
+        "3003": "hderma.vn",
+        "3004": "elasome.com",
+        "3005": "innerbright.vn",
+      };
+      
+      const detectedDomain = portMap[port] || "tazagroup.vn";
+      setSelectedDomain(detectedDomain);
+    };
+
+    detectDomain();
+  }, []);
 
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/auth/login");
     } else if (session?.user?.role !== "admin") {
       router.push("/admin");
-    } else {
+    } else if (selectedDomain) {
       fetchMenus();
     }
-  }, [session, status, router]);
+  }, [session, status, router, selectedDomain]);
 
   const fetchMenus = async () => {
+    if (!selectedDomain) return;
+    
+    setLoading(true);
     try {
-      const res = await fetch("/api/admin/menus");
+      const res = await fetch(`/api/admin/menus?domain=${selectedDomain}`);
       if (res.ok) {
         const data = await res.json();
         setMenus(data);
+      } else {
+        toast.error("Lỗi tải menu");
       }
     } catch (error) {
       toast.error("Lỗi tải menu");
@@ -75,6 +110,7 @@ export default function MenuManagementPage() {
         icon: menu.icon || "",
         order: menu.order,
         published: menu.published,
+        position: menu.position || "HEADER",
         parentId: menu.parentId || "",
       });
     } else {
@@ -85,6 +121,7 @@ export default function MenuManagementPage() {
         icon: "",
         order: menus.length,
         published: true,
+        position: "HEADER",
         parentId: "",
       });
     }
@@ -106,9 +143,11 @@ export default function MenuManagementPage() {
       const method = selectedMenu ? "PUT" : "POST";
       const payload = selectedMenu ? { id: selectedMenu.id, ...formData } : formData;
 
-      const res = await fetch("/api/admin/menus", {
+      const res = await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method,
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(payload),
       });
 
@@ -128,7 +167,7 @@ export default function MenuManagementPage() {
     if (!selectedMenu) return;
 
     try {
-      const res = await fetch(`/api/admin/menus?id=${selectedMenu.id}`, {
+      const res = await fetch(`/api/admin/menus?domain=${selectedDomain}&id=${selectedMenu.id}`, {
         method: "DELETE",
       });
 
@@ -147,9 +186,11 @@ export default function MenuManagementPage() {
 
   const handleTogglePublish = async (menu: Menu) => {
     try {
-      const res = await fetch("/api/admin/menus", {
+      const res = await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           id: menu.id,
           label: menu.label,
@@ -157,6 +198,7 @@ export default function MenuManagementPage() {
           icon: menu.icon,
           order: menu.order,
           published: !menu.published,
+          position: menu.position, // ✅ Include position
           parentId: menu.parentId,
         }),
       });
@@ -189,9 +231,11 @@ export default function MenuManagementPage() {
 
     // Update both menus
     try {
-      await fetch("/api/admin/menus", {
+      await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           id: newMenus[currentIndex].id,
           label: newMenus[currentIndex].label,
@@ -199,13 +243,16 @@ export default function MenuManagementPage() {
           icon: newMenus[currentIndex].icon,
           order: newMenus[currentIndex].order,
           published: newMenus[currentIndex].published,
+          position: newMenus[currentIndex].position, // ✅ Include position
           parentId: newMenus[currentIndex].parentId,
         }),
       });
 
-      await fetch("/api/admin/menus", {
+      await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           id: newMenus[swapIndex].id,
           label: newMenus[swapIndex].label,
@@ -213,6 +260,7 @@ export default function MenuManagementPage() {
           icon: newMenus[swapIndex].icon,
           order: newMenus[swapIndex].order,
           published: newMenus[swapIndex].published,
+          position: newMenus[swapIndex].position, // ✅ Include position
           parentId: newMenus[swapIndex].parentId,
         }),
       });
@@ -228,10 +276,10 @@ export default function MenuManagementPage() {
     .filter(m => !m.parentId)
     .map(m => ({ value: m.id, label: m.label }));
 
-  if (loading) {
+  if (loading || !selectedDomain) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p>Đang tải...</p>
+        <p className="text-lg">Đang tải menu...</p>
       </div>
     );
   }
@@ -240,20 +288,25 @@ export default function MenuManagementPage() {
     <div className="container mx-auto px-4 py-6 max-w-6xl">
       <Card>
         <CardHeader className="border-b sticky top-0 bg-background z-10">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2">
-                <MenuIcon className="h-6 w-6" />
-                Quản lý Menu
-              </CardTitle>
-              <CardDescription className="mt-1">
-                Thêm, sửa, xóa menu của website
-              </CardDescription>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <MenuIcon className="h-6 w-6" />
+                  Quản lý Menu
+                </CardTitle>
+                <CardDescription className="mt-1">
+                  Thêm, sửa, xóa menu của website
+                </CardDescription>
+              </div>
+              <Button onClick={() => handleOpenDialog()}>
+                <Plus className="h-4 w-4 mr-2" />
+                Thêm menu
+              </Button>
+              <Badge variant="outline" className="ml-2">
+                {menus.length} menu
+              </Badge>
             </div>
-            <Button onClick={() => handleOpenDialog()}>
-              <Plus className="h-4 w-4 mr-2" />
-              Thêm menu
-            </Button>
           </div>
         </CardHeader>
 
@@ -265,6 +318,7 @@ export default function MenuManagementPage() {
                   <th className="px-4 py-3 text-left text-sm font-medium">STT</th>
                   <th className="px-4 py-3 text-left text-sm font-medium">Tên menu</th>
                   <th className="px-4 py-3 text-left text-sm font-medium">URL</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium">Vị trí</th>
                   <th className="px-4 py-3 text-left text-sm font-medium">Trạng thái</th>
                   <th className="px-4 py-3 text-left text-sm font-medium">Thứ tự</th>
                   <th className="px-4 py-3 text-right text-sm font-medium">Hành động</th>
@@ -286,6 +340,11 @@ export default function MenuManagementPage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-muted-foreground">
                       {menu.url}
+                    </td>
+                    <td className="px-4 py-3">
+                      <Badge variant="outline" className="text-xs">
+                        {POSITION_OPTIONS.find(p => p.value === menu.position)?.label || menu.position}
+                      </Badge>
                     </td>
                     <td className="px-4 py-3">
                       <Badge variant={menu.published ? "default" : "secondary"}>
@@ -408,6 +467,18 @@ export default function MenuManagementPage() {
                 type="number"
                 value={formData.order}
                 onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="position">Vị trí menu *</Label>
+              <Combobox
+                options={POSITION_OPTIONS}
+                value={formData.position}
+                onValueChange={(value: string) => setFormData({ ...formData, position: value })}
+                placeholder="Chọn vị trí menu"
+                searchPlaceholder="Tìm vị trí..."
+                emptyText="Không tìm thấy vị trí"
               />
             </div>
 

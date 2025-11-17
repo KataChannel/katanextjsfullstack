@@ -5,8 +5,9 @@
  */
 
 import { useDroppable } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useBlockEditorStore, selectSelectedBlock } from '@/lib/blocks/store';
-import { BlockRenderer } from './BlockRenderer';
+import { SortableBlockRenderer } from './SortableBlockRenderer';
 import { PlusCircle } from 'lucide-react';
 
 export function BlockCanvas() {
@@ -49,9 +50,11 @@ export function BlockCanvas() {
 
         {/* Render blocks */}
         <div className="p-6 space-y-4">
-          {blocks.map(block => (
-            <BlockRenderer key={block.id} block={block} />
-          ))}
+          <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
+            {blocks.map(block => (
+              <SortableBlockRenderer key={block.id} block={block} />
+            ))}
+          </SortableContext>
         </div>
       </div>
     </div>

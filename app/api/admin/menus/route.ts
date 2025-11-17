@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
+import { headers } from 'next/headers';
 
-// GET /api/admin/menus - Lấy tất cả menu items (Admin only)
-export async function GET() {
+// GET /api/admin/menus?domain=xxx - Lấy tất cả menu items (Admin only)
+export async function GET(request: Request) {
   try {
     const session = await auth();
 
@@ -20,6 +21,11 @@ export async function GET() {
         { status: 403 }
       );
     }
+
+    // Lấy domain từ query parameter
+    const { searchParams } = new URL(request.url);
+    const domain = searchParams.get('domain') || 'innerbright.vn';
+    const prisma = await getPrisma(domain);
 
     const menus = await prisma.menu.findMany({
       orderBy: { order: 'asc' },
@@ -39,7 +45,7 @@ export async function GET() {
   }
 }
 
-// POST /api/admin/menus - Tạo menu mới
+// POST /api/admin/menus?domain=xxx - Tạo menu mới
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -58,8 +64,13 @@ export async function POST(request: Request) {
       );
     }
 
+    // Lấy domain từ query parameter
+    const { searchParams } = new URL(request.url);
+    const domain = searchParams.get('domain') || 'innerbright.vn';
+    const prisma = await getPrisma(domain);
+
     const body = await request.json();
-    const { label, url, icon, order, published, parentId } = body;
+    const { label, url, icon, order, published, position, parentId } = body;
 
     if (!label || !url) {
       return NextResponse.json(
@@ -75,6 +86,7 @@ export async function POST(request: Request) {
         icon: icon || null,
         order: order || 0,
         published: published !== undefined ? published : true,
+        position: position || 'HEADER',
         parentId: parentId || null,
       },
     });
@@ -89,7 +101,7 @@ export async function POST(request: Request) {
   }
 }
 
-// PUT /api/admin/menus - Cập nhật menu
+// PUT /api/admin/menus?domain=xxx - Cập nhật menu
 export async function PUT(request: Request) {
   try {
     const session = await auth();
@@ -108,8 +120,13 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Lấy domain từ query parameter
+    const { searchParams } = new URL(request.url);
+    const domain = searchParams.get('domain') || 'innerbright.vn';
+    const prisma = await getPrisma(domain);
+
     const body = await request.json();
-    const { id, label, url, icon, order, published, parentId } = body;
+    const { id, label, url, icon, order, published, position, parentId } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -126,6 +143,7 @@ export async function PUT(request: Request) {
         icon: icon || null,
         order,
         published,
+        position: position || 'HEADER',
         parentId: parentId || null,
       },
     });
@@ -140,7 +158,7 @@ export async function PUT(request: Request) {
   }
 }
 
-// DELETE /api/admin/menus - Xóa menu
+// DELETE /api/admin/menus?domain=xxx&id=xxx - Xóa menu
 export async function DELETE(request: Request) {
   try {
     const session = await auth();
@@ -159,8 +177,11 @@ export async function DELETE(request: Request) {
       );
     }
 
+    // Lấy domain và id từ query parameters
     const { searchParams } = new URL(request.url);
+    const domain = searchParams.get('domain') || 'innerbright.vn';
     const id = searchParams.get('id');
+    const prisma = await getPrisma(domain);
 
     if (!id) {
       return NextResponse.json(

@@ -24,7 +24,19 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const menuItems = [
+interface MenuItem {
+  id: string;
+  label: string;
+  url: string;
+  icon: string | null;
+  order: number;
+  published: boolean;
+  position: string;
+  parentId: string | null;
+}
+
+// Hardcoded fallback menu items
+const defaultMenuItems = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/admin', exact: true },
   { title: 'Quản lý Nội dung', icon: FileText, href: '/admin/content' },
   { title: 'Page Builder', icon: Palette, href: '/admin/page-builder' },
@@ -41,7 +53,34 @@ const menuItems = [
 export function AdminSidebar() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [adminMenus, setAdminMenus] = useState<MenuItem[]>([]);
+  const [useDefaultMenu, setUseDefaultMenu] = useState(true);
   const pathname = usePathname();
+
+  // Fetch admin menus from API
+  useEffect(() => {
+    const fetchAdminMenus = async () => {
+      try {
+        const response = await fetch('/api/admin/menus?position=ADMIN');
+        if (response.ok) {
+          const data = await response.json();
+          // ✅ Fix: Ensure data is array and has items
+          if (Array.isArray(data) && data.length > 0) {
+            setAdminMenus(data);
+            setUseDefaultMenu(false);
+          } else {
+            setAdminMenus([]);
+            setUseDefaultMenu(true); // Use default if no menus found
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching admin menus:', error);
+        setAdminMenus([]); // ✅ Fallback to empty array
+        setUseDefaultMenu(true); // Keep using default menu on error
+      }
+    };
+    fetchAdminMenus();
+  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -59,6 +98,14 @@ export function AdminSidebar() {
       document.body.style.overflow = '';
     };
   }, [mobileOpen]);
+
+  // Use dynamic menus if available, otherwise fallback to default
+  const menuItems = useDefaultMenu ? defaultMenuItems : adminMenus.map(menu => ({
+    title: menu.label,
+    icon: LayoutDashboard, // Default icon, can be mapped from menu.icon later
+    href: menu.url,
+    exact: false
+  }));
 
   return (
     <>

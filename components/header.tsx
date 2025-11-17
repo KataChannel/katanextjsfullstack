@@ -33,11 +33,22 @@ export function Header() {
       .then(data => setSettings(data))
       .catch(err => console.error('Error loading header settings:', err));
 
-    // Fetch menus (đã filter theo permissions)
-    fetch('/api/menus')
+    // Fetch menus HEADER position (đã filter theo permissions)
+    fetch('/api/menus?position=HEADER')
       .then(res => res.json())
-      .then(data => setMenus(data))
-      .catch(err => console.error('Error loading menus:', err));
+      .then(data => {
+        // ✅ Fix: Ensure data is array before setting
+        if (Array.isArray(data)) {
+          setMenus(data);
+        } else {
+          setMenus([]);
+          console.error('Menus data is not an array:', data);
+        }
+      })
+      .catch(err => {
+        console.error('Error loading menus:', err);
+        setMenus([]); // ✅ Fallback to empty array on error
+      });
   }, [status, session]);
 
   return (

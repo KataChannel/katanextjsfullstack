@@ -10,15 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Menu Position Enum
+enum MenuPosition {
+  HEADER  // Menu trên header (navigation chính)
+  FOOTER  // Menu ở footer
+  ADMIN   // Menu admin sidebar
+  SIDEBAR // Menu sidebar phụ (nếu có)
+}
+
 // Menu Items
 model Menu {
-  id        String  @id @default(uuid())
-  label     String // Tên hiển thị menu
-  url       String // URL path
-  icon      String? // Icon name (lucide-react)
-  order     Int     @default(0) // Thứ tự hiển thị
-  published Boolean @default(true) // Hiện/ẩn menu
-  parentId  String? // Parent menu ID (cho submenu)
+  id        String       @id @default(uuid())
+  label     String       // Tên hiển thị menu
+  url       String       // URL path
+  icon      String?      // Icon name (lucide-react)
+  order     Int          @default(0) // Thứ tự hiển thị
+  published Boolean      @default(true) // Hiện/ẩn menu
+  position  MenuPosition @default(HEADER) // Vị trí hiển thị menu
+  parentId  String?      // Parent menu ID (cho submenu)
 
   // Self-relation cho submenu
   parent   Menu?  @relation("MenuHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
@@ -30,6 +39,7 @@ model Menu {
   @@index([order])
   @@index([published])
   @@index([parentId])
+  @@index([position])
   @@map("menus")
 }
 
