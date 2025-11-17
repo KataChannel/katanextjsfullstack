@@ -1,21 +1,21 @@
 /**
  * API: GET /api/pages-v2/[id]
- * Get single page by ID
+ * Get single page by ID from CURRENT DOMAIN database only
  * 
  * PUT /api/pages-v2/[id]
- * Update page
+ * Update page in CURRENT DOMAIN database only
  * 
  * DELETE /api/pages-v2/[id]
- * Delete page
+ * Delete page from CURRENT DOMAIN database only
  */
 
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -24,8 +24,13 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     const page = await prisma.page.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         author: {
           select: {
@@ -52,7 +57,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -61,11 +66,15 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { title, slug, blocksV2, published, metaTitle, metaDescription } = body;
 
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     const page = await prisma.page.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title,
         slug,
@@ -89,7 +98,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -98,8 +107,13 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     await prisma.page.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

@@ -1,6 +1,6 @@
 'use server'
 
-import { prisma } from '@/lib/prisma'
+import { getPrisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -13,6 +13,9 @@ export async function createUser(formData: FormData) {
   }
 
   try {
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+    
     const existingUser = await prisma.user.findUnique({
       where: { email }
     })
@@ -39,6 +42,9 @@ export async function createUser(formData: FormData) {
 
 export async function getUsers() {
   try {
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+    
     const users = await prisma.user.findMany({
       include: {
         posts: true,
@@ -64,6 +70,9 @@ export async function createPost(formData: FormData) {
   }
 
   try {
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+    
     const author = await prisma.user.findUnique({
       where: { id: authorId }
     })
@@ -98,6 +107,9 @@ export async function createPost(formData: FormData) {
 
 export async function getPosts() {
   try {
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+    
     const posts = await prisma.post.findMany({
       include: {
         author: true,
@@ -121,6 +133,9 @@ export async function togglePostPublished(formData: FormData) {
   }
 
   try {
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+    
     const post = await prisma.post.findUnique({
       where: { id: postId },
     })

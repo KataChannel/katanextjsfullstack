@@ -82,13 +82,8 @@ export default function ContentManagementPage() {
 
   const fetchAllContent = async () => {
     try {
-      const [pagesRes, postsRes] = await Promise.all([
-        fetch("/api/pages"),
-        fetch("/api/posts"),
-      ]);
-
-      const pagesData = await pagesRes.json();
-      const postsData = await postsRes.json();
+      const res = await fetch("/api/admin/content");
+      const { pages: pagesData, posts: postsData } = await res.json();
 
       const pages: ContentItem[] = (Array.isArray(pagesData)
         ? pagesData
@@ -96,7 +91,7 @@ export default function ContentManagementPage() {
       ).map((page: any) => ({
         ...page,
         type: "page" as ContentType,
-        pageType: (page.blocks ? "builder" : "content") as PageType,
+        pageType: (page.blocks || page.blocksV2 ? "builder" : "content") as PageType,
       }));
 
       const posts: ContentItem[] = (Array.isArray(postsData)
@@ -131,7 +126,7 @@ export default function ContentManagementPage() {
     try {
       const endpoint =
         item.type === "page"
-          ? `/api/pages/${item.id}`
+          ? `/api/pages-v2/${item.id}`
           : `/api/posts/${item.id}`;
 
       const res = await fetch(endpoint, { method: "DELETE" });
@@ -155,7 +150,7 @@ export default function ContentManagementPage() {
     try {
       const endpoint =
         item.type === "page"
-          ? `/api/pages/${item.id}`
+          ? `/api/pages-v2/${item.id}`
           : `/api/posts/${item.id}`;
 
       const res = await fetch(endpoint, {
@@ -190,9 +185,9 @@ export default function ContentManagementPage() {
 
   const filteredContents = contents.filter((item) => {
     if (filterType === "all") return true;
-    if (filterType === "pages") return item.type === "page" && !item.blocks;
+    if (filterType === "pages") return item.type === "page" && !item.blocks && !(item as any).blocksV2;
     if (filterType === "posts") return item.type === "post" && !item.blocks;
-    if (filterType === "builder") return !!item.blocks; // Both pages and posts with builder
+    if (filterType === "builder") return !!item.blocks || !!(item as any).blocksV2; // Both pages and posts with builder
     return true;
   });
 
@@ -200,9 +195,9 @@ export default function ContentManagementPage() {
     total: contents.length,
     published: contents.filter((c) => c.published).length,
     draft: contents.filter((c) => !c.published).length,
-    pages: contents.filter((c) => c.type === "page" && !c.blocks).length,
+    pages: contents.filter((c) => c.type === "page" && !c.blocks && !(c as any).blocksV2).length,
     posts: contents.filter((c) => c.type === "post" && !c.blocks).length,
-    builder: contents.filter((c) => !!c.blocks).length, // Both pages and posts with builder
+    builder: contents.filter((c) => !!c.blocks || !!(c as any).blocksV2).length, // Both pages and posts with builder
   };
 
   // ============================================================================
@@ -219,11 +214,11 @@ export default function ContentManagementPage() {
             Quản lý thống nhất Pages, Posts và Visual Builder
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/admin/page-builder">
+        <div className="flex gap-2 flex-wrap">
+          <Button variant="outline" asChild size="sm">
+            <Link href="/admin/pages-v2">
               <Palette className="mr-2 h-4 w-4" />
-              Page Builder
+              Page Builder V2
             </Link>
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
@@ -404,9 +399,9 @@ function EmptyState({ filterType }: { filterType: ContentFilter }) {
               </Link>
             </Button>
             <Button variant="secondary" asChild>
-              <Link href="/admin/content/new?mode=builder">
+              <Link href="/admin/pages-v2/new">
                 <Palette className="mr-2 h-4 w-4" />
-                Tạo Page Builder
+                Tạo Page Builder V2
               </Link>
             </Button>
           </div>
@@ -435,9 +430,11 @@ function ContentCard({
   onDelete: () => void;
   onTogglePublish: () => void;
 }) {
-  const isBuilder = !!item.blocks;
+  const isBuilder = !!item.blocks || !!(item as any).blocksV2;
   const isPost = item.type === "post";
-  const elementCount = isBuilder ? (item.blocks?.canvas?.elements?.length || item.blocks?.elements?.length || 0) : 0;
+  const elementCount = isBuilder 
+    ? ((item as any).blocksV2?.length || item.blocks?.canvas?.elements?.length || item.blocks?.elements?.length || 0) 
+    : 0;
 
   const gradients = {
     builder: "bg-gradient-to-br from-blue-50 to-indigo-50",
@@ -515,13 +512,13 @@ function ContentCard({
           {isBuilder ? (
             <>
               <Button variant="outline" size="sm" asChild className="flex-1">
-                <Link href={`/admin/page-builder/${item.id}`}>
+                <Link href={`/admin/pages-v2/edit/${item.id}`}>
                   <Edit2 className="h-3 w-3 mr-1" />
                   Edit Builder
                 </Link>
               </Button>
               <Button variant="outline" size="sm" asChild>
-                <Link href={isPost ? `/posts/${item.slug}` : `/pages/${item.slug}`} target="_blank">
+                <Link href={isPost ? `/posts/${item.slug}` : `/${item.slug}`} target="_blank">
                   <Eye className="h-3 w-3" />
                 </Link>
               </Button>
@@ -613,9 +610,9 @@ function CreateContentDialog({
             </div>
           </Link>
 
-          {/* Page Builder */}
+          {/* Page Builder V2 */}
           <Link
-            href="/admin/content/new?mode=builder&type=page"
+            href="/admin/pages-v2/new"
             onClick={() => onOpenChange(false)}
             className="flex items-start gap-4 p-4 border rounded-lg hover:bg-accent hover:border-primary transition-colors cursor-pointer group"
           >
@@ -623,9 +620,9 @@ function CreateContentDialog({
               <Palette className="h-5 w-5" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold group-hover:text-primary">Page Builder (Visual)</h3>
+              <h3 className="font-semibold group-hover:text-primary">Page Builder V2 (Visual)</h3>
               <p className="text-sm text-muted-foreground">
-                Editor visual kéo thả, phù hợp cho landing pages, layouts phức tạp
+                Editor visual kéo thả Tailwind CSS, phù hợp cho landing pages, layouts phức tạp
               </p>
             </div>
           </Link>

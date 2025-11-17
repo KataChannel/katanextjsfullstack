@@ -4,10 +4,14 @@ import { generateSEOMetadata, generateArticleSchema } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { PageLayoutWrapper } from '@/components/page-layout-wrapper';
+import { auth } from '@/lib/auth';
 
 interface PageProps {
   params: Promise<{
     slug: string;
+  }>;
+  searchParams: Promise<{
+    preview?: string;
   }>;
 }
 
@@ -84,14 +88,42 @@ export async function generateStaticParams() {
   }
 }
 
-export default async function PageDetail({ params }: PageProps) {
+export default async function PageDetail({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  const { preview } = await searchParams;
   const prisma = await getPrisma();
+
+  // Check if preview mode and user is authenticated
+  const isPreview = preview === 'true';
+  let canPreview = false;
+  
+  if (isPreview) {
+    const session = await auth();
+    canPreview = !!session?.user;
+  }
 
   // Try to find as page first
   const page = await prisma.page.findUnique({
     where: { slug },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      content: true,
+      published: true,
+      blocks: true,
+      blocksV2: true,
+      version: true,
+      metaTitle: true,
+      metaDescription: true,
+      metaKeywords: true,
+      ogImage: true,
+      ogType: true,
+      canonicalUrl: true,
+      showHeader: true,
+      showFooter: true,
+      createdAt: true,
+      updatedAt: true,
       author: {
         select: {
           name: true,
@@ -101,14 +133,31 @@ export default async function PageDetail({ params }: PageProps) {
     },
   });
 
-  // If page found and published, use page data
-  if (page && page.published) {
+  // If page found and (published OR preview mode with auth), use page data
+  if (page && (page.published || (isPreview && canPreview))) {
     // Continue with page render logic below
   } else {
     // Try to find as post
     const post = await prisma.post.findUnique({
       where: { slug },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        content: true,
+        excerpt: true,
+        published: true,
+        blocks: true,
+        metaTitle: true,
+        metaDescription: true,
+        metaKeywords: true,
+        ogImage: true,
+        ogType: true,
+        canonicalUrl: true,
+        showHeader: true,
+        showFooter: true,
+        createdAt: true,
+        updatedAt: true,
         author: {
           select: {
             name: true,
@@ -118,26 +167,43 @@ export default async function PageDetail({ params }: PageProps) {
       },
     });
 
-    // If post found and published, render it directly (no redirect)
-    if (post && post.published) {
-      return renderContent(post, 'post', post.showHeader, post.showFooter);
+    // If post found and (published OR preview mode with auth), render it directly (no redirect)
+    if (post && (post.published || (isPreview && canPreview))) {
+      return renderContent(post, 'post', post.showHeader, post.showFooter, isPreview && !post.published);
     }
 
     // Neither page nor post found
     notFound();
   }
 
-  // At this point, page is guaranteed to exist and be published
-  return renderContent(page, 'page', page.showHeader, page.showFooter);
+  // At this point, page is guaranteed to exist and (published OR preview)
+  return renderContent(page, 'page', page.showHeader, page.showFooter, isPreview && !page.published);
 }
 
 // Helper function to render page or post content
-async function renderContent(content: any, type: 'page' | 'post', showHeader = true, showFooter = true) {
-  // Parse blocks - Handle both old format (array) and new PageBuilder format (object with canvas)
+async function renderContent(content: any, type: 'page' | 'post', showHeader = true, showFooter = true, isPreviewMode = false) {
+  // Parse blocks - Handle both V1 (blocks) and V2 (blocksV2) formats
   let blocks: any[] | null = null;
   let isPageBuilder = false;
+  let blocksV2: any[] | null = null;
   
-  if (content.blocks) {
+  // Check for V2 blocks first (newer format)
+  if (content.blocksV2) {
+    try {
+      const parsed = typeof content.blocksV2 === 'string' ? JSON.parse(content.blocksV2) : content.blocksV2;
+      
+      // V2 format: { blocks: [...], version: 2 }
+      if (parsed && parsed.blocks && Array.isArray(parsed.blocks)) {
+        blocksV2 = parsed.blocks;
+      }
+    } catch (error) {
+      console.error('Error parsing blocksV2:', error);
+      blocksV2 = null;
+    }
+  }
+  
+  // Check for V1 blocks (legacy format)
+  if (!blocksV2 && content.blocks) {
     try {
       const parsed = typeof content.blocks === 'string' ? JSON.parse(content.blocks) : content.blocks;
       
@@ -196,6 +262,13 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
       )}
 
       <PageLayoutWrapper showHeader={showHeader} showFooter={showFooter}>
+        {/* Preview Banner */}
+        {isPreviewMode && (
+          <div className="bg-yellow-500 text-yellow-900 px-4 py-2 text-center text-sm font-medium">
+            ⚠️ Preview Mode - This draft is only visible to authenticated users
+          </div>
+        )}
+        
         <div className="container mx-auto px-4 py-8">
         <article className="max-w-4xl mx-auto">
         {/* Header */}
@@ -251,7 +324,9 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
 
         {/* Content */}
         <div className="prose prose-lg max-w-none">
-          {blocks && blocks.length > 0 ? (
+          {blocksV2 && blocksV2.length > 0 ? (
+            <BlocksV2Renderer blocks={blocksV2} />
+          ) : blocks && blocks.length > 0 ? (
             isPageBuilder ? (
               <PageBuilderRenderer elements={blocks} />
             ) : (
@@ -386,6 +461,118 @@ function PageBuilderRenderer({ elements }: { elements: any[] }) {
             return (
               <div key={id} style={inlineStyles} className="unknown-element">
                 {content || type}
+              </div>
+            );
+        }
+      })}
+    </div>
+  );
+}
+
+// Component to render V2 blocks (Tailwind-based blocks)
+function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
+  if (!Array.isArray(blocks) || blocks.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-6">
+      {blocks.map((block: any) => {
+        if (block.hidden) return null;
+
+        const { id, type, content, styles } = block;
+        const elementClass = styles?.element || '';
+
+        switch (type) {
+          case 'text':
+            const Tag = content?.tag || 'p';
+            return (
+              <Tag key={id} className={elementClass}>
+                {content?.text || 'Enter text here...'}
+              </Tag>
+            );
+
+          case 'heading':
+            const HeadingTag = content?.tag || 'h2';
+            return (
+              <HeadingTag key={id} className={elementClass}>
+                {content?.text || 'Heading'}
+              </HeadingTag>
+            );
+
+          case 'image':
+            return (
+              <img
+                key={id}
+                src={content?.url || 'https://placehold.co/800x400'}
+                alt={content?.alt || 'Image'}
+                className={elementClass}
+              />
+            );
+
+          case 'button':
+            return (
+              <a
+                key={id}
+                href={content?.link || '#'}
+                className={elementClass}
+              >
+                {content?.text || 'Click me'}
+              </a>
+            );
+
+          case 'container':
+            return (
+              <div key={id} className={elementClass}>
+                {content?.children || content?.text || ''}
+              </div>
+            );
+
+          case 'video':
+            return (
+              <div key={id} className={elementClass}>
+                <iframe
+                  src={content?.url || ''}
+                  className="w-full aspect-video"
+                  allowFullScreen
+                />
+              </div>
+            );
+
+          case 'divider':
+            return <hr key={id} className={elementClass} />;
+
+          case 'spacer':
+            return <div key={id} className={elementClass} style={{ height: content?.height || '20px' }} />;
+
+          case 'hero':
+            return (
+              <section key={id} className={elementClass}>
+                {content?.title && <h1 className="text-4xl font-bold mb-4">{content.title}</h1>}
+                {content?.subtitle && <p className="text-xl text-gray-600 mb-6">{content.subtitle}</p>}
+                {content?.cta && (
+                  <a href={content.cta.link || '#'} className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg">
+                    {content.cta.text || 'Learn More'}
+                  </a>
+                )}
+              </section>
+            );
+
+          case 'card':
+            return (
+              <div key={id} className={elementClass}>
+                {content?.image && <img src={content.image} alt={content?.title || ''} className="w-full h-48 object-cover" />}
+                <div className="p-6">
+                  {content?.title && <h3 className="text-2xl font-bold mb-2">{content.title}</h3>}
+                  {content?.description && <p className="text-gray-600">{content.description}</p>}
+                </div>
+              </div>
+            );
+
+          default:
+            return (
+              <div key={id} className={elementClass}>
+                {content?.text || content?.html || ''}
               </div>
             );
         }

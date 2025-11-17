@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +38,7 @@ interface ContentData {
 export default function ContentEditPage({ params }: PageParams) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [id, setId] = useState<string>("");
+  const { id } = use(params); // Unwrap params Promise
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
@@ -63,36 +63,43 @@ export default function ContentEditPage({ params }: PageParams) {
   });
 
   useEffect(() => {
-    params.then(({ id: resolvedId }) => {
-      setId(resolvedId);
-      if (resolvedId !== "new") {
-        fetchContent(resolvedId);
-      } else {
-        setLoading(false);
-      }
-    });
-  }, [params]);
+    if (id !== "new") {
+      fetchContent(id);
+    } else {
+      setLoading(false);
+    }
+  }, [id]);
 
   const fetchContent = async (contentId: string) => {
     try {
       setLoading(true);
       
-      // Try to fetch as page first
-      let res = await fetch(`/api/pages/${contentId}`);
+      // Try to fetch as page first from CURRENT DOMAIN database only
+      let res = await fetch(`/api/pages-v2/${contentId}`);
       let type: "page" | "post" = "page";
       
       if (!res.ok) {
-        // Try as post
+        // Try as post from CURRENT DOMAIN database only
         res = await fetch(`/api/posts/${contentId}`);
         type = "post";
       }
 
       if (!res.ok) {
-        throw new Error("Content not found");
+        const currentDomain = window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+        throw new Error(
+          `Không tìm thấy nội dung với ID: ${contentId}\n\n` +
+          `Database hiện tại: ${currentDomain}\n\n` +
+          `Lưu ý: Mỗi domain chỉ quản lý database của domain đó. ` +
+          `Vui lòng truy cập đúng domain/port để chỉnh sửa nội dung.`
+        );
       }
 
       const data = await res.json();
       const content = data.data || data;
+
+      if (!content || !content.id) {
+        throw new Error('Dữ liệu nội dung không hợp lệ');
+      }
 
       setFormData({
         title: content.title || "",
@@ -106,17 +113,22 @@ export default function ContentEditPage({ params }: PageParams) {
         showHeader: content.showHeader !== false, // default true
         showFooter: content.showFooter !== false, // default true
         type,
-        mode: content.blocks ? "builder" : "content",
+        mode: content.blocks || content.blocksV2 ? "builder" : "content",
       });
       
+      setContentType(type);
+      
       // Set content mode based on blocks
-      if (content.blocks) {
+      if (content.blocks || content.blocksV2) {
         setContentMode("builder");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching content:", error);
-      toast.error("Không thể tải nội dung");
-      router.push("/admin/content");
+      toast.error(error.message || "Không thể tải nội dung");
+      // Give user time to see error message before redirect
+      setTimeout(() => {
+        router.push("/admin/content");
+      }, 2000);
     } finally {
       setLoading(false);
     }
@@ -140,12 +152,12 @@ export default function ContentEditPage({ params }: PageParams) {
         
         try {
           // Try 1: Get from existing content
-          const contentsRes = await fetch("/api/pages?limit=1");
+          const contentsRes = await fetch("/api/pages-v2?limit=1");
           const contentsData = await contentsRes.json();
           const firstContent = contentsData.data?.[0] || contentsData[0];
           
           if (firstContent) {
-            const detailRes = await fetch(`/api/pages/${firstContent.id}`);
+            const detailRes = await fetch(`/api/pages-v2/${firstContent.id}`);
             const detailData = await detailRes.json();
             authorId = detailData.data?.authorId || detailData.authorId;
           }
@@ -192,7 +204,7 @@ export default function ContentEditPage({ params }: PageParams) {
           return;
         }
 
-        const endpoint = type === "page" ? "/api/pages" : "/api/posts";
+        const endpoint = type === "page" ? "/api/pages-v2" : "/api/posts";
         
         // Prepare data based on mode
         const dataToSend: any = {
@@ -200,29 +212,17 @@ export default function ContentEditPage({ params }: PageParams) {
           authorId,
         };
         
-        // If builder mode, create empty blocks structure
+        // If builder mode, create empty blocksV2 structure
         if (contentMode === "builder") {
-          dataToSend.blocks = {
-            canvas: {
-              width: 1440,
-              height: 900,
-              zoom: 1,
-              snapToGrid: true,
-              gridSize: 12,
-              showGrid: false,
-              magneticAlignment: true,
-              selectedIds: [],
-              currentBreakpoint: 'desktop',
-              elements: [],
-            },
-            elements: [],
-            history: {
-              past: [],
-              future: [],
-            },
-          };
+          dataToSend.blocksV2 = [];
+          dataToSend.version = 2;
           // Don't send content for builder mode
           delete dataToSend.content;
+        } else {
+          // Content mode: ensure no blocks
+          dataToSend.version = 1;
+          delete dataToSend.blocks;
+          delete dataToSend.blocksV2;
         }
         
         // Remove mode field (not in database)
@@ -253,7 +253,7 @@ export default function ContentEditPage({ params }: PageParams) {
       } else {
         // Update existing
         const type = formData.type || "page";
-        const endpoint = type === "page" ? `/api/pages/${id}` : `/api/posts/${id}`;
+        const endpoint = type === "page" ? `/api/pages-v2/${id}` : `/api/posts/${id}`;
         
         const res = await fetch(endpoint, {
           method: "PUT",

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 
-// GET /api/admin/block-templates - Lấy tất cả templates (Admin only)
+// GET /api/admin/block-templates - Lấy tất cả templates từ CURRENT DOMAIN database (Admin only)
 export async function GET() {
   try {
     const session = await auth();
@@ -20,6 +20,9 @@ export async function GET() {
         { status: 403 }
       );
     }
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
 
     const templates = await prisma.blockTemplate.findMany({
       orderBy: { createdAt: 'desc' },
@@ -43,7 +46,7 @@ export async function GET() {
   }
 }
 
-// POST /api/admin/block-templates - Tạo template mới
+// POST /api/admin/block-templates - Tạo template mới trong CURRENT DOMAIN database
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -72,6 +75,9 @@ export async function POST(request: Request) {
       );
     }
 
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     const template = await prisma.blockTemplate.create({
       data: {
         name,
@@ -94,7 +100,7 @@ export async function POST(request: Request) {
   }
 }
 
-// PUT /api/admin/block-templates - Cập nhật template
+// PUT /api/admin/block-templates - Cập nhật template trong CURRENT DOMAIN database
 export async function PUT(request: Request) {
   try {
     const session = await auth();
@@ -123,6 +129,9 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     const template = await prisma.blockTemplate.update({
       where: { id },
       data: {
@@ -145,7 +154,7 @@ export async function PUT(request: Request) {
   }
 }
 
-// DELETE /api/admin/block-templates - Xóa template
+// DELETE /api/admin/block-templates - Xóa template từ CURRENT DOMAIN database
 export async function DELETE(request: Request) {
   try {
     const session = await auth();
@@ -173,6 +182,9 @@ export async function DELETE(request: Request) {
         { status: 400 }
       );
     }
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
 
     await prisma.blockTemplate.delete({
       where: { id },

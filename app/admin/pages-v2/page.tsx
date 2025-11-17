@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, FileText, Edit, Trash2, Eye } from 'lucide-react';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 
 export const metadata: Metadata = {
   title: 'Pages V2 | Admin',
@@ -22,6 +22,7 @@ export const metadata: Metadata = {
 };
 
 async function getPages() {
+  const prisma = await getPrisma();
   return await prisma.page.findMany({
     where: {
       version: 2,

@@ -1,17 +1,17 @@
 /**
  * API: Block Templates V2 - Single template
- * GET - Get template by ID
- * PUT - Update template
- * DELETE - Delete template
+ * GET - Get template by ID from CURRENT DOMAIN database
+ * PUT - Update template in CURRENT DOMAIN database
+ * DELETE - Delete template from CURRENT DOMAIN database
  */
 
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -20,8 +20,13 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     const template = await prisma.blockTemplateV2.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         author: {
           select: {
@@ -41,7 +46,7 @@ export async function GET(
 
     // Increment downloads count
     await prisma.blockTemplateV2.update({
-      where: { id: params.id },
+      where: { id },
       data: { downloads: { increment: 1 } },
     });
 
@@ -57,7 +62,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -66,12 +71,16 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
     const { name, description, category, tags, block, thumbnail, published } = body;
 
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     // Check ownership
     const existing = await prisma.blockTemplateV2.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existing) {
@@ -89,7 +98,7 @@ export async function PUT(
     }
 
     const template = await prisma.blockTemplateV2.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         description,
@@ -113,7 +122,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth();
@@ -122,9 +131,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     // Check ownership
     const existing = await prisma.blockTemplateV2.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!existing) {
@@ -142,7 +156,7 @@ export async function DELETE(
     }
 
     await prisma.blockTemplateV2.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     return NextResponse.json({ success: true });

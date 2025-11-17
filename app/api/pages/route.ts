@@ -58,9 +58,46 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const validatedData = pageSchema.parse(body);
-
+    
     const prisma = await getPrisma();
+
+    // Get or validate authorId
+    let authorId = body.authorId;
+
+    // Verify author exists
+    if (authorId) {
+      const authorExists = await prisma.user.findUnique({
+        where: { id: authorId },
+      });
+
+      if (!authorExists) {
+        authorId = null;
+      }
+    }
+
+    // If no valid authorId, find or create admin user
+    if (!authorId) {
+      const adminUser = await prisma.user.findFirst({
+        where: { role: 'admin' },
+      });
+
+      if (adminUser) {
+        authorId = adminUser.id;
+      } else {
+        // Create default admin user
+        const newAdmin = await prisma.user.create({
+          data: {
+            email: 'admin@example.com',
+            name: 'Admin',
+            role: 'admin',
+          },
+        });
+        authorId = newAdmin.id;
+      }
+    }
+
+    // Now validate with correct authorId
+    const validatedData = pageSchema.parse({ ...body, authorId });
 
     // Check if slug already exists
     const existingPage = await prisma.page.findUnique({

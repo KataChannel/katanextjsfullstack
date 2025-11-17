@@ -1,12 +1,12 @@
 /**
  * API: Block Templates V2
- * GET - List all templates
- * POST - Create new template
+ * GET - List all templates from CURRENT DOMAIN database
+ * POST - Create new template in CURRENT DOMAIN database
  */
 
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 
 export async function GET(request: Request) {
   try {
@@ -19,6 +19,9 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const published = searchParams.get('published');
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
 
     const templates = await prisma.blockTemplateV2.findMany({
       where: {
@@ -66,6 +69,9 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
 
     const template = await prisma.blockTemplateV2.create({
       data: {

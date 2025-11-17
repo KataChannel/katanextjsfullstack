@@ -4,7 +4,7 @@
  * Admin: Edit page with Block Editor
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { BlockEditor } from '@/components/block-editor';
 import { Button } from '@/components/ui/button';
@@ -34,8 +34,10 @@ interface PageData {
   metaDescription?: string;
 }
 
-export default function EditPageV2({ params }: { params: { id: string } }) {
+export default function EditPageV2({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const { id } = use(params); // Unwrap params Promise
+  
   const [page, setPage] = useState<PageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
@@ -54,7 +56,7 @@ export default function EditPageV2({ params }: { params: { id: string } }) {
   useEffect(() => {
     async function loadPage() {
       try {
-        const response = await fetch(`/api/pages-v2/${params.id}`);
+        const response = await fetch(`/api/pages-v2/${id}`);
         if (!response.ok) throw new Error('Failed to load page');
         
         const data = await response.json();
@@ -77,7 +79,7 @@ export default function EditPageV2({ params }: { params: { id: string } }) {
     }
     
     loadPage();
-  }, [params.id]);
+  }, [id]);
 
   const handleSaveClick = (blocks: Block[]) => {
     setCurrentBlocks(blocks);
@@ -88,7 +90,7 @@ export default function EditPageV2({ params }: { params: { id: string } }) {
     setSaving(true);
 
     try {
-      const response = await fetch(`/api/pages-v2/${params.id}`, {
+      const response = await fetch(`/api/pages-v2/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -119,7 +121,7 @@ export default function EditPageV2({ params }: { params: { id: string } }) {
     setPublished(newPublished);
     
     try {
-      const response = await fetch(`/api/pages-v2/${params.id}`, {
+      const response = await fetch(`/api/pages-v2/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -193,14 +195,12 @@ export default function EditPageV2({ params }: { params: { id: string } }) {
             Settings
           </Button>
           
-          {published && (
-            <Link href={`/${slug}`} target="_blank">
-              <Button variant="outline" size="sm">
-                <Eye className="w-4 h-4 mr-2" />
-                View
-              </Button>
-            </Link>
-          )}
+          <Link href={published ? `/${slug}` : `/${slug}?preview=true`} target="_blank">
+            <Button variant="outline" size="sm">
+              <Eye className="w-4 h-4 mr-2" />
+              {published ? 'View Live' : 'Preview'}
+            </Button>
+          </Link>
           
           <Button
             variant={published ? 'outline' : 'default'}
@@ -214,7 +214,7 @@ export default function EditPageV2({ params }: { params: { id: string } }) {
 
       {/* Block Editor */}
       <BlockEditor
-        pageId={params.id}
+        pageId={id}
         initialBlocks={currentBlocks}
         onSave={handleSaveClick}
       />

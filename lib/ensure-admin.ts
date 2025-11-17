@@ -3,11 +3,14 @@
  * Chạy tự động khi cần thiết
  */
 
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 
 export async function ensureAdminUser() {
   try {
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+    
     // Check if any user exists
     const userCount = await prisma.user.count();
     

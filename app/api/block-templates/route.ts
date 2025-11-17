@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getPrisma } from '@/lib/prisma';
 
-// GET /api/block-templates - Lấy published templates (public)
+// GET /api/block-templates - Lấy published templates từ CURRENT DOMAIN database (public)
 export async function GET() {
   try {
+    // Get Prisma client for CURRENT DOMAIN only
+    const prisma = await getPrisma();
+
     const templates = await prisma.blockTemplate.findMany({
       where: { published: true },
       orderBy: { createdAt: 'desc' },

@@ -163,6 +163,11 @@ async function main() {
           trigger: 'scroll',
         },
       },
+      {
+        id: 'heading-mission',
+        type: 'heading',
+        content: 'Sứ Mệnh',
+        styles: {
           fontSize: '32px',
           fontWeight: 'bold',
           color: '#fb923c',
