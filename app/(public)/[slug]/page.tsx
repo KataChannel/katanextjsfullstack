@@ -280,56 +280,58 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
         
         <div className="container mx-auto px-4 py-8">
         <article className="max-w-4xl mx-auto">
-        {/* Header */}
-        <header className="mb-8">
-          {/* Featured Image (for posts) */}
-          {type === 'post' && content.ogImage && (
-            <div className="mb-6 -mx-4 md:mx-0">
-              <img
-                src={content.ogImage}
-                alt={content.title}
-                className="w-full h-auto rounded-lg"
-              />
+        {/* Header - Only show for posts or pages without V2 blocks/Page Builder */}
+        {(type === 'post' || (!blocksV2 && !isPageBuilder)) && (
+          <header className="mb-8">
+            {/* Featured Image (for posts) */}
+            {type === 'post' && content.ogImage && (
+              <div className="mb-6 -mx-4 md:mx-0">
+                <img
+                  src={content.ogImage}
+                  alt={content.title}
+                  className="w-full h-auto rounded-lg"
+                />
+              </div>
+            )}
+
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">{content.title}</h1>
+
+            {/* Excerpt (for posts) */}
+            {type === 'post' && content.excerpt && (
+              <p className="text-xl text-muted-foreground mb-4">{content.excerpt}</p>
+            )}
+
+            {/* Meta info */}
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-t border-b py-4">
+              <time dateTime={content.createdAt.toISOString()}>
+                {new Date(content.createdAt).toLocaleDateString('vi-VN', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </time>
+              {content.author?.name && (
+                <>
+                  <span>•</span>
+                  <span>Bởi {content.author.name}</span>
+                </>
+              )}
+              {content.updatedAt > content.createdAt && (
+                <>
+                  <span>•</span>
+                  <span>
+                    Cập nhật:{' '}
+                    {new Date(content.updatedAt).toLocaleDateString('vi-VN', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </span>
+                </>
+              )}
             </div>
-          )}
-
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{content.title}</h1>
-
-          {/* Excerpt (for posts) */}
-          {type === 'post' && content.excerpt && (
-            <p className="text-xl text-muted-foreground mb-4">{content.excerpt}</p>
-          )}
-
-          {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-t border-b py-4">
-            <time dateTime={content.createdAt.toISOString()}>
-              {new Date(content.createdAt).toLocaleDateString('vi-VN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </time>
-            {content.author?.name && (
-              <>
-                <span>•</span>
-                <span>Bởi {content.author.name}</span>
-              </>
-            )}
-            {content.updatedAt > content.createdAt && (
-              <>
-                <span>•</span>
-                <span>
-                  Cập nhật:{' '}
-                  {new Date(content.updatedAt).toLocaleDateString('vi-VN', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
-              </>
-            )}
-          </div>
-        </header>
+          </header>
+        )}
 
         {/* Content */}
         <div className="prose prose-lg max-w-none">
