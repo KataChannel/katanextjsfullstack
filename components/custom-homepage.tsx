@@ -51,27 +51,52 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
       {blocks.map((block: any) => {
         switch (block.type) {
           case 'heading':
-            return (
-              <h2 key={block.id} className="text-3xl font-bold">
-                {block.content}
-              </h2>
-            );
+            // V2 heading block - content can be string or object {text, level}
+            const headingText = typeof block.content === 'string'
+              ? block.content
+              : block.content?.text || 'Heading';
+            const headingLevel = block.content?.level || 2;
+            
+            // Render based on level
+            if (headingLevel === 1) {
+              return <h1 key={block.id} className="text-4xl font-bold my-4">{headingText}</h1>;
+            } else if (headingLevel === 3) {
+              return <h3 key={block.id} className="text-2xl font-bold my-4">{headingText}</h3>;
+            } else if (headingLevel === 4) {
+              return <h4 key={block.id} className="text-xl font-bold my-4">{headingText}</h4>;
+            } else if (headingLevel === 5) {
+              return <h5 key={block.id} className="text-lg font-bold my-4">{headingText}</h5>;
+            } else if (headingLevel === 6) {
+              return <h6 key={block.id} className="text-base font-bold my-4">{headingText}</h6>;
+            }
+            return <h2 key={block.id} className="text-3xl font-bold my-4">{headingText}</h2>;
 
           case 'text':
+            // V2 text block - content can be string or object {tag, text}
+            const textContent = typeof block.content === 'string'
+              ? block.content
+              : block.content?.text || '';
+            
             return (
               <div
                 key={block.id}
                 className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: block.content }}
+                dangerouslySetInnerHTML={{ __html: textContent }}
               />
             );
 
           case 'image':
+            // V2 image block - content can be string (URL) or object {url, alt}
+            const imageSrc = typeof block.content === 'string' 
+              ? block.content 
+              : block.content?.url || '';
+            const imageAlt = block.content?.alt || block.alt || '';
+            
             return (
               <figure key={block.id} className="my-8">
                 <img
-                  src={block.content}
-                  alt={block.alt || ''}
+                  src={imageSrc}
+                  alt={imageAlt}
                   className="w-full h-auto rounded-lg"
                 />
                 {block.caption && (
@@ -125,6 +150,33 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
                 >
                   {buttonContent}
                 </a>
+              </div>
+            );
+
+          case 'container':
+            // V2 container block - can contain text or nested children blocks
+            const containerContent = block.content?.text || '';
+            const containerLayout = block.content?.layout || 'flex';
+            const containerDirection = block.content?.direction || 'column';
+            const containerGap = block.content?.gap || 4;
+            const containerChildren = block.content?.children || [];
+            
+            // Build container classes based on layout
+            const containerClasses = [
+              'my-6',
+              containerLayout === 'flex' ? 'flex' : 'block',
+              containerDirection === 'column' ? 'flex-col' : 'flex-row',
+              `gap-${containerGap}`,
+            ].join(' ');
+            
+            return (
+              <div key={block.id} className={containerClasses}>
+                {containerContent && (
+                  <div dangerouslySetInnerHTML={{ __html: containerContent }} />
+                )}
+                {Array.isArray(containerChildren) && containerChildren.length > 0 && (
+                  <PageBlocksRenderer blocks={containerChildren} />
+                )}
               </div>
             );
 
@@ -295,10 +347,13 @@ export function CustomHomePage({ content, type }: CustomHomePageProps) {
   const isPageBuilder = hasBlocks && (content.blocks.elements || content.blocks.canvas);
   const isLegacyBlocks = hasBlocks && Array.isArray(content.blocks);
 
+  // Don't show header if using V2 blocks or PageBuilder (they render their own layout)
+  const showHeader = !isV2Format && !isPageBuilder;
+
   return (
     <div className="min-h-screen">
-      {/* Header Section - Only show if not Page Builder (Page Builder renders its own layout) */}
-      {!isPageBuilder && (
+      {/* Header Section - Only show if not using custom blocks */}
+      {showHeader && (
         <section className="bg-linear-to-b from-primary/5 to-background py-12 sm:py-16 border-b">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto text-center space-y-4">
@@ -321,12 +376,14 @@ export function CustomHomePage({ content, type }: CustomHomePageProps) {
       )}
 
       {/* Content Section */}
-      <section className={isPageBuilder ? "" : "py-12 sm:py-16"}>
-        <div className={isPageBuilder ? "" : "container mx-auto px-4 sm:px-6 lg:px-8"}>
-          <div className={isPageBuilder ? "" : "max-w-4xl mx-auto"}>
+      <section className={showHeader ? "py-12 sm:py-16" : ""}>
+        <div className={isV2Format || isPageBuilder ? "container mx-auto px-4 sm:px-6 lg:px-8 py-8" : (showHeader ? "container mx-auto px-4 sm:px-6 lg:px-8" : "")}>
+          <div className={isV2Format || isPageBuilder ? "max-w-4xl mx-auto" : (showHeader ? "max-w-4xl mx-auto" : "")}>
             {/* Priority rendering: V2 blocks > Page Builder > Legacy blocks > Content */}
             {isV2Format ? (
-              <PageBlocksRenderer blocks={(content.blocksV2 as any).blocks} />
+              <div className="prose prose-lg max-w-none dark:prose-invert">
+                <PageBlocksRenderer blocks={(content.blocksV2 as any).blocks} />
+              </div>
             ) : isPageBuilder ? (
               <PageBuilderRenderer blocks={content.blocks} />
             ) : isLegacyBlocks ? (

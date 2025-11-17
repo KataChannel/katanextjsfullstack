@@ -63,9 +63,12 @@ export async function generateStaticParams() {
     // Sử dụng domain mặc định cho build time
     const prisma = await getPrisma('tazagroup.vn');
     
-    // Get all published pages
+    // Get all published pages (exclude slug "/" - handled by homepage route)
     const pages = await prisma.page.findMany({
-      where: { published: true },
+      where: { 
+        published: true,
+        slug: { not: '/' }  // Exclude homepage slug
+      },
       select: { slug: true },
     });
 
@@ -90,6 +93,12 @@ export async function generateStaticParams() {
 
 export default async function PageDetail({ params, searchParams }: PageProps) {
   const { slug } = await params;
+  
+  // Redirect slug "/" to homepage (handled by app/(public)/page.tsx)
+  if (slug === '/') {
+    redirect('/');
+  }
+  
   const { preview } = await searchParams;
   const prisma = await getPrisma();
 
@@ -524,6 +533,33 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
                 >
                   {buttonText}
                 </a>
+              </div>
+            );
+
+          case 'container':
+            // V2 container block - can contain text or nested children blocks
+            const containerContent = block.content?.text || '';
+            const containerLayout = block.content?.layout || 'flex';
+            const containerDirection = block.content?.direction || 'column';
+            const containerGap = block.content?.gap || 4;
+            const containerChildren = block.content?.children || [];
+            
+            // Build container classes based on layout
+            const containerClasses = [
+              'my-6',
+              containerLayout === 'flex' ? 'flex' : 'block',
+              containerDirection === 'column' ? 'flex-col' : 'flex-row',
+              `gap-${containerGap}`,
+            ].join(' ');
+            
+            return (
+              <div key={blockId} className={containerClasses}>
+                {containerContent && (
+                  <div dangerouslySetInnerHTML={{ __html: containerContent }} />
+                )}
+                {Array.isArray(containerChildren) && containerChildren.length > 0 && (
+                  <BlocksV2Renderer blocks={containerChildren} />
+                )}
               </div>
             );
 

@@ -32,7 +32,18 @@ export default async function Home() {
     if (seoSettings.homePageType === "page") {
       const page = await prisma.page.findUnique({
         where: { id: seoSettings.homePageId },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          content: true,
+          published: true,
+          blocks: true,
+          blocksV2: true, // ✅ Include V2 blocks
+          metaTitle: true,
+          metaDescription: true,
+          createdAt: true,
+          updatedAt: true,
           author: {
             select: {
               name: true,
@@ -48,7 +59,18 @@ export default async function Home() {
     } else if (seoSettings.homePageType === "post") {
       const post = await prisma.post.findUnique({
         where: { id: seoSettings.homePageId },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          content: true,
+          excerpt: true,
+          published: true,
+          blocks: true,
+          metaTitle: true,
+          metaDescription: true,
+          createdAt: true,
+          updatedAt: true,
           author: {
             select: {
               name: true,
