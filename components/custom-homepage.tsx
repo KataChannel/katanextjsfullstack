@@ -107,7 +107,40 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
               </pre>
             );
 
+          case 'button':
+            // V2 block editor button format
+            const buttonContent = block.content?.text || block.content || 'Button';
+            const buttonLink = block.content?.link || '#';
+            const buttonVariant = block.content?.variant || 'primary';
+            
+            return (
+              <div key={block.id} className="my-6">
+                <a
+                  href={buttonLink}
+                  className={`inline-block px-6 py-3 rounded-lg font-semibold transition-colors ${
+                    buttonVariant === 'primary'
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
+                  }`}
+                >
+                  {buttonContent}
+                </a>
+              </div>
+            );
+
           default:
+            // Unknown block type - try to render basic content
+            if (block.content) {
+              return (
+                <div key={block.id} className="my-4">
+                  {typeof block.content === 'string' ? (
+                    <div dangerouslySetInnerHTML={{ __html: block.content }} />
+                  ) : (
+                    <pre className="text-xs">{JSON.stringify(block.content, null, 2)}</pre>
+                  )}
+                </div>
+              );
+            }
             return null;
         }
       })}
@@ -252,7 +285,12 @@ function PageBuilderRenderer({ blocks }: { blocks: any }) {
 }
 
 export function CustomHomePage({ content, type }: CustomHomePageProps) {
-  // Determine content format
+  // Determine content format - PRIORITY: blocksV2 > blocks (V1)
+  // Check blocksV2 first (new format)
+  const hasBlocksV2 = 'blocksV2' in content && content.blocksV2 && typeof content.blocksV2 === 'object';
+  const isV2Format = hasBlocksV2 && (content.blocksV2 as any)?.blocks;
+  
+  // Fallback to V1 blocks
   const hasBlocks = content.blocks && typeof content.blocks === 'object';
   const isPageBuilder = hasBlocks && (content.blocks.elements || content.blocks.canvas);
   const isLegacyBlocks = hasBlocks && Array.isArray(content.blocks);
@@ -286,7 +324,10 @@ export function CustomHomePage({ content, type }: CustomHomePageProps) {
       <section className={isPageBuilder ? "" : "py-12 sm:py-16"}>
         <div className={isPageBuilder ? "" : "container mx-auto px-4 sm:px-6 lg:px-8"}>
           <div className={isPageBuilder ? "" : "max-w-4xl mx-auto"}>
-            {isPageBuilder ? (
+            {/* Priority rendering: V2 blocks > Page Builder > Legacy blocks > Content */}
+            {isV2Format ? (
+              <PageBlocksRenderer blocks={(content.blocksV2 as any).blocks} />
+            ) : isPageBuilder ? (
               <PageBuilderRenderer blocks={content.blocks} />
             ) : isLegacyBlocks ? (
               <PageBlocksRenderer blocks={content.blocks} />

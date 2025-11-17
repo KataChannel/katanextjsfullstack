@@ -469,7 +469,7 @@ function PageBuilderRenderer({ elements }: { elements: any[] }) {
   );
 }
 
-// Component to render V2 blocks (Tailwind-based blocks)
+// Component to render V2 blocks (new format from block editor)
 function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
   if (!Array.isArray(blocks) || blocks.length === 0) {
     return null;
@@ -477,111 +477,97 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
 
   return (
     <div className="space-y-6">
-      {blocks.map((block: any) => {
-        if (block.hidden) return null;
-
-        const { id, type, content, styles } = block;
-        const elementClass = styles?.element || '';
-
-        switch (type) {
+      {blocks.map((block: any, index: number) => {
+        const blockId = block.id || `block-${index}`;
+        
+        switch (block.type) {
           case 'text':
-            const Tag = content?.tag || 'p';
+            // V2 text block with rich content
+            const textContent = block.content?.text || block.content || '';
             return (
-              <Tag key={id} className={elementClass}>
-                {content?.text || 'Enter text here...'}
-              </Tag>
-            );
-
-          case 'heading':
-            const HeadingTag = content?.tag || 'h2';
-            return (
-              <HeadingTag key={id} className={elementClass}>
-                {content?.text || 'Heading'}
-              </HeadingTag>
-            );
-
-          case 'image':
-            return (
-              <img
-                key={id}
-                src={content?.url || 'https://placehold.co/800x400'}
-                alt={content?.alt || 'Image'}
-                className={elementClass}
+              <div
+                key={blockId}
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: textContent }}
               />
             );
 
-          case 'button':
+          case 'image':
+            // V2 image block
+            const imageUrl = block.content?.url || block.content || '';
+            const imageAlt = block.content?.alt || block.name || '';
             return (
-              <a
-                key={id}
-                href={content?.link || '#'}
-                className={elementClass}
-              >
-                {content?.text || 'Click me'}
-              </a>
-            );
-
-          case 'container':
-            return (
-              <div key={id} className={elementClass}>
-                {content?.children || content?.text || ''}
-              </div>
-            );
-
-          case 'video':
-            return (
-              <div key={id} className={elementClass}>
-                <iframe
-                  src={content?.url || ''}
-                  className="w-full aspect-video"
-                  allowFullScreen
+              <figure key={blockId} className="my-8">
+                <img
+                  src={imageUrl}
+                  alt={imageAlt}
+                  className="w-full h-auto rounded-lg"
                 />
+              </figure>
+            );
+
+          case 'button':
+            // V2 button block
+            const buttonText = block.content?.text || block.content || 'Button';
+            const buttonLink = block.content?.link || '#';
+            const buttonVariant = block.content?.variant || 'primary';
+            
+            return (
+              <div key={blockId} className="my-6">
+                <a
+                  href={buttonLink}
+                  className={`inline-block px-6 py-3 rounded-lg font-semibold transition-colors ${
+                    buttonVariant === 'primary'
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
+                  }`}
+                >
+                  {buttonText}
+                </a>
               </div>
             );
 
-          case 'divider':
-            return <hr key={id} className={elementClass} />;
-
-          case 'spacer':
-            return <div key={id} className={elementClass} style={{ height: content?.height || '20px' }} />;
-
-          case 'hero':
-            return (
-              <section key={id} className={elementClass}>
-                {content?.title && <h1 className="text-4xl font-bold mb-4">{content.title}</h1>}
-                {content?.subtitle && <p className="text-xl text-gray-600 mb-6">{content.subtitle}</p>}
-                {content?.cta && (
-                  <a href={content.cta.link || '#'} className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg">
-                    {content.cta.text || 'Learn More'}
-                  </a>
-                )}
-              </section>
-            );
-
-          case 'card':
-            return (
-              <div key={id} className={elementClass}>
-                {content?.image && <img src={content.image} alt={content?.title || ''} className="w-full h-48 object-cover" />}
-                <div className="p-6">
-                  {content?.title && <h3 className="text-2xl font-bold mb-2">{content.title}</h3>}
-                  {content?.description && <p className="text-gray-600">{content.description}</p>}
-                </div>
-              </div>
-            );
+          case 'heading':
+            // V2 heading block
+            const headingText = block.content?.text || block.content || 'Heading';
+            const headingLevel = block.content?.level || 2;
+            
+            // Render heading based on level
+            if (headingLevel === 1) {
+              return <h1 key={blockId} className="text-4xl font-bold my-4">{headingText}</h1>;
+            } else if (headingLevel === 2) {
+              return <h2 key={blockId} className="text-3xl font-bold my-4">{headingText}</h2>;
+            } else if (headingLevel === 3) {
+              return <h3 key={blockId} className="text-2xl font-bold my-4">{headingText}</h3>;
+            } else if (headingLevel === 4) {
+              return <h4 key={blockId} className="text-xl font-bold my-4">{headingText}</h4>;
+            } else if (headingLevel === 5) {
+              return <h5 key={blockId} className="text-lg font-bold my-4">{headingText}</h5>;
+            } else {
+              return <h6 key={blockId} className="text-base font-bold my-4">{headingText}</h6>;
+            }
 
           default:
-            return (
-              <div key={id} className={elementClass}>
-                {content?.text || content?.html || ''}
-              </div>
-            );
+            // Unknown block type - try to render content
+            if (block.content) {
+              const content = typeof block.content === 'string' 
+                ? block.content 
+                : block.content?.text || JSON.stringify(block.content);
+              
+              return (
+                <div key={blockId} className="my-4">
+                  <div dangerouslySetInnerHTML={{ __html: content }} />
+                </div>
+              );
+            }
+            return null;
         }
       })}
     </div>
   );
 }
 
-// Component to render old format page builder blocks
+// Component to render old format page builder blocks (V1)
 function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
   // Safety check
   if (!Array.isArray(blocks) || blocks.length === 0) {
