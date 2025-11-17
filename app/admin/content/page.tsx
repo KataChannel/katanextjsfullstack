@@ -575,7 +575,7 @@ function CreateContentDialog({
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid gap-3 py-4">
+        <div className="grid gap-3 p-4">
           {/* Page (Content Mode) */}
           <Link
             href="/admin/content/new?type=page&mode=content"

@@ -192,7 +192,7 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
   const getDefaultContent = (type: string) => {
     const defaults: Record<string, any> = {
       text: { text: 'Enter text here...', tag: 'p' },
-      image: { url: 'https://via.placeholder.com/800x400', alt: 'Image' },
+      image: { url: 'https://placehold.co/800x400', alt: 'Image' },
       button: { text: 'Click me', link: '#', variant: 'primary' },
       container: { layout: 'flex', direction: 'column', gap: 4 },
       divider: {},

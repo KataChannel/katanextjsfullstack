@@ -288,7 +288,7 @@ export const DEFAULT_CONTENT: Record<ElementBlockType, BlockContent> = {
     tag: 'p',
   },
   image: {
-    url: 'https://via.placeholder.com/800x600',
+    url: 'https://placehold.co/800x600',
     alt: 'Placeholder image',
   },
   button: {

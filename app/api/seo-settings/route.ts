@@ -11,7 +11,7 @@ const seoSettingsSchema = z.object({
   googleAnalytics: z.string().optional(),
   googleTagManager: z.string().optional(),
   facebookPixel: z.string().optional(),
-  homePageType: z.enum(["page", "post", ""]).optional(),
+  homePageType: z.string().optional(), // Can be "page", "post", or empty string
   homePageId: z.string().optional(),
 });
 
@@ -23,6 +23,15 @@ export async function POST(request: NextRequest) {
     const validated = seoSettingsSchema.parse(data);
     
     const prisma = await getPrisma();
+    
+    // Convert empty strings to null for homepage settings
+    // If user selects "default homepage", both will be empty string
+    const homePageType = validated.homePageType && validated.homePageType !== "" 
+      ? validated.homePageType 
+      : null;
+    const homePageId = validated.homePageId && validated.homePageId !== "" 
+      ? validated.homePageId 
+      : null;
     
     // Upsert SEO settings
     const seoSettings = await prisma.seoSettings.upsert({
@@ -36,8 +45,8 @@ export async function POST(request: NextRequest) {
         googleAnalytics: validated.googleAnalytics,
         googleTagManager: validated.googleTagManager,
         facebookPixel: validated.facebookPixel,
-        homePageType: validated.homePageType || null,
-        homePageId: validated.homePageId || null,
+        homePageType,
+        homePageId,
       },
       update: {
         siteName: validated.siteName || "",
@@ -47,8 +56,8 @@ export async function POST(request: NextRequest) {
         googleAnalytics: validated.googleAnalytics,
         googleTagManager: validated.googleTagManager,
         facebookPixel: validated.facebookPixel,
-        homePageType: validated.homePageType || null,
-        homePageId: validated.homePageId || null,
+        homePageType,
+        homePageId,
         updatedAt: new Date(),
       },
     });

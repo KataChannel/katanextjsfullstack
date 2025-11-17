@@ -1,11 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPrisma } from '@/lib/prisma';
 
+// Helper: Extract domain from hostname
+function extractDomain(hostname: string): string {
+  // Remove port
+  const withoutPort = hostname.split(':')[0];
+  
+  // Remove www prefix
+  const withoutWww = withoutPort.replace(/^www\./, '');
+  
+  // For localhost, return default domain
+  if (withoutWww === 'localhost' || withoutWww === '127.0.0.1') {
+    return 'innerbright.vn'; // Default domain for local development
+  }
+  
+  return withoutWww;
+}
+
 // GET - Lấy website settings theo domain
 export async function GET(request: NextRequest) {
   try {
+    // Get domain from query param or detect from request headers
     const searchParams = request.nextUrl.searchParams;
-    const domain = searchParams.get('domain') || 'tazagroup.vn';
+    let domain = searchParams.get('domain');
+    
+    if (!domain) {
+      // Auto-detect domain from request headers (multi-domain support)
+      const hostname = request.headers.get('x-hostname') || 
+                      request.headers.get('host') || 
+                      'localhost:3000';
+      
+      domain = extractDomain(hostname);
+    }
 
     const prisma = await getPrisma(domain);
     

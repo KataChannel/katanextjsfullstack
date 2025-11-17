@@ -39,18 +39,17 @@ async function getPages() {
     },
   });
   
-  // Filter pages with version 2 or non-empty blocksV2 data
+  // Filter pages with version 2 or has blocksV2 field
+  // blocksV2 structure: { blocks: [...], version: 2 } (object, not array)
+  // If page has blocksV2 field, it means it was touched by V2 editor
   return allPages.filter(page => {
+    // Show all version 2 pages
     if (page.version === 2) return true;
     
-    // Check if blocksV2 is a non-empty array
+    // Show pages that have blocksV2 field (object with blocks array inside)
+    // This includes pages that were opened in V2 editor
     if (page.blocksV2 !== null && page.blocksV2 !== undefined) {
-      try {
-        const blocks = Array.isArray(page.blocksV2) ? page.blocksV2 : [];
-        return blocks.length > 0;
-      } catch {
-        return false;
-      }
+      return typeof page.blocksV2 === 'object';
     }
     
     return false;

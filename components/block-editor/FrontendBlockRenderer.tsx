@@ -59,7 +59,7 @@ export function FrontendBlockRenderer({ block }: FrontendBlockRendererProps) {
         const content = block.content as any;
         return (
           <img
-            src={content.url || 'https://via.placeholder.com/800x400'}
+            src={content.url || 'https://placehold.co/800x400'}
             alt={content.alt || ''}
             className={block.styles.element}
             width={content.width}

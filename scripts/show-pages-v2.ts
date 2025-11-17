@@ -22,17 +22,13 @@ async function showPagesV2Stats() {
     });
 
     // Filter pages V2 (same logic as admin page)
+    // blocksV2 is object like { blocks: [...], version: 2 }, not array
     const pagesV2 = allPages.filter(page => {
       if (page.version === 2) return true;
       
-      // Check if blocksV2 is a non-empty array
+      // Check if blocksV2 field exists (object)
       if (page.blocksV2 !== null && page.blocksV2 !== undefined) {
-        try {
-          const blocks = Array.isArray(page.blocksV2) ? page.blocksV2 : [];
-          return blocks.length > 0;
-        } catch {
-          return false;
-        }
+        return typeof page.blocksV2 === 'object';
       }
       
       return false;
@@ -56,7 +52,8 @@ async function showPagesV2Stats() {
         console.log(`  ${index + 1}. ${page.title}`);
         console.log(`     - Slug: ${page.slug}`);
         console.log(`     - Version: ${page.version}`);
-        console.log(`     - Blocks: ${(page.blocksV2 as any[])?.length || 0}`);
+        const blocksCount = (page.blocksV2 as any)?.blocks?.length || 0;
+        console.log(`     - Blocks: ${blocksCount}`);
         console.log(`     - Status: ${page.published ? '✅ Published' : '📝 Draft'}`);
         console.log(`     - Author: ${page.author.name || page.author.email}`);
         console.log(`     - View: http://localhost:3005/${page.slug}`);

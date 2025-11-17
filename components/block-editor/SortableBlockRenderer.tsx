@@ -73,7 +73,7 @@ export function SortableBlockRenderer({ block }: SortableBlockRendererProps) {
       case 'image':
         return (
           <img
-            src={(block.content as any).url || 'https://via.placeholder.com/800x400'}
+            src={(block.content as any).url || 'https://placehold.co/800x400'}
             alt={(block.content as any).alt || ''}
             className={block.styles.element || 'w-full h-auto'}
           />
