@@ -6,7 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Settings, Code, X, ChevronRight } from 'lucide-react';
+import { Settings, Code, X, ChevronRight, Plus, Trash2, Image as ImageIcon, MoveUp, MoveDown } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { useState } from 'react';
 
 interface BlockInspectorProps {
   isOpen?: boolean;
@@ -16,6 +20,8 @@ interface BlockInspectorProps {
 export function BlockInspector({ isOpen = true, onClose }: BlockInspectorProps) {
   const selectedBlock = useBlockEditorStore(selectSelectedBlock);
   const { updateBlock } = useBlockEditorStore();
+  const [editingSlideIndex, setEditingSlideIndex] = useState<number | null>(null);
+  const [slideFormData, setSlideFormData] = useState<any>(null);
 
   if (!selectedBlock) {
     return (
@@ -69,6 +75,276 @@ export function BlockInspector({ isOpen = true, onClose }: BlockInspectorProps) 
           </div>
 
           <TabsContent value="content" className="flex-1 overflow-y-auto mt-0 px-4 py-4 space-y-4">
+            {selectedBlock.type === 'carousel' && (() => {
+              const carouselContent = selectedBlock.content as any;
+              const slides = carouselContent?.slides || [];
+              const autoplay = carouselContent?.autoplay ?? true;
+              const interval = carouselContent?.interval || 5000;
+
+              const handleAddSlide = () => {
+                const newSlide = {
+                  id: `slide-${Date.now()}`,
+                  image: 'https://placehold.co/1200x600',
+                  title: 'Tiêu đề mới',
+                  subtitle: 'Tiêu đề phụ',
+                  description: 'Mô tả slide',
+                  badge: 'Label',
+                  badgeHighlight: 'Highlight',
+                };
+                setSlideFormData(newSlide);
+                setEditingSlideIndex(slides.length);
+              };
+
+              const handleEditSlide = (index: number) => {
+                setSlideFormData({ ...slides[index] });
+                setEditingSlideIndex(index);
+              };
+
+              const handleDeleteSlide = (index: number) => {
+                const newSlides = slides.filter((_: any, i: number) => i !== index);
+                updateBlock(selectedBlock.id, {
+                  content: { ...carouselContent, slides: newSlides }
+                });
+              };
+
+              const handleMoveSlide = (index: number, direction: 'up' | 'down') => {
+                const newSlides = [...slides];
+                const targetIndex = direction === 'up' ? index - 1 : index + 1;
+                if (targetIndex < 0 || targetIndex >= slides.length) return;
+                [newSlides[index], newSlides[targetIndex]] = [newSlides[targetIndex], newSlides[index]];
+                updateBlock(selectedBlock.id, {
+                  content: { ...carouselContent, slides: newSlides }
+                });
+              };
+
+              const handleSaveSlide = () => {
+                if (editingSlideIndex === null || !slideFormData) return;
+                const newSlides = [...slides];
+                if (editingSlideIndex >= slides.length) {
+                  newSlides.push(slideFormData);
+                } else {
+                  newSlides[editingSlideIndex] = slideFormData;
+                }
+                updateBlock(selectedBlock.id, {
+                  content: { ...carouselContent, slides: newSlides }
+                });
+                setEditingSlideIndex(null);
+                setSlideFormData(null);
+              };
+
+              return (
+                <div className="space-y-4">
+                  {/* Autoplay & Interval */}
+                  <div className="space-y-3 pb-3 border-b">
+                    <div className="flex items-center justify-between gap-4">
+                      <Label className="text-sm font-medium">Tự động chuyển</Label>
+                      <Switch
+                        checked={autoplay}
+                        onCheckedChange={(checked) => updateBlock(selectedBlock.id, {
+                          content: { ...carouselContent, autoplay: checked }
+                        })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Thời gian chuyển (ms)</Label>
+                      <Input
+                        type="number"
+                        placeholder="5000"
+                        value={interval}
+                        onChange={(e) => updateBlock(selectedBlock.id, {
+                          content: { ...carouselContent, interval: parseInt(e.target.value) || 5000 }
+                        })}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Slides List */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">Slides ({slides.length})</Label>
+                      <Button
+                        size="sm"
+                        onClick={handleAddSlide}
+                        className="h-8 text-xs gap-1"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Thêm slide
+                      </Button>
+                    </div>
+
+                    {slides.length === 0 && (
+                      <div className="text-center py-8 text-gray-400 border-2 border-dashed rounded-lg">
+                        <ImageIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">Chưa có slide nào</p>
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      {slides.map((slide: any, index: number) => (
+                        <div
+                          key={slide.id}
+                          className="border rounded-lg p-3 space-y-2 hover:border-blue-300 transition"
+                        >
+                          <div className="flex items-start gap-2">
+                            <div
+                              className="w-16 h-16 rounded bg-cover bg-center shrink-0"
+                              style={{ backgroundImage: `url(${slide.image})` }}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium truncate">{slide.title}</p>
+                              <p className="text-xs text-gray-500 truncate">{slide.subtitle}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEditSlide(index)}
+                              className="h-7 text-xs flex-1"
+                            >
+                              Sửa
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleMoveSlide(index, 'up')}
+                              disabled={index === 0}
+                              className="h-7 w-7 p-0"
+                            >
+                              <MoveUp className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleMoveSlide(index, 'down')}
+                              disabled={index === slides.length - 1}
+                              className="h-7 w-7 p-0"
+                            >
+                              <MoveDown className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDeleteSlide(index)}
+                              className="h-7 w-7 p-0 text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Edit Slide Dialog */}
+                  <Dialog open={editingSlideIndex !== null} onOpenChange={(open) => {
+                    if (!open) {
+                      setEditingSlideIndex(null);
+                      setSlideFormData(null);
+                    }
+                  }}>
+                    <DialogContent className="flex flex-col max-h-[90vh] w-[95vw] max-w-2xl p-0">
+                      <DialogHeader className="px-4 sm:px-6 py-4 border-b shrink-0">
+                        <DialogTitle className="text-lg sm:text-xl">
+                          {editingSlideIndex !== null && editingSlideIndex >= slides.length ? 'Thêm slide mới' : 'Chỉnh sửa slide'}
+                        </DialogTitle>
+                        <DialogDescription className="text-sm text-gray-500">
+                          Cập nhật thông tin slide cho carousel
+                        </DialogDescription>
+                      </DialogHeader>
+
+                      <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">URL hình ảnh</Label>
+                            <Input
+                              placeholder="https://placehold.co/1200x600"
+                              value={slideFormData?.image || ''}
+                              onChange={(e) => setSlideFormData({ ...slideFormData, image: e.target.value })}
+                            />
+                            {slideFormData?.image && (
+                              <div
+                                className="w-full h-32 rounded bg-cover bg-center border"
+                                style={{ backgroundImage: `url(${slideFormData.image})` }}
+                              />
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Tiêu đề chính</Label>
+                            <Input
+                              placeholder="CÂU CHUYỆN"
+                              value={slideFormData?.title || ''}
+                              onChange={(e) => setSlideFormData({ ...slideFormData, title: e.target.value })}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Tiêu đề phụ</Label>
+                            <Input
+                              placeholder="Về INNERBRIGHT"
+                              value={slideFormData?.subtitle || ''}
+                              onChange={(e) => setSlideFormData({ ...slideFormData, subtitle: e.target.value })}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-medium">Mô tả</Label>
+                            <Textarea
+                              placeholder="Mô tả chi tiết về slide..."
+                              value={slideFormData?.description || ''}
+                              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setSlideFormData({ ...slideFormData, description: e.target.value })}
+                              rows={3}
+                              className="resize-none"
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">Badge (tùy chọn)</Label>
+                              <Input
+                                placeholder="Bởi nhà đào tạo"
+                                value={slideFormData?.badge || ''}
+                                onChange={(e) => setSlideFormData({ ...slideFormData, badge: e.target.value })}
+                              />
+                            </div>
+
+                            <div className="space-y-2">
+                              <Label className="text-sm font-medium">Badge Highlight (tùy chọn)</Label>
+                              <Input
+                                placeholder="CHLOE QUÝ CHÂU"
+                                value={slideFormData?.badgeHighlight || ''}
+                                onChange={(e) => setSlideFormData({ ...slideFormData, badgeHighlight: e.target.value })}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <DialogFooter className="px-4 sm:px-6 py-4 border-t shrink-0 flex-row gap-2 justify-end">
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setEditingSlideIndex(null);
+                            setSlideFormData(null);
+                          }}
+                          className="min-w-20"
+                        >
+                          Hủy
+                        </Button>
+                        <Button
+                          onClick={handleSaveSlide}
+                          className="min-w-20"
+                        >
+                          Lưu
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              );
+            })()}
+
             {selectedBlock.type === 'text' && (
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Nội dung văn bản</Label>
