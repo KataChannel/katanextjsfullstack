@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, Home } from "lucide-react";
+import { Menu, X, Search, User } from "lucide-react";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { useSession } from "next-auth/react";
 
 interface MenuItem {
@@ -24,6 +25,7 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [menus, setMenus] = useState<MenuItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -51,50 +53,90 @@ export function Header() {
       });
   }, [status, session]);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Global">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between gap-4">
           {/* Logo */}
-          <div className="flex lg:flex-1">
-            <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-2">
-              {settings?.logo && (
+          <div className="shrink-0">
+            <Link href="/" className="flex items-center">
+              {settings?.logo ? (
                 <img 
                   src={settings.logo} 
                   alt={settings.logoAlt || 'Logo'} 
-                  className="h-8 sm:h-10 w-auto"
+                  className="h-12 w-auto"
                 />
-              )}
-              {!settings?.logo && (
-                <span className="text-xl sm:text-2xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                  Taza Group
-                </span>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                    <span className="text-white font-bold text-xl">IB</span>
+                  </div>
+                  <div className="hidden sm:block">
+                    <div className="text-lg font-bold text-blue-800">InnerBright</div>
+                    <div className="text-xs text-gray-600">Training & Coaching</div>
+                  </div>
+                </div>
               )}
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex md:gap-x-6 lg:gap-x-8">
+          {/* Desktop Navigation - Now in center */}
+          <div className="hidden xl:flex xl:items-center xl:gap-1">
             {menus.map((item) => (
               <Link
                 key={item.id}
                 href={item.url}
-                className="text-sm lg:text-base font-medium text-muted-foreground hover:text-primary transition-colors"
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all whitespace-nowrap"
               >
                 {item.label}
               </Link>
             ))}
           </div>
 
-          {/* CTA Button Desktop */}
-          <div className="hidden md:flex md:flex-1 md:justify-end">
-            <Button asChild>
-              <Link href="/admin">Quản trị</Link>
+          {/* Search Bar - Desktop */}
+          <div className="hidden lg:flex flex-1 max-w-md">
+            <form onSubmit={handleSearch} className="relative w-full">
+              <Input
+                type="search"
+                placeholder="Tìm kiếm ..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-4 pr-10 py-2 rounded-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+              />
+              <Button
+                type="submit"
+                size="icon"
+                variant="ghost"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+              >
+                <Search className="h-4 w-4 text-gray-500" />
+              </Button>
+            </form>
+          </div>
+
+          {/* User Icon - Desktop */}
+          <div className="hidden md:flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+              className="rounded-full h-10 w-10"
+            >
+              <Link href={session ? "/admin" : "/auth/login"}>
+                <User className="h-5 w-5 text-gray-600" />
+              </Link>
             </Button>
           </div>
 
           {/* Mobile menu button */}
-          <div className="flex md:hidden">
+          <div className="flex xl:hidden">
             <Button
               variant="ghost"
               size="icon"
@@ -112,22 +154,46 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-2 border-t">
+          <div className="xl:hidden py-4 space-y-2 border-t">
+            {/* Mobile Search */}
+            <form onSubmit={handleSearch} className="px-4 pb-2">
+              <div className="relative">
+                <Input
+                  type="search"
+                  placeholder="Tìm kiếm ..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-4 pr-10 rounded-full"
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                >
+                  <Search className="h-4 w-4" />
+                </Button>
+              </div>
+            </form>
+
+            {/* Mobile Menu Items */}
             {menus.map((item) => (
               <Link
                 key={item.id}
                 href={item.url}
-                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-muted-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors"
+                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <Home className="h-5 w-5" />
                 {item.label}
               </Link>
             ))}
+            
+            {/* Mobile User Link */}
             <div className="px-4 pt-2">
-              <Button asChild className="w-full">
-                <Link href="/admin" onClick={() => setMobileMenuOpen(false)}>
-                  Quản trị
+              <Button asChild className="w-full" variant="outline">
+                <Link href={session ? "/admin" : "/auth/login"} onClick={() => setMobileMenuOpen(false)}>
+                  <User className="h-4 w-4 mr-2" />
+                  {session ? "Quản trị" : "Đăng nhập"}
                 </Link>
               </Button>
             </div>
