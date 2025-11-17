@@ -83,75 +83,75 @@ export default function NewPageV2() {
   };
 
   return (
-    <>
-      {/* Header */}
-      <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 justify-between">
-        <div className="flex items-center gap-4">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      {/* Header - Sticky */}
+      <div className="h-14 bg-background border-b flex items-center px-4 justify-between shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4">
           <Link href="/admin/pages-v2">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              <span className="hidden sm:inline">Quay lại</span>
             </Button>
           </Link>
           <div>
-            <h1 className="font-semibold text-gray-900">New Page</h1>
-            <p className="text-xs text-gray-500">Block Editor V2</p>
+            <h1 className="text-sm sm:text-base font-semibold">Tạo trang mới</h1>
+            <p className="text-xs text-muted-foreground hidden sm:block">Block Editor V2</p>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Block Editor */}
-      <BlockEditor onSave={handleSaveClick} />
-
-      {/* Save Dialog */}
+      {/* Block Editor - Fullscreen */}
+      <div className="flex-1 overflow-hidden">
+        <BlockEditor onSave={handleSaveClick} />
+      </div>      {/* Save Dialog */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Save New Page</DialogTitle>
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle>Lưu trang mới</DialogTitle>
             <DialogDescription>
-              Enter page details to save as draft
+              Nhập thông tin trang để lưu dưới dạng bản nháp
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="title">Page Title</Label>
+              <Label htmlFor="title">Tiêu đề trang *</Label>
               <Input
                 id="title"
-                placeholder="My Awesome Page"
+                placeholder="Trang tuyệt vời của tôi"
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="slug">URL Slug</Label>
+              <Label htmlFor="slug">URL Slug *</Label>
               <Input
                 id="slug"
-                placeholder="my-awesome-page"
+                placeholder="trang-tuyet-voi-cua-toi"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
               />
-              <p className="text-xs text-gray-500">
-                Page will be available at: /{slug}
+              <p className="text-xs text-muted-foreground">
+                Trang sẽ có URL: /{slug}
               </p>
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="border-t pt-4">
             <Button
               variant="outline"
               onClick={() => setShowSaveDialog(false)}
               disabled={saving}
             >
-              Cancel
+              Hủy
             </Button>
             <Button onClick={handleSave} disabled={saving}>
-              {saving ? 'Saving...' : 'Save as Draft'}
+              {saving ? 'Đang lưu...' : 'Lưu bản nháp'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }

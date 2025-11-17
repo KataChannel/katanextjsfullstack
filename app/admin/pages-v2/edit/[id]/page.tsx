@@ -143,10 +143,10 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading page...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Đang tải trang...</p>
         </div>
       </div>
     );
@@ -154,11 +154,11 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
 
   if (!page) {
     return (
-      <div className="h-screen flex items-center justify-center">
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Page not found</h2>
+          <h2 className="text-2xl font-bold mb-2">Không tìm thấy trang</h2>
           <Link href="/admin/pages-v2">
-            <Button>Back to Pages</Button>
+            <Button>Quay lại danh sách</Button>
           </Link>
         </div>
       </div>
@@ -166,39 +166,39 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
   }
 
   return (
-    <>
-      {/* Header */}
-      <div className="h-14 bg-white border-b border-gray-200 flex items-center px-4 justify-between">
-        <div className="flex items-center gap-4">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      {/* Header - Sticky */}
+      <div className="h-14 bg-background border-b flex items-center px-4 justify-between shrink-0">
+        <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
           <Link href="/admin/pages-v2">
             <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              <ArrowLeft className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Quay lại</span>
             </Button>
           </Link>
-          <div>
-            <h1 className="font-semibold text-gray-900">{title}</h1>
-            <p className="text-xs text-gray-500">/{slug}</p>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-sm sm:text-base font-semibold truncate">{title}</h1>
+            <p className="text-xs text-muted-foreground truncate hidden sm:block">/{slug}</p>
           </div>
-          <Badge variant={published ? 'default' : 'secondary'}>
-            {published ? 'Published' : 'Draft'}
+          <Badge variant={published ? 'default' : 'secondary'} className="shrink-0">
+            {published ? 'Đã xuất bản' : 'Bản nháp'}
           </Badge>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowSettingsDialog(true)}
           >
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
+            <Settings className="w-4 h-4 sm:mr-2" />
+            <span className="hidden sm:inline">Cài đặt</span>
           </Button>
           
           <Link href={published ? `/${slug}` : `/${slug}?preview=true`} target="_blank">
             <Button variant="outline" size="sm">
-              <Eye className="w-4 h-4 mr-2" />
-              {published ? 'View Live' : 'Preview'}
+              <Eye className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">{published ? 'Xem live' : 'Xem trước'}</span>
             </Button>
           </Link>
           
@@ -207,32 +207,34 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
             size="sm"
             onClick={handlePublishToggle}
           >
-            {published ? 'Unpublish' : 'Publish'}
+            {published ? 'Ẩn' : 'Xuất bản'}
           </Button>
         </div>
       </div>
 
-      {/* Block Editor */}
-      <BlockEditor
-        pageId={id}
-        initialBlocks={currentBlocks}
-        onSave={handleSaveClick}
-      />
+      {/* Block Editor - Fullscreen */}
+      <div className="flex-1 overflow-hidden">
+        <BlockEditor
+          pageId={id}
+          initialBlocks={currentBlocks}
+          onSave={handleSaveClick}
+        />
+      </div>
 
-      {/* Settings Dialog */}
+      {/* Settings Dialog - Mobile First with Scrollable Content */}
       <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Page Settings</DialogTitle>
+        <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+          <DialogHeader className="border-b pb-4">
+            <DialogTitle>Cài đặt trang</DialogTitle>
             <DialogDescription>
-              Update page metadata and SEO settings
+              Cập nhật metadata và SEO cho trang
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="edit-title">Page Title</Label>
+                <Label htmlFor="edit-title">Tiêu đề trang *</Label>
                 <Input
                   id="edit-title"
                   value={title}
@@ -241,7 +243,7 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-slug">URL Slug</Label>
+                <Label htmlFor="edit-slug">URL Slug *</Label>
                 <Input
                   id="edit-slug"
                   value={slug}
@@ -254,7 +256,7 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
               <Label htmlFor="meta-title">Meta Title (SEO)</Label>
               <Input
                 id="meta-title"
-                placeholder="Leave empty to use page title"
+                placeholder="Để trống để sử dụng tiêu đề trang"
                 value={metaTitle}
                 onChange={(e) => setMetaTitle(e.target.value)}
               />
@@ -264,19 +266,19 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
               <Label htmlFor="meta-description">Meta Description (SEO)</Label>
               <Input
                 id="meta-description"
-                placeholder="Brief description for search engines"
+                placeholder="Mô tả ngắn gọn cho công cụ tìm kiếm"
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
               />
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="border-t pt-4">
             <Button
               variant="outline"
               onClick={() => setShowSettingsDialog(false)}
             >
-              Cancel
+              Hủy
             </Button>
             <Button
               onClick={() => {
@@ -286,11 +288,11 @@ export default function EditPageV2({ params }: { params: Promise<{ id: string }>
               disabled={saving}
             >
               <Save className="w-4 h-4 mr-2" />
-              {saving ? 'Saving...' : 'Save Settings'}
+              {saving ? 'Đang lưu...' : 'Lưu cài đặt'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
