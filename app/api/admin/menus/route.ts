@@ -22,12 +22,14 @@ export async function GET(request: Request) {
       );
     }
 
-    // Lấy domain từ query parameter
+    // Lấy domain và position từ query parameter
     const { searchParams } = new URL(request.url);
-    const domain = searchParams.get('domain') || 'innerbright.vn';
+    const domain = searchParams.get('domain') || undefined;
+    const position = searchParams.get('position');
     const prisma = await getPrisma(domain);
 
     const menus = await prisma.menu.findMany({
+      where: position ? { position: position as any } : undefined,
       orderBy: { order: 'asc' },
       include: {
         parent: true,

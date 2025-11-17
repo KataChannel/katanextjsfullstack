@@ -21,8 +21,25 @@ import {
   Globe,
   Menu as MenuIcon,
   Blocks,
+  LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+// Icon mapping từ string name sang component
+const iconMap: Record<string, LucideIcon> = {
+  LayoutDashboard,
+  FileText,
+  Layout,
+  Image,
+  Settings,
+  BarChart3,
+  Users,
+  Menu: MenuIcon,
+  Shield,
+  Globe,
+  Blocks,
+  Palette,
+};
 
 interface MenuItem {
   id: string;
@@ -64,19 +81,21 @@ export function AdminSidebar() {
         const response = await fetch('/api/admin/menus?position=ADMIN');
         if (response.ok) {
           const data = await response.json();
-          // ✅ Fix: Ensure data is array and has items
           if (Array.isArray(data) && data.length > 0) {
             setAdminMenus(data);
             setUseDefaultMenu(false);
           } else {
+            console.warn('⚠️ No admin menus found in database. Run: bun run scripts/seed-admin-menu.ts');
             setAdminMenus([]);
-            setUseDefaultMenu(true); // Use default if no menus found
+            setUseDefaultMenu(true);
           }
+        } else {
+          console.error('Failed to fetch admin menus:', response.status);
+          setUseDefaultMenu(true);
         }
       } catch (error) {
         console.error('Error fetching admin menus:', error);
-        setAdminMenus([]); // ✅ Fallback to empty array
-        setUseDefaultMenu(true); // Keep using default menu on error
+        setUseDefaultMenu(true);
       }
     };
     fetchAdminMenus();
@@ -102,9 +121,9 @@ export function AdminSidebar() {
   // Use dynamic menus if available, otherwise fallback to default
   const menuItems = useDefaultMenu ? defaultMenuItems : adminMenus.map(menu => ({
     title: menu.label,
-    icon: LayoutDashboard, // Default icon, can be mapped from menu.icon later
+    icon: menu.icon ? (iconMap[menu.icon] || LayoutDashboard) : LayoutDashboard,
     href: menu.url,
-    exact: false
+    exact: menu.url === '/admin'
   }));
 
   return (

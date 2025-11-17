@@ -22,14 +22,14 @@ import {
   PopoverTrigger,
 } from "./ui/popover";
 
-const adminNavigation = [
-  { name: "Tổng quan", href: "/admin", icon: LayoutDashboard },
-  { name: "Quản lý Nội dung", href: "/admin/content", icon: FileText },
-  { name: "Page Builder", href: "/admin/page-builder", icon: LayoutDashboard },
-  { name: "Thư viện Media", href: "/admin/media", icon: Image },
-  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-  { name: "Cài đặt SEO", href: "/admin/seo-settings", icon: Settings },
-  { name: "Người dùng", href: "/admin/users", icon: Users },
+const adminNavigation:any = [
+  // { name: "Tổng quan", href: "/admin", icon: LayoutDashboard },
+  // { name: "Quản lý Nội dung", href: "/admin/content", icon: FileText },
+  // { name: "Page Builder", href: "/admin/page-builder", icon: LayoutDashboard },
+  // { name: "Thư viện Media", href: "/admin/media", icon: Image },
+  // { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  // { name: "Cài đặt SEO", href: "/admin/seo-settings", icon: Settings },
+  // { name: "Người dùng", href: "/admin/users", icon: Users },
 ];
 
 export function AdminHeader() {
@@ -119,7 +119,7 @@ export function AdminHeader() {
         {mobileMenuOpen && (
           <div className="lg:hidden absolute top-16 left-0 right-0 bg-background border-b shadow-lg">
             <div className="py-4 px-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
-              {adminNavigation.map((item) => {
+              {adminNavigation.map((item:any) => {
                 const Icon = item.icon;
                 return (
                   <Link
