@@ -1,4 +1,5 @@
 import { CarouselComponent } from '@/components/CarouselComponent';
+import { CarouselBlock } from '@/components/carousel-block';
 
 interface PageContent {
   id: string;
@@ -46,9 +47,6 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
     return null;
   }
 
-  // Import carousel dynamically for client component
-  const Carousel = require('@/components/carousel').Carousel;
-
   return (
     <div className="space-y-6">
       {blocks.map((block: any) => {
@@ -60,13 +58,12 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
             const interval = block.content?.interval || 5000;
             
             return (
-              <div key={block.id} className="-mx-4 sm:-mx-6 lg:-mx-8">
-                <Carousel 
-                  slides={slides}
-                  autoplay={autoplay}
-                  interval={interval}
-                />
-              </div>
+              <CarouselBlock
+                key={block.id}
+                slides={slides}
+                autoplay={autoplay}
+                interval={interval}
+              />
             );
 
           case 'heading':

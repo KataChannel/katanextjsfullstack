@@ -2,6 +2,7 @@
 
 /**
  * Block Sidebar - Block library and templates
+ * Mobile-first with overlay support
  */
 
 import { useState, useEffect } from 'react';
@@ -21,15 +22,20 @@ import {
   Star,
   Search,
   Loader2,
+  X,
+  Menu,
+  ChevronLeft,
+  Presentation,
 } from 'lucide-react';
 import type { ElementBlockType } from '@/lib/blocks/types';
 
 const ELEMENT_BLOCKS: Array<{
-  type: ElementBlockType;
+  type: ElementBlockType | 'carousel';
   label: string;
   icon: any;
   description: string;
 }> = [
+  { type: 'carousel', label: 'Carousel', icon: Presentation, description: 'Image slideshow' },
   { type: 'text', label: 'Text', icon: Type, description: 'Paragraph or heading' },
   { type: 'image', label: 'Image', icon: Image, description: 'Single image' },
   { type: 'button', label: 'Button', icon: MousePointerClick, description: 'CTA button' },
@@ -149,7 +155,12 @@ interface BlockTemplate {
   downloads: number;
 }
 
-export function BlockSidebar() {
+interface BlockSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function BlockSidebar({ isOpen = true, onClose }: BlockSidebarProps) {
   const [search, setSearch] = useState('');
   const [templateSearch, setTemplateSearch] = useState('');
   const [templates, setTemplates] = useState<BlockTemplate[]>([]);
@@ -199,127 +210,199 @@ export function BlockSidebar() {
   });
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">Blocks</h2>
-        <p className="text-xs text-gray-500 mt-1">Drag & drop to canvas</p>
+    <>
+      {/* Mobile Overlay Backdrop */}
+      {isOpen && onClose && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar Panel - Mobile First */}
+      <div
+        className={`
+          fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto
+          w-full sm:w-96 lg:w-80 bg-white
+          border-r border-gray-200 flex flex-col
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          shadow-2xl lg:shadow-none
+        `}
+      >
+        {/* Header - Mobile Optimized */}
+        <div className="px-4 py-3 lg:py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {onClose && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onClose}
+                  className="lg:hidden -ml-2"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </Button>
+              )}
+              <div>
+                <h2 className="text-base lg:text-lg font-semibold text-gray-900">
+                  Blocks
+                </h2>
+                <p className="text-xs text-gray-500 mt-0.5 hidden sm:block">
+                  Kéo thả vào canvas
+                </p>
+              </div>
+            </div>
+            {onClose && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="lg:hidden"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Tabs - Mobile Optimized */}
+        <Tabs defaultValue="elements" className="flex-1 flex flex-col min-h-0">
+          <div className="px-4 pt-3 lg:pt-4 shrink-0">
+            <TabsList className="w-full grid grid-cols-3 h-9">
+              <TabsTrigger value="elements" className="text-xs sm:text-sm">
+                Phần tử
+              </TabsTrigger>
+              <TabsTrigger value="templates" className="text-xs sm:text-sm">
+                Mẫu
+              </TabsTrigger>
+              <TabsTrigger value="saved" className="text-xs sm:text-sm">
+                Đã lưu
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* Elements Tab */}
+          <TabsContent value="elements" className="flex-1 flex flex-col mt-0 min-h-0">
+            <div className="px-4 pt-3 pb-2 shrink-0">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Tìm kiếm blocks..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-9 h-9 text-sm"
+                />
+              </div>
+            </div>
+
+            {/* Block list - Scrollable */}
+            <div className="flex-1 px-4 pb-4 overflow-y-auto">
+              <div className="space-y-2">
+                {filteredBlocks.map(block => (
+                  <DraggableBlock key={block.type} {...block} />
+                ))}
+              </div>
+
+              {filteredBlocks.length === 0 && (
+                <div className="text-center py-12 text-gray-400">
+                  <Search className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Không tìm thấy blocks</p>
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          {/* Templates Tab */}
+          <TabsContent value="templates" className="flex-1 flex flex-col mt-0 min-h-0">
+            <div className="px-4 pt-3 pb-2 shrink-0 space-y-3">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Input
+                  placeholder="Tìm mẫu..."
+                  value={templateSearch}
+                  onChange={(e) => setTemplateSearch(e.target.value)}
+                  className="pl-9 h-9 text-sm"
+                />
+              </div>
+
+              {/* Category filter - Horizontal scroll on mobile */}
+              <div className="w-full overflow-x-auto whitespace-nowrap">
+                <div className="flex gap-2 pb-1">
+                  <Button
+                    size="sm"
+                    variant={selectedCategory === 'all' ? 'default' : 'outline'}
+                    onClick={() => setSelectedCategory('all')}
+                    className="h-8 text-xs"
+                  >
+                    Tất cả
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedCategory === 'element' ? 'default' : 'outline'}
+                    onClick={() => setSelectedCategory('element')}
+                    className="h-8 text-xs"
+                  >
+                    Phần tử
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedCategory === 'template' ? 'default' : 'outline'}
+                    onClick={() => setSelectedCategory('template')}
+                    className="h-8 text-xs"
+                  >
+                    Template
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={selectedCategory === 'custom' ? 'default' : 'outline'}
+                    onClick={() => setSelectedCategory('custom')}
+                    className="h-8 text-xs"
+                  >
+                    Tùy chỉnh
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Loading state */}
+            {loadingTemplates && (
+              <div className="flex-1 flex items-center justify-center text-gray-400">
+                <Loader2 className="w-6 h-6 animate-spin" />
+              </div>
+            )}
+
+            {/* Templates list - Scrollable */}
+            {!loadingTemplates && (
+              <div className="flex-1 px-4 pb-4 overflow-y-auto">
+                <div className="space-y-2">
+                  {filteredTemplates.map(template => (
+                    <DraggableTemplate key={template.id} template={template} />
+                  ))}
+                </div>
+
+                {/* Empty state */}
+                {filteredTemplates.length === 0 && (
+                  <div className="text-center py-12 text-gray-400">
+                    <Box className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Không tìm thấy mẫu</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Saved Tab */}
+          <TabsContent value="saved" className="flex-1 flex items-center justify-center mt-0">
+            <div className="text-center py-12 text-gray-400">
+              <Star className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">Chưa có blocks đã lưu</p>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-
-      {/* Tabs */}
-      <Tabs defaultValue="elements" className="flex-1 flex flex-col">
-        <TabsList className="w-full grid grid-cols-3 mx-4 mt-4">
-          <TabsTrigger value="elements">Elements</TabsTrigger>
-          <TabsTrigger value="templates">Templates</TabsTrigger>
-          <TabsTrigger value="saved">Saved</TabsTrigger>
-        </TabsList>
-
-        {/* Elements Tab */}
-        <TabsContent value="elements" className="flex-1 overflow-auto p-4 mt-0">
-          {/* Search */}
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              placeholder="Search blocks..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-
-          {/* Block list */}
-          <div className="space-y-2">
-            {filteredBlocks.map(block => (
-              <DraggableBlock key={block.type} {...block} />
-            ))}
-          </div>
-
-          {filteredBlocks.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              <Search className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No blocks found</p>
-            </div>
-          )}
-        </TabsContent>
-
-        {/* Templates Tab */}
-        <TabsContent value="templates" className="flex-1 overflow-auto p-4 mt-0">
-          {/* Search */}
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              placeholder="Search templates..."
-              value={templateSearch}
-              onChange={(e) => setTemplateSearch(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-
-          {/* Category filter */}
-          <div className="flex gap-2 mb-4">
-            <Button
-              size="sm"
-              variant={selectedCategory === 'all' ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory('all')}
-            >
-              All
-            </Button>
-            <Button
-              size="sm"
-              variant={selectedCategory === 'element' ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory('element')}
-            >
-              Elements
-            </Button>
-            <Button
-              size="sm"
-              variant={selectedCategory === 'template' ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory('template')}
-            >
-              Templates
-            </Button>
-            <Button
-              size="sm"
-              variant={selectedCategory === 'custom' ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory('custom')}
-            >
-              Custom
-            </Button>
-          </div>
-
-          {/* Loading state */}
-          {loadingTemplates && (
-            <div className="flex items-center justify-center py-8 text-gray-400">
-              <Loader2 className="w-6 h-6 animate-spin" />
-            </div>
-          )}
-
-          {/* Templates list */}
-          {!loadingTemplates && (
-            <div className="space-y-2">
-              {filteredTemplates.map(template => (
-                <DraggableTemplate key={template.id} template={template} />
-              ))}
-            </div>
-          )}
-
-          {/* Empty state */}
-          {!loadingTemplates && filteredTemplates.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              <Box className="w-12 h-12 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No templates found</p>
-            </div>
-          )}
-        </TabsContent>
-
-        {/* Saved Tab */}
-        <TabsContent value="saved" className="flex-1 overflow-auto p-4 mt-0">
-          <div className="text-center py-8 text-gray-400">
-            <Star className="w-12 h-12 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No saved blocks yet</p>
-          </div>
-        </TabsContent>
-      </Tabs>
-    </div>
+    </>
   );
 }

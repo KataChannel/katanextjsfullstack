@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { PageLayoutWrapper } from '@/components/page-layout-wrapper';
 import { auth } from '@/lib/auth';
+import { CarouselBlock } from '@/components/carousel-block';
 
 interface PageProps {
   params: Promise<{
@@ -486,9 +487,6 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
     return null;
   }
 
-  // Import carousel dynamically for client component
-  const Carousel = require('@/components/carousel').Carousel;
-
   return (
     <div className="space-y-6">
       {blocks.map((block: any, index: number) => {
@@ -502,13 +500,12 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const interval = block.content?.interval || 5000;
             
             return (
-              <div key={blockId} className="-mx-4 sm:-mx-6 lg:-mx-8">
-                <Carousel 
-                  slides={slides}
-                  autoplay={autoplay}
-                  interval={interval}
-                />
-              </div>
+              <CarouselBlock
+                key={blockId}
+                slides={slides}
+                autoplay={autoplay}
+                interval={interval}
+              />
             );
 
           

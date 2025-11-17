@@ -35,6 +35,8 @@ interface BlockEditorProps {
 export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEditorProps) {
   const [activeDragId, setActiveDragId] = useState<string | null>(null);
   const [showTemplateDialog, setShowTemplateDialog] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [inspectorOpen, setInspectorOpen] = useState(true);
   const [templateData, setTemplateData] = useState({
     name: '',
     description: '',
@@ -191,6 +193,21 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
   // Helper to get default content
   const getDefaultContent = (type: string) => {
     const defaults: Record<string, any> = {
+      carousel: {
+        autoplay: true,
+        interval: 5000,
+        slides: [
+          {
+            id: 'slide-1',
+            image: 'https://placehold.co/1200x600',
+            title: 'Slide 1',
+            subtitle: 'Tiêu đề phụ',
+            description: 'Mô tả slide',
+            badge: 'Label',
+            badgeHighlight: 'Highlight',
+          },
+        ],
+      },
       text: { text: 'Enter text here...', tag: 'p' },
       image: { url: 'https://placehold.co/800x400', alt: 'Image' },
       button: { text: 'Click me', link: '#', variant: 'primary' },
@@ -206,6 +223,7 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
   // Helper to get default styles
   const getDefaultStyles = (type: string) => {
     const defaults: Record<string, any> = {
+      carousel: { element: 'w-full' },
       text: { element: 'text-base text-gray-900' },
       image: { element: 'w-full h-auto rounded-lg' },
       button: { element: 'inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition' },
@@ -294,13 +312,22 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
         {/* Main 3-panel layout */}
         <div className="flex-1 flex overflow-hidden">
           {/* Left Sidebar - Block library */}
-          <BlockSidebar />
+          <BlockSidebar 
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
 
           {/* Center Canvas - Main editing area */}
-          <BlockCanvas />
+          <BlockCanvas 
+            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            onToggleInspector={() => setInspectorOpen(!inspectorOpen)}
+          />
 
           {/* Right Inspector - Properties panel */}
-          <BlockInspector />
+          <BlockInspector 
+            isOpen={inspectorOpen}
+            onClose={() => setInspectorOpen(false)}
+          />
         </div>
       </div>
 
