@@ -46,10 +46,29 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
     return null;
   }
 
+  // Import carousel dynamically for client component
+  const Carousel = require('@/components/carousel').Carousel;
+
   return (
     <div className="space-y-6">
       {blocks.map((block: any) => {
         switch (block.type) {
+          case 'carousel':
+            // V2 carousel block
+            const slides = block.content?.slides || [];
+            const autoplay = block.content?.autoplay ?? true;
+            const interval = block.content?.interval || 5000;
+            
+            return (
+              <div key={block.id} className="-mx-4 sm:-mx-6 lg:-mx-8">
+                <Carousel 
+                  slides={slides}
+                  autoplay={autoplay}
+                  interval={interval}
+                />
+              </div>
+            );
+
           case 'heading':
             // V2 heading block - content can be string or object {text, level}
             const headingText = typeof block.content === 'string'
