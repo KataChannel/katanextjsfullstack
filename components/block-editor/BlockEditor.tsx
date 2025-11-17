@@ -318,10 +318,7 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
           />
 
           {/* Center Canvas - Main editing area */}
-          <BlockCanvas 
-            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-            onToggleInspector={() => setInspectorOpen(!inspectorOpen)}
-          />
+          <BlockCanvas />
 
           {/* Right Inspector - Properties panel */}
           <BlockInspector 

@@ -159,6 +159,91 @@ export function SortableBlockRenderer({ block }: SortableBlockRendererProps) {
           </div>
         );
 
+      case 'carousel': {
+        const slides = (block.content as any)?.slides || [];
+        const autoplay = (block.content as any)?.autoplay ?? true;
+        const interval = (block.content as any)?.interval || 5000;
+        
+        if (slides.length === 0) {
+          return (
+            <div className="w-full h-[400px] md:h-[500px] bg-linear-to-r from-blue-900 to-blue-600 rounded-lg flex items-center justify-center">
+              <div className="text-center text-white p-8">
+                <svg className="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-lg font-semibold mb-2">Carousel Block</p>
+                <p className="text-sm opacity-80">Chọn block và thêm slides trong Inspector</p>
+                <div className="mt-4 text-xs opacity-60">
+                  {autoplay ? `Tự động chuyển: ${interval}ms` : 'Không tự động chuyển'}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        // Preview first slide in canvas
+        const firstSlide = slides[0];
+        return (
+          <div className="w-full h-[400px] md:h-[500px] rounded-lg overflow-hidden relative">
+            {/* Background image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${firstSlide.image})`,
+              }}
+            />
+            
+            {/* Overlay gradient */}
+            <div className="absolute inset-0 bg-linear-to-r from-blue-900/90 via-blue-800/70 to-transparent" />
+
+            {/* Content preview */}
+            <div className="relative h-full flex items-center px-8">
+              <div className="max-w-2xl text-white space-y-3">
+                <div className="space-y-1">
+                  <h2 className="text-2xl md:text-3xl font-bold text-orange-400">
+                    {firstSlide.title}
+                  </h2>
+                  <h3 className="text-3xl md:text-4xl font-bold">
+                    {firstSlide.subtitle}
+                  </h3>
+                </div>
+                <p className="text-sm md:text-base text-gray-200 line-clamp-2">
+                  {firstSlide.description}
+                </p>
+                {firstSlide.badge && (
+                  <div className="inline-flex items-center gap-2 bg-blue-600/80 backdrop-blur-sm px-4 py-2 rounded-lg text-sm">
+                    <span>{firstSlide.badge}</span>
+                    {firstSlide.badgeHighlight && (
+                      <span className="font-bold">{firstSlide.badgeHighlight}</span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Dots indicator */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+              {slides.map((_: any, index: number) => (
+                <div
+                  key={index}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === 0
+                      ? 'bg-white w-8'
+                      : 'bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Info badge */}
+            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs">
+              {slides.length} slides
+              {autoplay && ` • Auto ${interval}ms`}
+            </div>
+          </div>
+        );
+      }
+
       default:
         return (
           <div className="p-4 bg-gray-100 rounded text-sm text-gray-500">
