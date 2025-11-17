@@ -23,10 +23,9 @@ export const metadata: Metadata = {
 
 async function getPages() {
   const prisma = await getPrisma();
-  return await prisma.page.findMany({
-    where: {
-      version: 2,
-    },
+  
+  // Fetch all pages and filter manually (Prisma JSON filter limitation)
+  const allPages = await prisma.page.findMany({
     orderBy: {
       updatedAt: 'desc',
     },
@@ -38,6 +37,23 @@ async function getPages() {
         },
       },
     },
+  });
+  
+  // Filter pages with version 2 or non-empty blocksV2 data
+  return allPages.filter(page => {
+    if (page.version === 2) return true;
+    
+    // Check if blocksV2 is a non-empty array
+    if (page.blocksV2 !== null && page.blocksV2 !== undefined) {
+      try {
+        const blocks = Array.isArray(page.blocksV2) ? page.blocksV2 : [];
+        return blocks.length > 0;
+      } catch {
+        return false;
+      }
+    }
+    
+    return false;
   });
 }
 

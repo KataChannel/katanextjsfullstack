@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Facebook, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Youtube, Mail, Phone } from "lucide-react";
+import { SiTiktok } from "react-icons/si";
 
 interface SocialLink {
-  platform: string;
-  url: string;
+  name?: string;
+  platform?: string;
+  href?: string;
+  url?: string;
   icon: string;
 }
 
@@ -20,22 +23,27 @@ interface MenuItem {
 }
 
 interface WebsiteSettings {
+  logo?: string;
+  logoAlt?: string;
+  phone?: string;
+  email?: string;
   footerText?: string;
   footerHtml?: string;
   socialLinks?: SocialLink[];
 }
 
-const defaultSocialLinks = [
-  { name: "Facebook", href: "https://facebook.com/tazagroup", icon: Facebook },
-  { name: "Instagram", href: "https://instagram.com/tazagroup", icon: Instagram },
-  { name: "Youtube", href: "https://youtube.com/@tazagroup", icon: Youtube },
-];
+interface NormalizedSocialLink {
+  name: string;
+  href: string;
+  icon: string;
+}
 
-const iconMap: Record<string, any> = {
-  facebook: Facebook,
-  instagram: Instagram,
-  youtube: Youtube,
-};
+const defaultSocialLinks = [
+  { name: "Facebook", href: "https://facebook.com", icon: "facebook" },
+  { name: "Instagram", href: "https://instagram.com", icon: "instagram" },
+  { name: "TikTok", href: "https://tiktok.com", icon: "tiktok" },
+  { name: "Youtube", href: "https://youtube.com", icon: "youtube" },
+];
 
 export function Footer() {
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
@@ -51,124 +59,151 @@ export function Footer() {
     fetch('/api/menus?position=FOOTER')
       .then(res => res.json())
       .then(data => {
-        // ✅ Fix: Ensure data is array before setting
         if (Array.isArray(data)) {
           setFooterMenus(data);
         } else {
           setFooterMenus([]);
-          console.error('Footer menus data is not an array:', data);
         }
       })
       .catch(err => {
         console.error('Error loading footer menus:', err);
-        setFooterMenus([]); // ✅ Fallback to empty array on error
+        setFooterMenus([]);
       });
   }, []);
 
-  const socialLinks = settings?.socialLinks && settings.socialLinks.length > 0
+  const socialLinks: NormalizedSocialLink[] = settings?.socialLinks && settings.socialLinks.length > 0
     ? settings.socialLinks.map(link => ({
-        name: link.platform,
-        href: link.url,
-        icon: iconMap[link.icon.toLowerCase()] || Facebook,
+        name: link.name || link.platform || 'Social',
+        href: link.href || link.url || '#',
+        icon: link.icon || 'facebook'
       }))
     : defaultSocialLinks;
 
-  return (
-    <footer className="border-t bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {/* Custom Footer HTML */}
-        {settings?.footerHtml && (
-          <div 
-            className="mb-8" 
-            dangerouslySetInnerHTML={{ __html: settings.footerHtml }} 
-          />
-        )}
+  const getSocialIcon = (iconName: string) => {
+    const name = iconName.toLowerCase();
+    switch (name) {
+      case 'facebook':
+        return <Facebook className="h-5 w-5" />;
+      case 'instagram':
+        return <Instagram className="h-5 w-5" />;
+      case 'tiktok':
+        return <SiTiktok className="h-5 w-5" />;
+      case 'youtube':
+        return <Youtube className="h-5 w-5" />;
+      default:
+        return <Facebook className="h-5 w-5" />;
+    }
+  };
 
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <h3 className="text-xl font-bold bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Taza Group
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Hệ thống thẩm mỹ viện và spa hàng đầu Việt Nam với công nghệ hiện đại và đội ngũ chuyên gia.
-            </p>
-            
+  return (
+    <footer className="bg-gray-50 border-t border-gray-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          
+          {/* Column 1: Logo & Contact Info */}
+          <div className="space-y-6">
+            {/* Logo */}
+            <div>
+              {settings?.logo ? (
+                <img 
+                  src={settings.logo} 
+                  alt={settings.logoAlt || 'Logo'} 
+                  className="h-16 w-auto mb-4"
+                />
+              ) : (
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                    <span className="text-white font-bold text-xl">IB</span>
+                  </div>
+                  <div>
+                    <div className="text-lg font-bold text-gray-800">InnerBright</div>
+                    <div className="text-xs text-gray-600">Training & Coaching</div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Contact Info */}
-            <div className="space-y-2">
-              <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>123 Đường ABC, Quận 1, TP.HCM</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Phone className="h-4 w-4 shrink-0" />
-                <a href="tel:1900xxxx" className="hover:text-primary transition-colors">
-                  1900 xxxx
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-gray-700">
+                <Phone className="h-5 w-5 shrink-0" />
+                <a 
+                  href={`tel:${settings?.phone || '0908370968'}`} 
+                  className="hover:text-blue-600 transition-colors font-medium"
+                >
+                  {settings?.phone || '090 837 09 68'}
                 </a>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail className="h-4 w-4 shrink-0" />
-                <a href="mailto:contact@tazagroup.vn" className="hover:text-primary transition-colors">
-                  contact@tazagroup.vn
+              <div className="flex items-center gap-3 text-gray-700">
+                <Mail className="h-5 w-5 shrink-0" />
+                <a 
+                  href={`mailto:${settings?.email || 'info@innerbright.vn'}`}
+                  className="hover:text-blue-600 transition-colors"
+                >
+                  {settings?.email || 'info@innerbright.vn'}
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Footer Menus (Dynamic from Database) */}
-          {footerMenus.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-base font-semibold">Menu</h3>
-              <ul className="space-y-2">
-                {footerMenus.map((menu) => (
-                  <li key={menu.id}>
-                    <Link
-                      href={menu.url}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {menu.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Social Media */}
+          {/* Column 2: INNNER (First menu group) */}
           <div className="space-y-4">
-            <h3 className="text-base font-semibold">Theo dõi chúng tôi</h3>
-            <div className="flex gap-3">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center w-9 h-9 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground transition-colors"
-                    aria-label={social.name}
+            <h3 className="text-lg font-bold text-gray-800 uppercase">INNNER</h3>
+            <ul className="space-y-3">
+              {footerMenus.slice(0, 4).map((menu) => (
+                <li key={menu.id}>
+                  <Link
+                    href={menu.url}
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
                   >
-                    <Icon className="h-4 w-4" />
-                  </a>
-                );
-              })}
+                    {menu.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: OUR SERVICES (Second menu group) */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-gray-800 uppercase">OUR SERVICES</h3>
+            <ul className="space-y-3">
+              {footerMenus.slice(4, 9).map((menu) => (
+                <li key={menu.id}>
+                  <Link
+                    href={menu.url}
+                    className="text-gray-600 hover:text-blue-600 transition-colors"
+                  >
+                    {menu.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 4: Social Media Icons */}
+          <div className="flex lg:justify-end items-start">
+            <div className="flex gap-4">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                  aria-label={social.name}
+                >
+                  {getSocialIcon(social.icon)}
+                </a>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-8 border-t">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>{settings?.footerText || `© ${new Date().getFullYear()} Taza Group. Bảo lưu mọi quyền.`}</p>
-            <p className="text-center sm:text-right">
-              Thiết kế bởi{" "}
-              <Link href="/" className="text-primary hover:underline">
-                Taza Tech Team
-              </Link>
-            </p>
-          </div>
+        {/* Bottom Copyright */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          <p className="text-center text-sm text-gray-500 italic">
+            {settings?.footerText || 'Bản quyền InnerBright 2025 Bảo lưu mọi quyền'}
+          </p>
         </div>
       </div>
     </footer>

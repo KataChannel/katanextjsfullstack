@@ -5,8 +5,11 @@ import { getPrisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { extractDomain } from "@/lib/database";
 import Link from "next/link";
-import { ArrowRight, Sparkles, TrendingUp, Award, Clock } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Award, Clock, Star, Quote } from "lucide-react";
 import { CustomHomePage } from "@/components/custom-homepage";
+import { CarouselComponent } from "@/components/CarouselComponent";
+import { FrontendBlockRenderer } from "@/components/block-editor/FrontendBlockRenderer";
+import type { Block } from "@/lib/blocks/types";
 
 export default async function Home() {
   // Get current domain from proxy middleware (x-domain header)
@@ -62,7 +65,7 @@ export default async function Home() {
   }
 
   // Default homepage rendering
-  const [featuredPosts, stats] = await Promise.all([
+  const [featuredPosts, stats, customBlocks] = await Promise.all([
     prisma.post.findMany({
       where: { published: true },
       take: 3,
@@ -80,42 +83,116 @@ export default async function Home() {
       prisma.post.count({ where: { published: true } }),
       prisma.page.count({ where: { published: true } }),
       prisma.user.count(),
-    ])
+    ]),
+    // Fetch custom homepage blocks if any
+    prisma.page.findFirst({
+      where: { 
+        slug: 'homepage-blocks',
+        published: true 
+      },
+      select: {
+        blocks: true,
+      }
+    })
   ]);
   
   const [postsCount, pagesCount, usersCount] = stats;
 
+  // Hero carousel slides
+  const heroSlides = [
+    {
+      id: '1',
+      image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1600&h=600&fit=crop',
+      title: 'Làm đẹp tự nhiên, An toàn tuyệt đối',
+      description: 'Công nghệ hiện đại kết hợp bí quyết truyền thống',
+      alt: 'Taza Group Beauty Spa'
+    },
+    {
+      id: '2',
+      image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=1600&h=600&fit=crop',
+      title: 'Đội ngũ chuyên gia hàng đầu',
+      description: 'Nhiều năm kinh nghiệm trong ngành thẩm mỹ',
+      alt: 'Expert Team'
+    },
+    {
+      id: '3',
+      image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=1600&h=600&fit=crop',
+      title: 'Cam kết hiệu quả rõ rệt',
+      description: 'Hàng ngàn khách hàng tin tưởng và hài lòng',
+      alt: 'Customer Satisfaction'
+    }
+  ];
+
+  // Testimonials data
+  const testimonials = [
+    {
+      id: '1',
+      name: 'Nguyễn Thị Lan',
+      role: 'Khách hàng thân thiết',
+      content: 'Dịch vụ tuyệt vời, đội ngũ chuyên nghiệp. Tôi rất hài lòng với kết quả sau 3 tháng điều trị.',
+      rating: 5,
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
+    },
+    {
+      id: '2',
+      name: 'Trần Minh Anh',
+      role: 'CEO Startup',
+      content: 'Không gian sang trọng, nhân viên nhiệt tình. Đã giới thiệu cho nhiều bạn bè và đồng nghiệp.',
+      rating: 5,
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop'
+    },
+    {
+      id: '3',
+      name: 'Lê Hoàng Nam',
+      role: 'Diễn viên',
+      content: 'Chất lượng dịch vụ 5 sao, giá cả hợp lý. Taza Group là lựa chọn số 1 của tôi.',
+      rating: 5,
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'
+    },
+    {
+      id: '4',
+      name: 'Phạm Thu Hà',
+      role: 'Giảng viên',
+      content: 'Công nghệ hiện đại, hiệu quả vượt mong đợi. Cảm ơn đội ngũ Taza Group đã giúp tôi tự tin hơn.',
+      rating: 5,
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop'
+    }
+  ];
+
+  // Partner brands
+  const partners = [
+    { id: '1', name: 'Partner 1', logo: 'https://via.placeholder.com/150x80?text=Partner+1' },
+    { id: '2', name: 'Partner 2', logo: 'https://via.placeholder.com/150x80?text=Partner+2' },
+    { id: '3', name: 'Partner 3', logo: 'https://via.placeholder.com/150x80?text=Partner+3' },
+    { id: '4', name: 'Partner 4', logo: 'https://via.placeholder.com/150x80?text=Partner+4' },
+    { id: '5', name: 'Partner 5', logo: 'https://via.placeholder.com/150x80?text=Partner+5' },
+  ];
+
   return (
     <div className="min-h-screen">
-      <section className="relative overflow-hidden bg-linear-to-b from-primary/5 via-background to-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <Badge variant="secondary" className="mb-4">
-              <Sparkles className="h-3 w-3 mr-1" />
-              Chào mừng đến với Taza Group
-            </Badge>
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight">
-              Làm đẹp tự nhiên
-              <span className="block text-primary mt-2">An toàn - Hiệu quả</span>
-            </h1>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
-              Hệ thống thẩm mỹ viện và spa hàng đầu Việt Nam với công nghệ hiện đại, 
-              đội ngũ chuyên gia giàu kinh nghiệm và cam kết mang đến vẻ đẹp tự nhiên.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Button size="lg" asChild>
-                <Link href="/lien-he">
-                  Đặt lịch tư vấn
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/dich-vu">Xem dịch vụ</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
+      {/* Hero Carousel Section */}
+      <section className="relative w-full">
+        <CarouselComponent
+          slides={heroSlides}
+          autoPlay={true}
+          interval={5000}
+          showDots={true}
+          showArrows={true}
+          height={600}
+          className="w-full"
+        />
       </section>
+
+      {/* Custom Page Builder Blocks */}
+      {customBlocks?.blocks && (
+        <section className="py-8 sm:py-12">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            {(customBlocks.blocks as unknown as Block[]).map((block) => (
+              <FrontendBlockRenderer key={block.id} block={block} />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="py-8 sm:py-12 border-y bg-muted/30">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -207,6 +284,80 @@ export default async function Home() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Carousel Section */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-linear-to-b from-background to-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <Badge variant="secondary" className="mb-4">
+              <Star className="h-3 w-3 mr-1 fill-primary text-primary" />
+              Khách hàng nói gì về chúng tôi
+            </Badge>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">
+              Đánh giá từ khách hàng
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Hàng ngàn khách hàng tin tưởng và hài lòng với dịch vụ của Taza Group
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {testimonials.map((testimonial) => (
+                <Card key={testimonial.id} className="relative hover:shadow-lg transition-all duration-200">
+                  <CardContent className="p-6 space-y-4">
+                    <Quote className="h-8 w-8 text-primary/20" />
+                    <p className="text-sm sm:text-base text-muted-foreground italic">
+                      "{testimonial.content}"
+                    </p>
+                    <div className="flex items-center gap-1 text-yellow-500">
+                      {Array.from({ length: testimonial.rating }).map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-current" />
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-3 pt-4 border-t">
+                      <img
+                        src={testimonial.avatar}
+                        alt={testimonial.name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="font-semibold text-sm">{testimonial.name}</p>
+                        <p className="text-xs text-muted-foreground">{testimonial.role}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Partners/Brands Section */}
+      <section className="py-8 sm:py-12 border-y bg-muted/50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h3 className="text-xl sm:text-2xl font-bold mb-2">
+              Đối tác & Chứng nhận
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Được tin tưởng bởi các thương hiệu hàng đầu
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center justify-items-center">
+            {partners.map((partner) => (
+              <div key={partner.id} className="grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="h-12 sm:h-16 w-auto object-contain"
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>

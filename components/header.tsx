@@ -63,7 +63,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Global">
-        <div className="flex h-20 items-center justify-between gap-4">
+        {/* Top Row: Logo | Search | User */}
+        <div className="flex h-16 items-center justify-between gap-4 border-b border-gray-100">
           {/* Logo */}
           <div className="shrink-0">
             <Link href="/" className="flex items-center">
@@ -87,28 +88,15 @@ export function Header() {
             </Link>
           </div>
 
-          {/* Desktop Navigation - Now in center */}
-          <div className="hidden xl:flex xl:items-center xl:gap-1">
-            {menus.map((item) => (
-              <Link
-                key={item.id}
-                href={item.url}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all whitespace-nowrap"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
           {/* Search Bar - Desktop */}
-          <div className="hidden lg:flex flex-1 max-w-md">
+          <div className="hidden md:flex flex-1 max-w-2xl mx-auto">
             <form onSubmit={handleSearch} className="relative w-full">
               <Input
                 type="search"
                 placeholder="Tìm kiếm ..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-4 pr-10 py-2 rounded-full border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                className="w-full pl-4 pr-10 py-2 rounded-full border-gray-200 focus:border-blue-500 focus:ring-blue-500"
               />
               <Button
                 type="submit"
@@ -122,12 +110,12 @@ export function Header() {
           </div>
 
           {/* User Icon - Desktop */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 shrink-0">
             <Button
               variant="ghost"
               size="icon"
               asChild
-              className="rounded-full h-10 w-10"
+              className="rounded-full h-10 w-10 hover:bg-gray-100"
             >
               <Link href={session ? "/admin" : "/auth/login"}>
                 <User className="h-5 w-5 text-gray-600" />
@@ -136,7 +124,7 @@ export function Header() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="flex xl:hidden">
+          <div className="flex md:hidden shrink-0">
             <Button
               variant="ghost"
               size="icon"
@@ -150,6 +138,23 @@ export function Header() {
               )}
             </Button>
           </div>
+        </div>
+
+        {/* Bottom Row: Navigation Menu - Desktop Only */}
+        <div className="hidden md:flex items-center gap-1 py-3">
+          {menus.map((item, index) => (
+            <Link
+              key={item.id}
+              href={item.url}
+              className={`px-4 py-2 text-sm font-medium transition-all whitespace-nowrap rounded-lg ${
+                index === 0
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
         {/* Mobile Navigation */}
