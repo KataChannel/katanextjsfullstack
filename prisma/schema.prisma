@@ -206,45 +206,73 @@ model Page {
   @@map("pages")
 }
 
-model SeoSettings {
-  id               String  @id @default(uuid())
-  domain           String  @unique
-  siteName         String
-  siteDescription  String?
-  defaultOgImage   String?
-  twitterHandle    String?
-  googleAnalytics  String?
-  googleTagManager String?
-  facebookPixel    String?
-
-  // Homepage Settings
-  homePageType String? // 'page' | 'post' | null (default static homepage)
-  homePageId   String? // ID of page or post to use as homepage
-
-  // Structured Data
-  organizationSchema Json?
-  websiteSchema      Json?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("seo_settings")
-}
-
 model WebsiteSettings {
   id     String @id @default(uuid())
   domain String @unique
 
-  // Header Settings
+  // ========================================
+  // METADATA SETTINGS
+  // ========================================
+  siteName        String  @default("")
+  siteDescription String?
+  siteKeywords    String? // Comma separated keywords
+  siteFavicon     String? // Path to favicon
+  siteOgImage     String? // Default Open Graph image
+  
+  // Page metadata template
+  titleTemplate    String? // e.g., "%s | Site Name"
+  metaTitle        String? // Default meta title
+  metaDescription  String? // Default meta description
+  
+  // Social
+  twitterHandle    String? // @username
+  
+  // PWA Settings
+  manifestJson     Json? // PWA manifest configuration
+  themeColor       String? @default("#ffffff")
+  
+  // ========================================
+  // SEO & TRACKING
+  // ========================================
+  googleAnalytics  String?
+  googleTagManager String?
+  facebookPixel    String?
+  
+  // Homepage Settings
+  homePageType String? // 'page' | 'post' | null (default static homepage)
+  homePageId   String? // ID of page or post to use as homepage
+  
+  // Structured Data
+  organizationSchema Json?
+  websiteSchema      Json?
+  
+  // Robots
+  robotsTxt String? @db.Text // Custom robots.txt content
+
+  // ========================================
+  // HEADER SETTINGS
+  // ========================================
   logo           String?
   logoAlt        String?
+  logoWidth      Int? // Logo width in pixels
+  logoHeight     Int? // Logo height in pixels
   headerHtml     String? @db.Text
   navigationMenu Json? // Array of menu items: [{label, url, children}]
 
-  // Footer Settings
+  // ========================================
+  // FOOTER SETTINGS
+  // ========================================
   footerHtml  String? @db.Text
   footerText  String?
   socialLinks Json? // Array: [{platform, url, icon}]
+  
+  // ========================================
+  // ADVANCED SETTINGS
+  // ========================================
+  customCss  String? @db.Text // Custom CSS
+  customJs   String? @db.Text // Custom JavaScript
+  headerCode String? @db.Text // Code to inject in <head>
+  footerCode String? @db.Text // Code to inject before </body>
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

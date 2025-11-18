@@ -42,6 +42,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   trustHost: true, // Allow dynamic host detection
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' ? '.innerbright.vn' : undefined,
+      },
+    },
+  },
   pages: {
     signIn: "/auth/login",
     signOut: "/auth/login",
@@ -100,10 +112,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user, trigger, account }) {
       // Initial sign in - add user data to token
       if (user) {
         token.id = user.id;
+        token.email = user.email;
         token.role = user.role;
         token.emailVerified = user.emailVerified;
         
@@ -111,6 +124,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           userId: user.id,
           userEmail: user.email,
           role: user.role,
+          provider: account?.provider,
         });
       }
       
@@ -118,10 +132,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (trigger === "update") {
         const dbUser = await authPrisma.user.findUnique({
           where: { id: token.id as string },
-          select: { id: true, role: true, emailVerified: true },
+          select: { id: true, email: true, role: true, emailVerified: true },
         });
         
         if (dbUser) {
+          token.email = dbUser.email;
           token.role = dbUser.role;
           token.emailVerified = dbUser.emailVerified;
         }
@@ -133,11 +148,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Add token data to session
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;
         session.user.role = token.role as string;
         session.user.emailVerified = token.emailVerified as Date | null;
         
         console.log('[Auth] Session callback:', {
           userId: token.id,
+          userEmail: token.email,
           userRole: token.role,
         });
       }
@@ -172,18 +189,40 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       
       // For OAuth providers (Google, etc.)
       if (account?.provider === "google") {
-        // Check if user exists and update emailVerified if needed
-        const existingUser = await authPrisma.user.findUnique({
-          where: { email: user.email! },
-          select: { id: true, emailVerified: true },
+        console.log('[Auth] Google OAuth login:', {
+          accountEmail: user.email,
+          accountId: account.providerAccountId,
+          userId: user.id,
         });
 
-        if (existingUser && !existingUser.emailVerified) {
-          // Auto-verify email for OAuth logins
-          await authPrisma.user.update({
-            where: { id: existingUser.id },
-            data: { emailVerified: new Date() },
-          });
+        // Check if user exists in database
+        const existingUser = await authPrisma.user.findUnique({
+          where: { email: user.email! },
+          select: { 
+            id: true, 
+            email: true,
+            role: true,
+            emailVerified: true 
+          },
+        });
+
+        console.log('[Auth] Existing user found:', existingUser);
+
+        if (existingUser) {
+          // Update emailVerified if not set
+          if (!existingUser.emailVerified) {
+            await authPrisma.user.update({
+              where: { id: existingUser.id },
+              data: { emailVerified: new Date() },
+            });
+            console.log('[Auth] Auto-verified email for OAuth user:', existingUser.email);
+          }
+
+          // Make sure the user object has correct data from DB
+          user.id = existingUser.id;
+          user.email = existingUser.email;
+          user.role = existingUser.role;
+          user.emailVerified = existingUser.emailVerified || new Date();
         }
       }
       

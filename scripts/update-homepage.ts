@@ -18,7 +18,7 @@ async function updateHomepage() {
     
     // Get current settings
     console.log('📊 BEFORE:');
-    const before = await prisma.seoSettings.findUnique({
+    const before = await prisma.websiteSettings.findUnique({
       where: { domain }
     });
     console.log(`  - homePageType: ${before?.homePageType || 'null'}`);
@@ -26,7 +26,7 @@ async function updateHomepage() {
     
     // Update settings
     console.log('\n🔄 UPDATING...');
-    const updated = await prisma.seoSettings.update({
+    const updated = await prisma.websiteSettings.update({
       where: { domain },
       data: {
         homePageType: 'page',

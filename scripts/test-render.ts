@@ -5,7 +5,7 @@ async function testRender() {
   const prisma = await getPrisma(domain);
 
   // Get SEO settings
-  const seoSettings = await prisma.seoSettings.findUnique({
+  const websiteSettings = await prisma.websiteSettings.findUnique({
     where: { domain },
     select: {
       homePageType: true,
@@ -16,19 +16,19 @@ async function testRender() {
   console.log('\n🧪 Testing Homepage Render Logic');
   console.log('═══════════════════════════════════════════\n');
 
-  if (!seoSettings?.homePageType || !seoSettings?.homePageId) {
+  if (!websiteSettings?.homePageType || !websiteSettings?.homePageId) {
     console.log('❌ No custom homepage set');
     return;
   }
 
   console.log('✅ Custom homepage configured:');
-  console.log('   Type:', seoSettings.homePageType);
-  console.log('   ID:', seoSettings.homePageId);
+  console.log('   Type:', websiteSettings.homePageType);
+  console.log('   ID:', websiteSettings.homePageId);
   console.log('');
 
-  if (seoSettings.homePageType === 'page') {
+  if (websiteSettings.homePageType === 'page') {
     const page = await prisma.page.findUnique({
-      where: { id: seoSettings.homePageId },
+      where: { id: websiteSettings.homePageId },
       include: {
         author: {
           select: {
