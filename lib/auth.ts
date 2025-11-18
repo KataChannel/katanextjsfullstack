@@ -38,9 +38,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // @ts-ignore - Type mismatch between @auth/prisma-adapter and next-auth versions
   adapter: PrismaAdapter(authPrisma),
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // 24 hours
   },
   trustHost: true, // Allow dynamic host detection
   pages: {
@@ -101,36 +100,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      // With database sessions, user comes from DB directly
-      if (session.user && user) {
-        console.log('[Auth] Session callback:', {
+    async jwt({ token, user, trigger }) {
+      // Initial sign in - add user data to token
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+        token.emailVerified = user.emailVerified;
+        
+        console.log('[Auth] JWT callback - user data added:', {
           userId: user.id,
           userEmail: user.email,
+          role: user.role,
         });
-
-        // Load full user from DB to get role
+      }
+      
+      // Refresh token data on update
+      if (trigger === "update") {
         const dbUser = await authPrisma.user.findUnique({
-          where: { id: user.id },
+          where: { id: token.id as string },
           select: { id: true, role: true, emailVerified: true },
         });
-
-        console.log('[Auth] Session - DB user:', {
-          role: dbUser?.role,
-          verified: !!dbUser?.emailVerified
-        });
-
+        
         if (dbUser) {
-          session.user.id = dbUser.id;
-          session.user.role = dbUser.role;
-          session.user.emailVerified = dbUser.emailVerified;
+          token.role = dbUser.role;
+          token.emailVerified = dbUser.emailVerified;
         }
       }
       
-      console.log('[Auth] Final session:', {
-        hasUser: !!session.user,
-        userRole: session.user?.role
-      });
+      return token;
+    },
+    async session({ session, token }) {
+      // Add token data to session
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
+        session.user.emailVerified = token.emailVerified as Date | null;
+        
+        console.log('[Auth] Session callback:', {
+          userId: token.id,
+          userRole: token.role,
+        });
+      }
       
       return session;
     },
