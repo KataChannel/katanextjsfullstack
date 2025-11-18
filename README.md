@@ -125,15 +125,25 @@ Truy cập http://localhost:3000
 
 ## 📖 Documentation
 
-- **[HOW_TO_ADD_DOMAIN.md](./HOW_TO_ADD_DOMAIN.md)** - 🆕 **Hướng dẫn thêm domain mới** (Quick guide!)
-- **[NEXT16_MIGRATION.md](./NEXT16_MIGRATION.md)** - 🆕 **Next.js 16 Migration Guide** (middleware → proxy)
-- **[TONG_HOP_MULTI_DOMAIN.md](./TONG_HOP_MULTI_DOMAIN.md)** - 🎯 **TỔNG HỢP MULTI-DOMAIN** (Đọc đầu tiên!)
-- **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** - 🚀 Hướng dẫn Deploy Production (Tất cả domains)
-- **[DEPLOYMENT_PER_DOMAIN.md](./DEPLOYMENT_PER_DOMAIN.md)** - 🔧 Deploy Từng Domain Riêng Lẻ
-- **[MULTI_DOMAIN_CONFIG.md](./MULTI_DOMAIN_CONFIG.md)** - ⭐ Hướng dẫn cấu hình Multi-Domain
-- **[MULTI_DOMAIN_USAGE_EXAMPLES.md](./docs/MULTI_DOMAIN_USAGE_EXAMPLES.md)** - ⭐ Ví dụ sử dụng Multi-Domain
-- **[IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md)** - Chi tiết kiến trúc và implementation
-- **[QUICK_START.md](./QUICK_START.md)** - Hướng dẫn nhanh bắt đầu
+### 🚀 Getting Started
+- **[Quick Start Guide](./docs/QUICK_START.md)** - Setup dự án trong 5 phút ⚡
+- **[Add New Domain](./docs/ADD_DOMAIN.md)** - Hướng dẫn thêm domain mới
+- **[Environment Variables](./docs/ENVIRONMENT.md)** - Cấu hình biến môi trường
+
+### 📚 Core Features
+- **[Multi-Domain System](./docs/MULTI_DOMAIN.md)** - Kiến trúc multi-domain với database isolation
+- **[Page Builder](./docs/PAGE_BUILDER.md)** - Drag & drop page builder
+- **[Authentication](./docs/AUTHENTICATION.md)** - JWT authentication & authorization
+- **[Content Management](./docs/CONTENT_MANAGEMENT.md)** - Pages & Posts với Tiptap editor
+- **[Menu System](./docs/MENU_SYSTEM.md)** - Multi-level menu management
+
+### 🛠️ Advanced
+- **[Troubleshooting](./docs/TROUBLESHOOTING.md)** - Giải quyết vấn đề thường gặp
+- **[Deployment Scripts](./deploy/)** - Docker deployment tools
+
+### 📦 Complete Documentation
+- **[Documentation Index](./docs/INDEX.md)** - Complete docs index
+- **[Archived Docs](./docs/archive/)** - Historical documentation (138 files)
 
 ## 🗂️ Project Structure
 
