@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   
+  // Docker standalone output
+  output: 'standalone',
+  
   // Image optimization
   images: {
     remotePatterns: [
@@ -14,6 +17,11 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: '116.118.49.243',
         port: '12007',
+      },
+      {
+        protocol: 'http',
+        hostname: 'minio',
+        port: '9000',
       },
     ],
     formats: ['image/avif', 'image/webp'],
