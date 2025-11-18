@@ -244,7 +244,7 @@ export default async function Home() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredPosts.map((post) => (
+              {featuredPosts.map((post: { id: string; title: string; slug: string; excerpt: string | null; createdAt: Date; author: { name: string | null; email: string } | null }) => (
                 <Card key={post.id} className="flex flex-col hover:shadow-lg transition-all duration-200">
                   <CardHeader>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
@@ -263,7 +263,7 @@ export default async function Home() {
                     </CardDescription>
                     <div className="flex items-center justify-between pt-4 border-t">
                       <span className="text-xs text-muted-foreground">
-                        {post.author.name || post.author.email}
+                        {post.author?.name || post.author?.email || 'Anonymous'}
                       </span>
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/posts/${post.slug}`}>

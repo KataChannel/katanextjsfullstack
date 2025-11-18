@@ -5,8 +5,10 @@ import GoogleProvider from "next-auth/providers/google";
 import { compare } from "bcryptjs";
 import { getPrismaClient } from "@/lib/database";
 
-// Get default Prisma client for authentication (tazagroup.vn)
-const authPrisma = getPrismaClient('tazagroup.vn');
+// Get Prisma client for the current domain
+// Domain is determined from NEXT_PUBLIC_DOMAIN or defaults to innerbright.vn
+const currentDomain = process.env.NEXT_PUBLIC_DOMAIN || 'innerbright.vn';
+const authPrisma = getPrismaClient(currentDomain);
 
 // Extend session types
 declare module "next-auth" {
@@ -36,23 +38,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // @ts-ignore - Type mismatch between @auth/prisma-adapter and next-auth versions
   adapter: PrismaAdapter(authPrisma),
   session: {
-    strategy: "jwt",
+    strategy: "database",
     maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   trustHost: true, // Allow dynamic host detection
-  cookies: {
-    sessionToken: {
-      name: process.env.NODE_ENV === 'production' 
-        ? '__Secure-next-auth.session-token'
-        : 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production' && process.env.NEXTAUTH_URL?.startsWith('https'),
-      },
-    },
-  },
   pages: {
     signIn: "/auth/login",
     signOut: "/auth/login",
@@ -111,34 +101,58 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      if (user) {
-        token.id = user.id!;
-        token.role = user.role;
-        token.emailVerified = user.emailVerified;
-      }
+    async session({ session, user }) {
+      // With database sessions, user comes from DB directly
+      if (session.user && user) {
+        console.log('[Auth] Session callback:', {
+          userId: user.id,
+          userEmail: user.email,
+        });
 
-      // Handle session update
-      if (trigger === "update" && session) {
-        token = { ...token, ...session };
-      }
+        // Load full user from DB to get role
+        const dbUser = await authPrisma.user.findUnique({
+          where: { id: user.id },
+          select: { id: true, role: true, emailVerified: true },
+        });
 
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-        session.user.emailVerified = token.emailVerified as Date | null;
+        console.log('[Auth] Session - DB user:', {
+          role: dbUser?.role,
+          verified: !!dbUser?.emailVerified
+        });
+
+        if (dbUser) {
+          session.user.id = dbUser.id;
+          session.user.role = dbUser.role;
+          session.user.emailVerified = dbUser.emailVerified;
+        }
       }
+      
+      console.log('[Auth] Final session:', {
+        hasUser: !!session.user,
+        userRole: session.user?.role
+      });
+      
       return session;
     },
     async signIn({ user, account, profile }) {
+      console.log('[Auth] signIn callback:', {
+        provider: account?.provider,
+        userEmail: user.email,
+        userId: user.id,
+        userRole: user.role
+      });
+
       // For credentials provider, check email verification
       if (account?.provider === "credentials") {
         const dbUser = await authPrisma.user.findUnique({
           where: { id: user.id },
-          select: { emailVerified: true },
+          select: { emailVerified: true, role: true },
+        });
+        
+        console.log('[Auth] Credentials login - DB user:', {
+          email: user.email,
+          emailVerified: dbUser?.emailVerified,
+          role: dbUser?.role
         });
         
         if (!dbUser?.emailVerified) {
@@ -146,7 +160,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
       
-      // OAuth providers are automatically verified by NextAuth adapter
+      // For OAuth providers (Google, etc.)
+      if (account?.provider === "google") {
+        // Check if user exists and update emailVerified if needed
+        const existingUser = await authPrisma.user.findUnique({
+          where: { email: user.email! },
+          select: { id: true, emailVerified: true },
+        });
+
+        if (existingUser && !existingUser.emailVerified) {
+          // Auto-verify email for OAuth logins
+          await authPrisma.user.update({
+            where: { id: existingUser.id },
+            data: { emailVerified: new Date() },
+          });
+        }
+      }
+      
       return true;
     },
   },

@@ -39,7 +39,7 @@ export async function generateStaticParams() {
     select: { slug: true },
   });
 
-  return pages.map((page) => ({
+  return pages.map((page: { slug: string }) => ({
     slug: page.slug,
   }));
 }

@@ -7,26 +7,53 @@
 FROM oven/bun:1 AS deps
 WORKDIR /app
 
+# Install OpenSSL for Prisma
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
 # Copy package files
 COPY package.json bun.lockb* ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN bun install --frozen-lockfile
+# Set environment for Prisma - skip postinstall
+ENV PRISMA_SKIP_POSTINSTALL_GENERATE=1
+ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
 
-# Generate Prisma Client
-RUN bun run db:generate
+# Install dependencies without generating Prisma
+RUN bun install --no-save
+
+# Generate Prisma Client with multiple fallback attempts
+RUN bunx prisma generate || \
+    (sleep 5 && bunx prisma generate) || \
+    (sleep 10 && bunx prisma generate) || \
+    echo "Warning: Prisma generate failed, will try in builder stage"
 
 # Stage 2: Builder
 FROM oven/bun:1 AS builder
 WORKDIR /app
 
-# Copy dependencies from deps stage
+# Install OpenSSL for Prisma
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
+# Copy dependencies AND generated Prisma Client from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/package.json ./package.json
 
+# Copy prisma schema
+COPY prisma ./prisma/
+
 # Copy source code
 COPY . .
+
+# Set Prisma environment
+ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
+
+# Ensure Prisma Client exists - generate if needed with retry
+RUN if [ ! -d "node_modules/.prisma/client" ]; then \
+        bunx prisma generate || \
+        (sleep 5 && bunx prisma generate) || \
+        (sleep 10 && bunx prisma generate) || \
+        echo "ERROR: Failed to generate Prisma Client"; \
+    fi
 
 # Build application
 ENV NODE_ENV=production

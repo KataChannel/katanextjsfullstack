@@ -92,7 +92,7 @@ export const DOMAIN_CONFIGS: Record<string, DomainConfig> = {
   },
   'innerbright.vn': {
     domain: 'innerbright.vn',
-    database: 'postgresql://postgres:postgres@116.118.49.243:13003/innerv2core',
+    database: 'postgresql://postgres:2kOIU5HX98Nb@116.118.48.208:5432/innerv2core',
     description: 'InnerBright Training & Coaching, Cuộc sống của Bạn là do chính Bạn tạo ra và Lập Trình Ngôn Ngữ Tư Duy - NLP (Neuro Linguistic Programming)',
     address: 'TP. Hồ Chí Minh.',
     hotline: '0908370968',
@@ -103,8 +103,8 @@ export const DOMAIN_CONFIGS: Record<string, DomainConfig> = {
     devPort: 3005,
     storage: {
       type: 'minio',
-      endpoint: '116.118.49.243',
-      port: 12007,
+      endpoint: '116.118.48.208',
+      port: 9000,
       useSSL: false,
       bucketName: 'innerbright',
     },

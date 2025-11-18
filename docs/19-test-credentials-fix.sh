@@ -1,0 +1,43 @@
+#!/bin/bash
+# Test credentials login after fixing OAuth link issue
+
+echo "======================================"
+echo "Testing Credentials Login Fix"
+echo "======================================"
+echo ""
+echo "Issue: admin@example.com had Google OAuth account linked"
+echo "Fix: Deleted OAuth account link from accounts table"
+echo ""
+echo "Current Status:"
+echo ""
+
+# Check user status
+echo "1. Checking user in database..."
+ssh root@116.118.48.208 "docker exec innerbright-postgres psql -U postgres -d innerv2core -c \"SELECT email, role, \\\"emailVerified\\\" IS NOT NULL as verified, LENGTH(password) as has_pwd FROM users WHERE email = 'admin@example.com';\""
+
+echo ""
+echo "2. Checking OAuth accounts..."
+ssh root@116.118.48.208 "docker exec innerbright-postgres psql -U postgres -d innerv2core -c \"SELECT COUNT(*) as oauth_accounts FROM accounts WHERE \\\"userId\\\" = (SELECT id FROM users WHERE email = 'admin@example.com');\""
+
+echo ""
+echo "======================================"
+echo "Test Credentials:"
+echo "======================================"
+echo "Email: admin@example.com"
+echo "Password: admin123"
+echo "URL: https://innerbright.vn/auth/login"
+echo ""
+echo "Expected Result:"
+echo "✅ Login successful"
+echo "✅ Redirect to /admin"
+echo "✅ No OAuthAccountNotLinked error"
+echo ""
+echo "======================================"
+echo "If still fails, check:"
+echo "======================================"
+echo "1. Container logs:"
+echo "   ssh root@116.118.48.208 'docker logs innerbright-web -f'"
+echo ""
+echo "2. Database state:"
+echo "   ssh root@116.118.48.208 \"docker exec innerbright-postgres psql -U postgres -d innerv2core -c 'SELECT * FROM users WHERE email = \\\"admin@example.com\\\";'\""
+echo ""

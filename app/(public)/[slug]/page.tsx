@@ -81,8 +81,8 @@ export async function generateStaticParams() {
 
     // Combine both
     const allSlugs = [
-      ...pages.map((page) => ({ slug: page.slug })),
-      ...posts.map((post) => ({ slug: post.slug })),
+      ...pages.map((page: { slug: string }) => ({ slug: page.slug })),
+      ...posts.map((post: { slug: string }) => ({ slug: post.slug })),
     ];
 
     return allSlugs;

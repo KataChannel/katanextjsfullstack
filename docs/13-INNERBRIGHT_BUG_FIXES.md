@@ -195,22 +195,112 @@ docker compose ps
 - Missing icon files (404 errors)
 - Nginx buffer configuration optimized
 - Docker volume mounts updated
+- **Authentication system using wrong database (tazagroup.vn instead of innerbright.vn)**
+- **Login not working - users couldn't authenticate**
+- **Google OAuth redirect not configured properly**
 
 ### 🟡 Known Issues:
 - Homepage still showing Taza Group content (metadata correct, blocks content outdated)
-- Auth CSRF warnings in logs (not affecting functionality)
 
 ### 🟢 System Health:
 - Website: ✅ https://innerbright.vn
 - SSL Certificate: ✅ Valid (89 days)
 - HTTP/2: ✅ Enabled and working
 - All Containers: ✅ Healthy
-- Database: ✅ Connected
+- Database: ✅ Connected (innerv2core on 116.118.48.208:5432)
 - Icons: ✅ Loading properly
+- Authentication: ✅ Working with credentials
+- Admin User: ✅ Created (admin@innerbright.vn)
 
 ---
 
-## 📝 Next Steps (Optional)
+## � Authentication Bug Fix (2025-11-18)
+
+### Problem 3: Login Not Working
+
+**Issue:**
+- Cannot login with credentials or Google OAuth
+- Error: "Email chưa được xác thực"
+- Auth system using wrong database (tazagroup.vn)
+
+**Root Cause:**
+1. `lib/auth.ts` hardcoded to use `getPrismaClient('tazagroup.vn')`
+2. `lib/domain-config.ts` had wrong database URL (old server)
+3. Existing users had no `emailVerified` timestamp
+4. No admin user for innerbright.vn domain
+
+**Solution:**
+
+**Step 1:** Update domain-config.ts with correct database
+```typescript
+'innerbright.vn': {
+  domain: 'innerbright.vn',
+  database: 'postgresql://postgres:2kOIU5HX98Nb@116.118.48.208:5432/innerv2core',
+  // ... rest of config
+  storage: {
+    type: 'minio',
+    endpoint: '116.118.48.208',
+    port: 9000,
+    useSSL: false,
+    bucketName: 'innerbright',
+  },
+}
+```
+
+**Step 2:** Fix auth.ts to use dynamic domain
+```typescript
+// OLD - hardcoded
+const authPrisma = getPrismaClient('tazagroup.vn');
+
+// NEW - dynamic based on NEXT_PUBLIC_DOMAIN
+const currentDomain = process.env.NEXT_PUBLIC_DOMAIN || 'innerbright.vn';
+const authPrisma = getPrismaClient(currentDomain);
+```
+
+**Step 3:** Update existing users
+```sql
+UPDATE users 
+SET "emailVerified" = NOW() 
+WHERE role IN ('admin', 'editor') 
+AND "emailVerified" IS NULL;
+```
+
+**Step 4:** Create admin user
+```bash
+node scripts/create-innerbright-admin.js
+```
+
+**Step 5:** Rebuild and deploy
+```bash
+# Build locally (server has low specs)
+docker build -t innerbright-web:latest .
+docker save innerbright-web:latest -o innerbright-web-latest.tar
+
+# Upload to server
+rsync -avz innerbright-web-latest.tar root@116.118.48.208:/tmp/
+
+# Deploy on server
+ssh root@116.118.48.208
+docker load -i /tmp/innerbright-web-latest.tar
+cd /var/www/innerbright
+docker compose down innerbright-web
+docker compose up -d innerbright-web
+```
+
+**Result:** ✅ Authentication working
+
+### Login Credentials:
+```
+URL: https://innerbright.vn/auth/login
+Email: admin@innerbright.vn
+Password: Admin@2025!
+```
+
+⚠️ **IMPORTANT:** Change password after first login!
+
+---
+
+## �📝 Next Steps (Optional)
 
 1. **Update Homepage Content:**
    ```bash
