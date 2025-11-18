@@ -1,0 +1,36 @@
+[
+  {
+    "id": "43ccb17e-aa79-406a-81f5-669979e14634",
+    "domain": "localhost",
+    "siteName": "",
+    "siteDescription": "",
+    "defaultOgImage": "",
+    "twitterHandle": "",
+    "googleAnalytics": "",
+    "googleTagManager": "",
+    "facebookPixel": "",
+    "homePageType": "page",
+    "homePageId": "dfcd1f81-f5bd-44a9-b4ea-45556a4f811a",
+    "organizationSchema": null,
+    "websiteSchema": null,
+    "createdAt": "2025-11-12T17:53:51.528Z",
+    "updatedAt": "2025-11-17T17:12:17.922Z"
+  },
+  {
+    "id": "daa64c74-ebab-4e38-b923-b8be4dc5ee23",
+    "domain": "innerbright.vn",
+    "siteName": "InnerBright",
+    "siteDescription": "InnerBright Training & Coaching",
+    "defaultOgImage": null,
+    "twitterHandle": null,
+    "googleAnalytics": null,
+    "googleTagManager": null,
+    "facebookPixel": null,
+    "homePageType": "page",
+    "homePageId": "dfcd1f81-f5bd-44a9-b4ea-45556a4f811a",
+    "organizationSchema": null,
+    "websiteSchema": null,
+    "createdAt": "2025-11-12T20:54:38.841Z",
+    "updatedAt": "2025-11-17T17:33:18.743Z"
+  }
+]

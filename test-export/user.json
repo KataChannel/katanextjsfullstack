@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1071bc3d-d53d-450a-bb4e-d03683c65902",
+    "email": "admin@example.com",
+    "name": "Admin",
+    "password": "$2b$10$gfoExVRjhk4PT31ENWZvDOPyDO6oSbqoIY/L4wQsVnWr2TMUubXZ2",
+    "role": "admin",
+    "emailVerified": "2025-11-12T19:41:29.634Z",
+    "image": null,
+    "otp": null,
+    "otpExpiresAt": null,
+    "createdAt": "2025-11-12T19:41:29.637Z",
+    "updatedAt": "2025-11-12T19:41:29.637Z"
+  }
+]

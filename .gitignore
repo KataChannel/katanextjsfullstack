@@ -48,3 +48,9 @@ middleware.js
 /lib/generated/prisma
 /prisma/dev.db
 /prisma/dev.db-journal
+
+# backups
+/backups
+*.tar.gz
+/export-data
+/import-data

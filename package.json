@@ -25,7 +25,15 @@
     "db:seed-pagebuilder": "bun run prisma/seed-pagebuilder.ts",
     "seed:menus": "bun scripts/seed-all-menus.ts",
     "seed:menus:innerbright": "bun scripts/seed-innerbright-menus.ts",
-    "seed:admin-menus": "bun scripts/seed-admin-menus.ts"
+    "seed:admin-menus": "bun scripts/seed-admin-menus.ts",
+    "backup": "./scripts/backup-domain.sh",
+    "backup:tazagroup": "./scripts/backup-domain.sh tazagroup.vn",
+    "backup:innerbright": "./scripts/backup-domain.sh innerbright.vn",
+    "backup:kataseo": "./scripts/backup-domain.sh kataseo.com",
+    "backup:manager": "./scripts/backup-manager.sh",
+    "restore": "./scripts/restore-domain.sh",
+    "export": "bun run scripts/export-data.ts",
+    "import": "bun run scripts/import-data.ts"
   },
   "prisma": {
     "seed": "bun run prisma/seed.ts"

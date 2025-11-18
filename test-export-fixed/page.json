@@ -1,0 +1,440 @@
+[
+  {
+    "id": "933ad571-90a8-4ad4-921f-47a163618fdb",
+    "title": "Test Page V2",
+    "slug": "test-page-v2",
+    "content": "This is a test page created with Page Builder V2",
+    "published": true,
+    "blocks": null,
+    "blocksV2": [
+      {
+        "id": "block-1",
+        "type": "text",
+        "hidden": false,
+        "styles": {
+          "element": "text-4xl font-bold text-primary",
+          "wrapper": "container mx-auto",
+          "container": "py-8"
+        },
+        "content": {
+          "tag": "h1",
+          "text": "Welcome to Page V2"
+        }
+      },
+      {
+        "id": "block-2",
+        "type": "text",
+        "hidden": false,
+        "styles": {
+          "element": "text-lg text-muted-foreground",
+          "wrapper": "container mx-auto",
+          "container": "py-4"
+        },
+        "content": {
+          "tag": "p",
+          "text": "This page was created using the new Block Editor V2."
+        }
+      },
+      {
+        "id": "block-3",
+        "type": "button",
+        "hidden": false,
+        "styles": {
+          "element": "bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors inline-block",
+          "wrapper": "container mx-auto",
+          "container": "py-6"
+        },
+        "content": {
+          "link": "/about",
+          "text": "Learn More",
+          "target": "_self"
+        }
+      }
+    ],
+    "version": 2,
+    "metaTitle": "Test Page V2",
+    "metaDescription": "A test page created with Block Editor V2",
+    "metaKeywords": null,
+    "ogImage": null,
+    "ogType": "website",
+    "canonicalUrl": null,
+    "showHeader": true,
+    "showFooter": true,
+    "publishedAt": "2025-11-17T13:37:55.241Z",
+    "createdAt": "2025-11-17T13:37:55.251Z",
+    "updatedAt": "2025-11-17T13:37:55.251Z",
+    "authorId": "1071bc3d-d53d-450a-bb4e-d03683c65902"
+  },
+  {
+    "id": "c04e7fc7-7209-43fd-990b-77afb1f6cdea",
+    "title": "Bộ Thẻ NLP",
+    "slug": "bo-the-nlp",
+    "content": null,
+    "published": true,
+    "blocks": null,
+    "blocksV2": {
+      "blocks": [],
+      "version": 2
+    },
+    "version": 2,
+    "metaTitle": "",
+    "metaDescription": "",
+    "metaKeywords": "",
+    "ogImage": null,
+    "ogType": "website",
+    "canonicalUrl": null,
+    "showHeader": true,
+    "showFooter": true,
+    "publishedAt": null,
+    "createdAt": "2025-11-13T04:49:54.674Z",
+    "updatedAt": "2025-11-17T16:47:03.733Z",
+    "authorId": "1071bc3d-d53d-450a-bb4e-d03683c65902"
+  },
+  {
+    "id": "dfcd1f81-f5bd-44a9-b4ea-45556a4f811a",
+    "title": "Trang Chủ",
+    "slug": "",
+    "content": null,
+    "published": true,
+    "blocks": null,
+    "blocksV2": {
+      "blocks": [
+        {
+          "id": "block-1763399838789-dlg72uy4a",
+          "name": "image block",
+          "type": "image",
+          "hidden": false,
+          "locked": false,
+          "styles": {
+            "element": "w-full h-auto rounded-lg"
+          },
+          "content": {
+            "alt": "Image",
+            "url": "https://placehold.co/800x400"
+          }
+        },
+        {
+          "id": "block-1763399839955-q2ax9v0e4",
+          "name": "text block",
+          "type": "text",
+          "hidden": false,
+          "locked": false,
+          "styles": {
+            "element": "text-base text-gray-900"
+          },
+          "content": {
+            "tag": "p",
+            "text": "Enter text here..."
+          }
+        },
+        {
+          "id": "block-1763399841595-3o8znzh1c",
+          "name": "button block",
+          "type": "button",
+          "hidden": false,
+          "locked": false,
+          "styles": {
+            "element": "inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          },
+          "content": {
+            "link": "#",
+            "text": "Click me",
+            "variant": "primary"
+          }
+        },
+        {
+          "id": "block-1763399842867-556msmktn",
+          "name": "container block",
+          "type": "container",
+          "hidden": false,
+          "locked": false,
+          "styles": {
+            "container": "flex flex-col gap-4 p-6 border border-gray-200 rounded-lg"
+          },
+          "content": {
+            "gap": 4,
+            "layout": "flex",
+            "direction": "column"
+          }
+        }
+      ],
+      "version": 2
+    },
+    "version": 2,
+    "metaTitle": "",
+    "metaDescription": "",
+    "metaKeywords": null,
+    "ogImage": null,
+    "ogType": "website",
+    "canonicalUrl": null,
+    "showHeader": true,
+    "showFooter": true,
+    "publishedAt": "2025-11-17T17:17:24.207Z",
+    "createdAt": "2025-11-17T15:16:12.145Z",
+    "updatedAt": "2025-11-17T17:17:24.209Z",
+    "authorId": "1071bc3d-d53d-450a-bb4e-d03683c65902"
+  },
+  {
+    "id": "4a83da73-fdf0-467a-be5e-8906ee05c18c",
+    "title": "Về InnerBright",
+    "slug": "ve-innerbright",
+    "content": null,
+    "published": true,
+    "blocks": null,
+    "blocksV2": {
+      "blocks": [
+        {
+          "id": "block-1763408232713-carousel",
+          "name": "carousel block",
+          "type": "carousel",
+          "hidden": false,
+          "locked": false,
+          "styles": {
+            "element": "w-full relative overflow-hidden"
+          },
+          "content": {
+            "slides": [
+              {
+                "id": "slide-1",
+                "badge": "Bởi nhà đào tạo",
+                "image": "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=600&fit=crop",
+                "title": "CÂU CHUYỆN",
+                "subtitle": "Về INNERBRIGHT",
+                "description": "InnerBright Training & Coaching được thành lập từ năm 2020",
+                "badgeHighlight": "CHLOE QUÝ CHÂU"
+              },
+              {
+                "id": "slide-2",
+                "badge": "Chuyên gia hàng đầu",
+                "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&h=600&fit=crop",
+                "title": "TRAINING",
+                "subtitle": "Professional Coaching",
+                "description": "Đào tạo chuyên nghiệp với phương pháp hiện đại",
+                "badgeHighlight": "NLP MASTER"
+              },
+              {
+                "id": "slide-3",
+                "badge": "Huấn luyện viên",
+                "image": "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&h=600&fit=crop",
+                "title": "COACHING",
+                "subtitle": "Personal Development",
+                "description": "Phát triển bản thân toàn diện",
+                "badgeHighlight": "CHỨNG NHẬN QUỐC TẾ"
+              }
+            ],
+            "autoplay": true,
+            "interval": 5000
+          }
+        },
+        {
+          "id": "block-1763410214431-vision-v2",
+          "name": "Vision Infographic Enhanced",
+          "type": "container",
+          "hidden": false,
+          "locked": false,
+          "styles": {
+            "element": "container mx-auto px-4 sm:px-6 lg:px-8",
+            "container": "w-full py-12 md:py-20 bg-gradient-to-br from-gray-50 to-blue-50/30"
+          },
+          "content": {
+            "gap": 8,
+            "layout": "flex",
+            "direction": "column"
+          },
+          "children": [
+            {
+              "id": "block-1763410214431-title",
+              "name": "Main Title",
+              "type": "text",
+              "styles": {
+                "element": "text-center mb-8 md:mb-16"
+              },
+              "content": {
+                "tag": "div",
+                "text": "\n            <div class=\"space-y-2\">\n              <h2 class=\"text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight\">\n                <span class=\"text-orange-400\">MẠNG TRONG MÌNH</span>\n              </h2>\n              <h2 class=\"text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight\">\n                <span class=\"text-blue-600\">KHÁT VỌNG</span>\n              </h2>\n            </div>\n          "
+              }
+            },
+            {
+              "id": "block-1763410214431-content-wrapper",
+              "name": "Content Wrapper",
+              "type": "container",
+              "styles": {
+                "container": "relative max-w-7xl mx-auto"
+              },
+              "content": {},
+              "children": [
+                {
+                  "id": "block-1763410214431-content-grid",
+                  "name": "Content Grid",
+                  "type": "container",
+                  "styles": {
+                    "container": "grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 md:gap-12 lg:gap-16 items-center"
+                  },
+                  "content": {},
+                  "children": [
+                    {
+                      "id": "block-1763410214431-left-col",
+                      "name": "Left Column",
+                      "type": "container",
+                      "styles": {
+                        "container": "space-y-8 md:space-y-12 lg:space-y-16 text-left lg:text-right"
+                      },
+                      "content": {},
+                      "children": [
+                        {
+                          "id": "block-1763410214431-mission",
+                          "name": "Mission Block",
+                          "type": "container",
+                          "styles": {
+                            "container": "space-y-3 md:space-y-4"
+                          },
+                          "content": {},
+                          "children": [
+                            {
+                              "id": "block-1763410214431-mission-title",
+                              "type": "text",
+                              "styles": {
+                                "element": "inline-block border-b-4 border-blue-500 pb-2 mb-4"
+                              },
+                              "content": {
+                                "tag": "h3",
+                                "text": "<span class=\"text-2xl md:text-3xl lg:text-4xl font-bold text-orange-400\">SỨ MỆNH</span>"
+                              }
+                            },
+                            {
+                              "id": "block-1763410214431-mission-text",
+                              "type": "text",
+                              "styles": {
+                                "element": "text-gray-700 text-base md:text-lg leading-relaxed max-w-md lg:ml-auto"
+                              },
+                              "content": {
+                                "tag": "p",
+                                "text": "Tạo dựng cuộc sống thịnh vượng hơn cho người người Việt Nam bằng việc khai phóng tiềm năng và giúp phát huy tối đa nội lực của mỗi cá nhân."
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "id": "block-1763410214431-vision",
+                          "name": "Vision Block",
+                          "type": "container",
+                          "styles": {
+                            "container": "space-y-3 md:space-y-4"
+                          },
+                          "content": {},
+                          "children": [
+                            {
+                              "id": "block-1763410214431-vision-title",
+                              "type": "text",
+                              "styles": {
+                                "element": "inline-block border-b-4 border-blue-500 pb-2 mb-4"
+                              },
+                              "content": {
+                                "tag": "h3",
+                                "text": "<span class=\"text-2xl md:text-3xl lg:text-4xl font-bold text-orange-400\">TẦM NHÌN</span>"
+                              }
+                            },
+                            {
+                              "id": "block-1763410214431-vision-text",
+                              "type": "text",
+                              "styles": {
+                                "element": "text-gray-700 text-base md:text-lg leading-relaxed max-w-md lg:ml-auto"
+                              },
+                              "content": {
+                                "tag": "p",
+                                "text": "Trang bị cho mỗi người Việt Nam đủ sở hữu tư duy phát triển bản thân đúng đắn, hiệu quả và bền vững."
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "block-1763410214431-center-col",
+                      "name": "Center Image Container",
+                      "type": "container",
+                      "styles": {
+                        "container": "flex items-center justify-center p-8 lg:p-12"
+                      },
+                      "content": {},
+                      "children": [
+                        {
+                          "id": "block-1763410214431-target-image",
+                          "type": "container",
+                          "styles": {
+                            "container": "relative"
+                          },
+                          "content": {},
+                          "children": [
+                            {
+                              "id": "block-1763410214431-svg-target",
+                              "type": "text",
+                              "styles": {
+                                "element": "w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96"
+                              },
+                              "content": {
+                                "tag": "div",
+                                "text": "\n                            <svg viewBox=\"0 0 400 400\" class=\"w-full h-full\" xmlns=\"http://www.w3.org/2000/svg\">\n                              <!-- Outer circle (light blue) -->\n                              <circle cx=\"200\" cy=\"200\" r=\"190\" fill=\"#60A5FA\" opacity=\"0.8\"/>\n                              <!-- Second circle (medium blue) -->\n                              <circle cx=\"200\" cy=\"200\" r=\"150\" fill=\"#3B82F6\" opacity=\"0.85\"/>\n                              <!-- Third circle (darker blue) -->\n                              <circle cx=\"200\" cy=\"200\" r=\"110\" fill=\"#2563EB\" opacity=\"0.9\"/>\n                              <!-- Fourth circle (deep blue) -->\n                              <circle cx=\"200\" cy=\"200\" r=\"70\" fill=\"#1E40AF\" opacity=\"0.95\"/>\n                              <!-- Center circle (indigo) -->\n                              <circle cx=\"200\" cy=\"200\" r=\"30\" fill=\"#4F46E5\"/>\n                              <!-- White rings -->\n                              <circle cx=\"200\" cy=\"200\" r=\"190\" fill=\"none\" stroke=\"white\" stroke-width=\"3\"/>\n                              <circle cx=\"200\" cy=\"200\" r=\"150\" fill=\"none\" stroke=\"white\" stroke-width=\"3\"/>\n                              <circle cx=\"200\" cy=\"200\" r=\"110\" fill=\"none\" stroke=\"white\" stroke-width=\"3\"/>\n                              <circle cx=\"200\" cy=\"200\" r=\"70\" fill=\"none\" stroke=\"white\" stroke-width=\"3\"/>\n                              <!-- Arrow hitting center -->\n                              <g transform=\"translate(320, 80) rotate(45)\">\n                                <line x1=\"0\" y1=\"0\" x2=\"150\" y2=\"0\" stroke=\"#4F46E5\" stroke-width=\"8\"/>\n                                <polygon points=\"150,-10 170,0 150,10\" fill=\"#4F46E5\"/>\n                                <!-- Arrow fletching -->\n                                <line x1=\"10\" y1=\"-8\" x2=\"25\" y2=\"-15\" stroke=\"#4F46E5\" stroke-width=\"4\"/>\n                                <line x1=\"10\" y1=\"8\" x2=\"25\" y2=\"15\" stroke=\"#4F46E5\" stroke-width=\"4\"/>\n                              </g>\n                            </svg>\n                          "
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "id": "block-1763410214431-right-col",
+                      "name": "Right Column",
+                      "type": "container",
+                      "styles": {
+                        "container": "space-y-3 md:space-y-4 text-left"
+                      },
+                      "content": {},
+                      "children": [
+                        {
+                          "id": "block-1763410214431-values-title",
+                          "type": "text",
+                          "styles": {
+                            "element": "inline-block border-b-4 border-blue-500 pb-2 mb-4"
+                          },
+                          "content": {
+                            "tag": "h3",
+                            "text": "<span class=\"text-2xl md:text-3xl lg:text-4xl font-bold text-orange-400\">GIÁ TRỊ CỐT LÕI</span>"
+                          }
+                        },
+                        {
+                          "id": "block-1763410214431-values-list",
+                          "type": "text",
+                          "styles": {
+                            "element": "text-gray-700 text-base md:text-lg leading-relaxed space-y-2 max-w-md"
+                          },
+                          "content": {
+                            "tag": "div",
+                            "text": "\n                        <ul class=\"space-y-3 list-none\">\n                          <li class=\"flex items-start gap-3\">\n                            <span class=\"text-blue-600 font-bold text-xl\">•</span>\n                            <span>Hệ thống</span>\n                          </li>\n                          <li class=\"flex items-start gap-3\">\n                            <span class=\"text-blue-600 font-bold text-xl\">•</span>\n                            <span>Hợp nhất</span>\n                          </li>\n                          <li class=\"flex items-start gap-3\">\n                            <span class=\"text-blue-600 font-bold text-xl\">•</span>\n                            <span>Từ tế</span>\n                          </li>\n                        </ul>\n                      "
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "version": 2
+    },
+    "version": 1,
+    "metaTitle": "",
+    "metaDescription": "",
+    "metaKeywords": "",
+    "ogImage": null,
+    "ogType": "website",
+    "canonicalUrl": null,
+    "showHeader": true,
+    "showFooter": true,
+    "publishedAt": "2025-11-17T19:48:00.440Z",
+    "createdAt": "2025-11-12T19:41:29.782Z",
+    "updatedAt": "2025-11-17T20:10:14.526Z",
+    "authorId": "1071bc3d-d53d-450a-bb4e-d03683c65902"
+  }
+]
