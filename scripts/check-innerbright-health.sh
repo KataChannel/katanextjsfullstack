@@ -80,12 +80,12 @@ echo -e "${BLUE}🏗️  Infrastructure Services${NC}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 check_service() {
-    local service=$1
-    local container=$2
+    service=$1
+    container=$2
     
     if docker ps --format '{{.Names}}' | grep -q "^${container}$"; then
-        local status=$(docker inspect -f '{{.State.Status}}' ${container})
-        local health=$(docker inspect -f '{{.State.Health.Status}}' ${container} 2>/dev/null || echo "none")
+        status=$(docker inspect -f '{{.State.Status}}' ${container})
+        health=$(docker inspect -f '{{.State.Health.Status}}' ${container} 2>/dev/null || echo "none")
         
         if [ "$health" = "healthy" ] || [ "$health" = "none" ]; then
             echo -e "${GREEN}✅ ${service}: running${NC}"
@@ -108,8 +108,8 @@ echo -e "${BLUE}🌐 Website Application${NC}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 if docker ps --format '{{.Names}}' | grep -q "^innerbright-web$"; then
-    local status=$(docker inspect -f '{{.State.Status}}' innerbright-web)
-    local uptime=$(docker inspect -f '{{.State.StartedAt}}' innerbright-web)
+    status=$(docker inspect -f '{{.State.Status}}' innerbright-web)
+    uptime=$(docker inspect -f '{{.State.StartedAt}}' innerbright-web)
     
     echo -e "${GREEN}✅ Website: running${NC}"
     echo -e "   Started: ${uptime}"
