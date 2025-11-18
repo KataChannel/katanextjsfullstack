@@ -3,7 +3,8 @@
 # ============================================
 # InnerBright Docker Deployment Script
 # Deploy to: 116.118.48.208
-# Optimized for low-resource server (1CPU, 2GB RAM)
+# Frontend: Next.js with Bun.js runtime
+# Backend: Docker containers
 # ============================================
 
 set -e
@@ -14,6 +15,7 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
 NC='\033[0m'
 
 # Config
@@ -23,20 +25,45 @@ REMOTE_DIR="/var/www/innerbright"
 DEPLOY_ENV="production"
 IMAGE_NAME="innerbright-web"
 IMAGE_TAG="latest"
+ENV_FILE=".env.innerbright"
 
 echo -e "${BLUE}============================================${NC}"
 echo -e "${BLUE}🐳 InnerBright Docker Deployment${NC}"
 echo -e "${BLUE}============================================${NC}"
 echo -e "${CYAN}Host: ${REMOTE_HOST}${NC}"
 echo -e "${CYAN}Directory: ${REMOTE_DIR}${NC}"
+echo -e "${CYAN}Environment: ${ENV_FILE}${NC}"
 echo ""
 
-# Check if .env file exists locally
-if [ ! -f ".env" ]; then
-    echo -e "${RED}❌ .env file not found${NC}"
-    echo -e "${YELLOW}Create .env from .env.docker.example first${NC}"
+# Check if env file exists locally
+if [ ! -f "${ENV_FILE}" ]; then
+    echo -e "${RED}❌ ${ENV_FILE} file not found${NC}"
+    echo -e "${YELLOW}Please create ${ENV_FILE} with required configuration${NC}"
+    echo -e "${YELLOW}You can copy from .env.docker.example${NC}"
     exit 1
 fi
+
+# Validate env file has required variables
+echo -e "${BLUE}🔍 Validating environment file...${NC}"
+required_vars=("POSTGRES_PASSWORD" "NEXTAUTH_SECRET" "NEXTAUTH_URL")
+missing_vars=()
+
+for var in "${required_vars[@]}"; do
+    if ! grep -q "^${var}=" "${ENV_FILE}"; then
+        missing_vars+=("${var}")
+    fi
+done
+
+if [ ${#missing_vars[@]} -ne 0 ]; then
+    echo -e "${RED}❌ Missing required variables in ${ENV_FILE}:${NC}"
+    for var in "${missing_vars[@]}"; do
+        echo -e "${RED}   - ${var}${NC}"
+    done
+    exit 1
+fi
+
+echo -e "${GREEN}✅ Environment file validated${NC}"
+echo ""
 
 # Step 1: Sync files to remote server
 echo -e "${BLUE}📤 Step 1: Syncing files to remote server...${NC}"
@@ -57,9 +84,14 @@ fi
 echo ""
 
 # Step 2: Copy .env file
-echo -e "${BLUE}📋 Step 2: Copying .env file...${NC}"
-scp .env ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/.env
-echo -e "${GREEN}✅ .env file copied${NC}"
+echo -e "${BLUE}📋 Step 2: Copying environment file...${NC}"
+scp ${ENV_FILE} ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/.env
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✅ Environment file copied to .env${NC}"
+else
+    echo -e "${RED}❌ Failed to copy environment file${NC}"
+    exit 1
+fi
 echo ""
 
 # Step 3: Build Docker image locally
