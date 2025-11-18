@@ -32,6 +32,8 @@
     "backup:kataseo": "./scripts/backup-domain.sh kataseo.com",
     "backup:manager": "./scripts/backup-manager.sh",
     "restore": "./scripts/restore-domain.sh",
+    "restore:remote": "./scripts/restore-remote.sh",
+    "restore:innerbright": "./scripts/restore-remote.sh innerbright.vn",
     "export": "bun run scripts/export-data.ts",
     "import": "bun run scripts/import-data.ts"
   },
