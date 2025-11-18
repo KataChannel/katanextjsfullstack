@@ -123,8 +123,8 @@ export function getDomainConfig(hostname: string): DomainConfig {
   // Remove www. nếu có
   const domain = cleanHostname.replace(/^www\./, '');
   
-  // Kiểm tra nếu là localhost - xác định dựa vào port
-  if (domain === 'localhost' || domain === '127.0.0.1') {
+  // Kiểm tra nếu là localhost hoặc production IP - xác định dựa vào port
+  if (domain === 'localhost' || domain === '127.0.0.1' || domain === '116.118.48.208') {
     const port = hostname.split(':')[1];
     
     // Map port với domain tương ứng
