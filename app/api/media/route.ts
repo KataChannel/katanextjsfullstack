@@ -6,6 +6,7 @@ import { join } from 'path';
 import { z } from 'zod';
 import { getDomainConfig } from '@/lib/domain-config';
 import { getMinioClient, uploadToMinio, MINIO_CONFIGS } from '@/lib/minio';
+import sharp from 'sharp';
 
 const mediaSchema = z.object({
   filename: z.string(),
@@ -94,12 +95,51 @@ export async function POST(request: NextRequest) {
     
     // Generate unique filename
     const timestamp = Date.now();
-    const fileExt = file.name.split('.').pop();
-    const filename = `${timestamp}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const baseFilename = `${timestamp}-${Math.random().toString(36).substring(7)}`;
     
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    let buffer: Buffer = Buffer.from(bytes);
+    let finalMimeType = file.type;
+    let width: number | undefined;
+    let height: number | undefined;
+    
+    // Optimize images: Convert to WebP, resize, compress
+    if (file.type.startsWith('image/') && file.type !== 'image/svg+xml') {
+      try {
+        const image = sharp(buffer);
+        const metadata = await image.metadata();
+        
+        width = metadata.width;
+        height = metadata.height;
+        
+        // Convert to WebP with optimization
+        // Resize nếu quá lớn (max 1920px width)
+        const optimizedBuffer = await image
+          .resize(1920, undefined, {
+            fit: 'inside',
+            withoutEnlargement: true,
+          })
+          .webp({ 
+            quality: 85, // High quality nhưng vẫn optimize
+            effort: 6,   // Balance between speed and compression
+          })
+          .toBuffer();
+        
+        buffer = optimizedBuffer;
+        
+        finalMimeType = 'image/webp';
+        console.log(`✅ Optimized: ${file.type} → WebP (${(file.size / 1024).toFixed(2)}KB → ${(buffer.length / 1024).toFixed(2)}KB)`);
+      } catch (error) {
+        console.error('Error optimizing image, using original:', error);
+        // Fallback to original nếu optimize thất bại
+      }
+    }
+    
+    // Final filename với extension đúng
+    const filename = finalMimeType === 'image/webp' 
+      ? `${baseFilename}.webp` 
+      : `${baseFilename}.${file.name.split('.').pop()}`;
 
     let url: string;
     
@@ -122,7 +162,7 @@ export async function POST(request: NextRequest) {
         minioConfig.bucketName,
         filename,
         buffer,
-        file.type,
+        finalMimeType,
         {
           'alt': formData.get('alt') as string || '',
           'caption': formData.get('caption') as string || '',
@@ -144,15 +184,6 @@ export async function POST(request: NextRequest) {
       
       console.log(`✅ Uploaded to local: ${url}`);
     }
-    
-    // Get image dimensions if it's an image
-    let width: number | undefined;
-    let height: number | undefined;
-    
-    if (file.type.startsWith('image/')) {
-      // For production, use sharp or similar library
-      // For now, we'll store without dimensions
-    }
 
     // Save to database
     const prisma = await getPrisma();
@@ -160,8 +191,8 @@ export async function POST(request: NextRequest) {
       data: {
         filename: file.name,
         url,
-        mimeType: file.type,
-        size: file.size,
+        mimeType: finalMimeType,
+        size: buffer.length, // Size sau khi optimize
         width,
         height,
         alt: formData.get('alt') as string || undefined,

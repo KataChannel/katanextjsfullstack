@@ -5,6 +5,7 @@ import { getPrisma } from "@/lib/prisma";
 import { Upload, Trash2, Search, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { MediaCard } from "./media-card";
+import { MediaUploadForm } from "./media-upload-form";
 
 
 export default async function MediaLibraryPage({
@@ -46,25 +47,11 @@ export default async function MediaLibraryPage({
         <CardHeader>
           <CardTitle>Upload Media</CardTitle>
           <CardDescription>
-            Tải lên hình ảnh hoặc video (tối đa 10MB)
+            Tải lên hình ảnh hoặc video (tối đa 10MB, tự động tối ưu sang WebP)
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action="/api/media" method="POST" encType="multipart/form-data" className="space-y-4">
-            <div className="flex gap-4">
-              <Input
-                type="file"
-                name="file"
-                accept="image/*,video/*"
-                required
-                className="flex-1"
-              />
-              <Button type="submit">
-                <Upload className="mr-2 h-4 w-4" />
-                Upload
-              </Button>
-            </div>
-          </form>
+          <MediaUploadForm />
         </CardContent>
       </Card>
 

@@ -58,6 +58,7 @@ export function getMinioClient(domain: string): Minio.Client {
 
 /**
  * Đảm bảo bucket tồn tại, tạo mới nếu chưa có
+ * Set bucket policy thành public read để tránh AccessDenied
  */
 export async function ensureBucket(client: Minio.Client, bucketName: string): Promise<void> {
   const bucketExists = await client.bucketExists(bucketName);
@@ -65,6 +66,27 @@ export async function ensureBucket(client: Minio.Client, bucketName: string): Pr
   if (!bucketExists) {
     await client.makeBucket(bucketName, 'us-east-1');
     console.log(`✅ Created MinIO bucket: ${bucketName}`);
+  }
+  
+  // Set bucket policy cho public read access
+  // Điều này cho phép tất cả mọi người đọc (read/download) files từ bucket
+  const publicReadPolicy = {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Principal: { AWS: ['*'] },
+        Action: ['s3:GetObject'],
+        Resource: [`arn:aws:s3:::${bucketName}/*`],
+      },
+    ],
+  };
+  
+  try {
+    await client.setBucketPolicy(bucketName, JSON.stringify(publicReadPolicy));
+    console.log(`✅ Set public read policy for bucket: ${bucketName}`);
+  } catch (error) {
+    console.warn(`⚠️ Could not set bucket policy (may already be set):`, error);
   }
 }
 
