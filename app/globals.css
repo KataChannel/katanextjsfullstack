@@ -41,6 +41,16 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Brand Colors - Arbitrary values support */
+  --color-brand-orange: #FFB340;
+  --color-brand-dark: #2C3E50;
+  --color-brand-blue: #3498DB;
+  --color-brand-green: #27AE60;
+  --color-brand-red: #E74C3C;
+  --color-brand-purple: #9B59B6;
+  --color-brand-yellow: #F1C40F;
+  --color-brand-gray: #95A5A6;
 }
 
 :root {

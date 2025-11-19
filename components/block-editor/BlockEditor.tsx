@@ -305,7 +305,7 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
 
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      <div className="h-screen flex flex-col bg-gray-50">
+      <div className="h-[90vh] flex flex-col bg-gray-50">
         {/* Toolbar */}
         <BlockToolbar onSave={handleSave} onSaveAsTemplate={handleSaveAsTemplate} />
 
@@ -347,7 +347,7 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="space-y-4 p-4">
             <div className="space-y-2">
               <Label htmlFor="template-name">Template Name *</Label>
               <Input

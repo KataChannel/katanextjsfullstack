@@ -295,8 +295,7 @@ export const DEFAULT_STYLES: Record<ElementBlockType, TailwindClasses> = {
 
 export const DEFAULT_CONTENT: Record<ElementBlockType, BlockContent> = {
   text: {
-    html: '<p>Enter text here...</p>',
-    tag: 'p',
+    html: '<p>Type / for commands...</p>',
   },
   image: {
     url: 'https://placehold.co/800x600',

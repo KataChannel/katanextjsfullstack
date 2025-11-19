@@ -601,14 +601,13 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
           case 'html':
             // V2 HTML custom block
             const htmlContent = block.content?.html || '';
-            const htmlContainerStyles = block.styles?.container || '';
+            const htmlContainerStyles = block.styles?.container || 'w-full';
             
+            // Container có Tailwind classes, content HTML bên trong
             return (
-              <div 
-                key={blockId} 
-                className={htmlContainerStyles}
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
-              />
+              <div key={blockId} className={htmlContainerStyles}>
+                <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+              </div>
             );
 
           default:

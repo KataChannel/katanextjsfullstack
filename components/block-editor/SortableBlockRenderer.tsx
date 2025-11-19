@@ -11,6 +11,7 @@ import { useBlockEditorStore } from '@/lib/blocks/store';
 import type { Block } from '@/lib/blocks/types';
 import { GripVertical, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { TiptapBlockEditor } from './TiptapBlockEditor';
 
 interface SortableBlockRendererProps {
   block: Block;
@@ -44,30 +45,18 @@ export function SortableBlockRenderer({ block }: SortableBlockRendererProps) {
   const renderContent = () => {
     switch (block.type) {
       case 'text': {
-        const textTag = (block.content as any).tag || 'p';
-        const textContent = (block.content as any).text || 'Enter text...';
-        const className = block.styles.element || 'text-base text-gray-900';
-        
-        switch (textTag) {
-          case 'h1':
-            return <h1 className={className} contentEditable suppressContentEditableWarning>{textContent}</h1>;
-          case 'h2':
-            return <h2 className={className} contentEditable suppressContentEditableWarning>{textContent}</h2>;
-          case 'h3':
-            return <h3 className={className} contentEditable suppressContentEditableWarning>{textContent}</h3>;
-          case 'h4':
-            return <h4 className={className} contentEditable suppressContentEditableWarning>{textContent}</h4>;
-          case 'h5':
-            return <h5 className={className} contentEditable suppressContentEditableWarning>{textContent}</h5>;
-          case 'h6':
-            return <h6 className={className} contentEditable suppressContentEditableWarning>{textContent}</h6>;
-          case 'div':
-            return <div className={className} contentEditable suppressContentEditableWarning>{textContent}</div>;
-          case 'span':
-            return <span className={className} contentEditable suppressContentEditableWarning>{textContent}</span>;
-          default:
-            return <p className={className} contentEditable suppressContentEditableWarning>{textContent}</p>;
-        }
+        return (
+          <TiptapBlockEditor
+            content={(block.content as any).html || '<p>Type / for commands...</p>'}
+            onChange={(html) => {
+              useBlockEditorStore.getState().updateBlock(block.id, {
+                content: { html },
+              });
+            }}
+            className={block.styles.element || 'text-base text-gray-900'}
+            placeholder="Type / for commands..."
+          />
+        );
       }
 
       case 'image':
@@ -161,11 +150,13 @@ export function SortableBlockRenderer({ block }: SortableBlockRendererProps) {
 
       case 'html': {
         const htmlContent = (block.content as any).html || '<div class="p-4 bg-gray-100 rounded text-gray-500 text-sm">No HTML content</div>';
+        const htmlContainerStyles = block.styles.container || 'w-full';
+        
+        // Container có Tailwind classes (được compile), content HTML bên trong
         return (
-          <div
-            className={block.styles.container || 'w-full'}
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
-          />
+          <div className={htmlContainerStyles}>
+            <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+          </div>
         );
       }
 

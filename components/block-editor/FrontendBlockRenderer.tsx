@@ -151,13 +151,13 @@ export function FrontendBlockRenderer({ block }: FrontendBlockRendererProps) {
 
       case 'html': {
         const content = block.content as any;
+        const htmlContainerStyles = block.styles.container || 'w-full';
+        
+        // Container có Tailwind classes (được compile), content HTML bên trong
         return (
-          <div
-            className={block.styles.container}
-            dangerouslySetInnerHTML={{
-              __html: content.html || '',
-            }}
-          />
+          <div className={htmlContainerStyles}>
+            <div dangerouslySetInnerHTML={{ __html: content.html || '' }} />
+          </div>
         );
       }
 

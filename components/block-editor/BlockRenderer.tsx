@@ -9,6 +9,7 @@ import { useBlockEditorStore } from '@/lib/blocks/store';
 import type { Block } from '@/lib/blocks/types';
 import { GripVertical, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { TiptapBlockEditor } from './TiptapBlockEditor';
 
 interface BlockRendererProps {
   block: Block;
@@ -30,13 +31,16 @@ export function BlockRenderer({ block }: BlockRendererProps) {
     switch (block.type) {
       case 'text':
         return (
-          <div
+          <TiptapBlockEditor
+            content={(block.content as any).html || '<p>Type / for commands...</p>'}
+            onChange={(html) => {
+              useBlockEditorStore.getState().updateBlock(block.id, {
+                content: { html },
+              });
+            }}
             className={block.styles.element || 'text-base text-gray-900'}
-            contentEditable
-            suppressContentEditableWarning
-          >
-            {(block.content as any).text || 'Enter text...'}
-          </div>
+            placeholder="Type / for commands..."
+          />
         );
 
       case 'image':
