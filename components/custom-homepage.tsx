@@ -380,7 +380,7 @@ export function CustomHomePage({ content, type }: CustomHomePageProps) {
       {showHeader && (
         <section className="bg-linear-to-b from-primary/5 to-background py-12 sm:py-16 border-b">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center space-y-4">
+            <div className="w-full mx-auto text-center space-y-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
                 {content.title}
               </h1>
@@ -402,7 +402,7 @@ export function CustomHomePage({ content, type }: CustomHomePageProps) {
       {/* Content Section */}
       <section className={showHeader ? "py-12 sm:py-16" : ""}>
         <div className={isV2Format || isPageBuilder ? "container mx-auto px-4 sm:px-6 lg:px-8 py-8" : (showHeader ? "container mx-auto px-4 sm:px-6 lg:px-8" : "")}>
-          <div className={isV2Format || isPageBuilder ? "max-w-4xl mx-auto" : (showHeader ? "max-w-4xl mx-auto" : "")}>
+          <div className={isV2Format || isPageBuilder ? "w-full mx-auto" : (showHeader ? "w-full mx-auto" : "")}>
             {/* Priority rendering: V2 blocks > Page Builder > Legacy blocks > Content */}
             {isV2Format ? (
               <div className="prose prose-lg max-w-none dark:prose-invert">

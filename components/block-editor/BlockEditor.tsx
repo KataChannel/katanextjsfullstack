@@ -6,7 +6,15 @@
  */
 
 import { useState, useEffect } from 'react';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core';
+import { 
+  DndContext, 
+  DragEndEvent, 
+  DragOverlay, 
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import { BlockSidebar } from './BlockSidebar';
 import { BlockCanvas } from './BlockCanvas';
 import { BlockInspector } from './BlockInspector';
@@ -46,6 +54,15 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
   const [savingTemplate, setSavingTemplate] = useState(false);
   
   const { blocks, loadBlocks, addBlock, moveBlock, selectedBlockId, getBlock, deleteBlock, duplicateBlock, selectBlock } = useBlockEditorStore();
+
+  // Setup DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px of movement required before drag starts
+      },
+    })
+  );
 
   // Load initial blocks
   useEffect(() => {
@@ -304,7 +321,11 @@ export function BlockEditor({ pageId, initialBlocks, onSave, onChange }: BlockEd
   };
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext 
+      sensors={sensors}
+      onDragStart={handleDragStart} 
+      onDragEnd={handleDragEnd}
+    >
       <div className="h-[90vh] flex flex-col bg-gray-50">
         {/* Toolbar */}
         <BlockToolbar onSave={handleSave} onSaveAsTemplate={handleSaveAsTemplate} />

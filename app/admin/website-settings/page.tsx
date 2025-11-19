@@ -7,8 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { toast } from 'sonner';
-import { Plus, Trash2, GripVertical, Save, Globe, Search, Code, Palette } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Save, Globe, Search, Code, Palette, Home, Check, ChevronsUpDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface MenuItem {
   label: string;
@@ -33,6 +36,10 @@ interface WebsiteSettings {
   metaTitle?: string;
   metaDescription?: string;
   twitterHandle?: string;
+  
+  // Homepage Settings
+  homePageType?: 'page' | 'post' | null;
+  homePageId?: string;
   
   // SEO & Tracking
   googleAnalytics?: string;
@@ -63,6 +70,12 @@ interface WebsiteSettings {
   robotsTxt?: string;
 }
 
+interface PageOption {
+  id: string;
+  title: string;
+  slug: string;
+}
+
 export default function WebsiteSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -72,9 +85,12 @@ export default function WebsiteSettingsPage() {
     navigationMenu: [],
     socialLinks: [],
   });
+  const [pages, setPages] = useState<PageOption[]>([]);
+  const [openHomePageCombobox, setOpenHomePageCombobox] = useState(false);
 
   useEffect(() => {
     fetchSettings();
+    fetchPages();
   }, []);
 
   const fetchSettings = async () => {
@@ -88,6 +104,22 @@ export default function WebsiteSettingsPage() {
       toast.error('Lỗi khi tải cài đặt website');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPages = async () => {
+    try {
+      const response = await fetch('/api/pages-v2?published=true');
+      if (response.ok) {
+        const data = await response.json();
+        setPages(data.map((page: any) => ({
+          id: page.id,
+          title: page.title,
+          slug: page.slug,
+        })));
+      }
+    } catch (error) {
+      console.error('Error fetching pages:', error);
     }
   };
 
@@ -175,8 +207,12 @@ export default function WebsiteSettingsPage() {
         </p>
       </div>
 
-      <Tabs defaultValue="seo" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+      <Tabs defaultValue="homepage" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="homepage" className="gap-2">
+            <Home className="h-4 w-4" />
+            <span className="hidden sm:inline">Trang Chủ</span>
+          </TabsTrigger>
           <TabsTrigger value="seo" className="gap-2">
             <Search className="h-4 w-4" />
             <span className="hidden sm:inline">SEO</span>
@@ -198,6 +234,121 @@ export default function WebsiteSettingsPage() {
             <span className="hidden sm:inline">Nâng Cao</span>
           </TabsTrigger>
         </TabsList>
+
+        {/* Homepage Tab */}
+        <TabsContent value="homepage" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Cài Đặt Trang Chủ</CardTitle>
+              <CardDescription>Chọn trang hiển thị làm trang chủ của website</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="homePageType">Loại trang chủ</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <Button
+                    type="button"
+                    variant={!settings.homePageType ? 'default' : 'outline'}
+                    onClick={() => setSettings({ ...settings, homePageType: null, homePageId: undefined })}
+                    className="h-auto py-3 flex flex-col items-start"
+                  >
+                    <div className="font-semibold">Trang Tĩnh</div>
+                    <div className="text-xs text-left">Dùng homepage mặc định</div>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={settings.homePageType === 'page' ? 'default' : 'outline'}
+                    onClick={() => setSettings({ ...settings, homePageType: 'page', homePageId: undefined })}
+                    className="h-auto py-3 flex flex-col items-start"
+                  >
+                    <div className="font-semibold">Trang Custom</div>
+                    <div className="text-xs text-left">Chọn page làm trang chủ</div>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={settings.homePageType === 'post' ? 'default' : 'outline'}
+                    onClick={() => setSettings({ ...settings, homePageType: 'post', homePageId: undefined })}
+                    className="h-auto py-3 flex flex-col items-start"
+                  >
+                    <div className="font-semibold">Blog</div>
+                    <div className="text-xs text-left">Hiển thị danh sách posts</div>
+                  </Button>
+                </div>
+              </div>
+
+              {settings.homePageType === 'page' && (
+                <div className="space-y-2">
+                  <Label>Chọn trang</Label>
+                  <Popover open={openHomePageCombobox} onOpenChange={setOpenHomePageCombobox}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openHomePageCombobox}
+                        className="w-full justify-between"
+                      >
+                        {settings.homePageId
+                          ? pages.find((page) => page.id === settings.homePageId)?.title || 'Chọn trang...'
+                          : 'Chọn trang...'}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Tìm trang..." />
+                        <CommandList>
+                          <CommandEmpty>Không tìm thấy trang.</CommandEmpty>
+                          <CommandGroup>
+                            {pages.map((page) => (
+                              <CommandItem
+                                key={page.id}
+                                value={page.title}
+                                onSelect={() => {
+                                  setSettings({ ...settings, homePageId: page.id });
+                                  setOpenHomePageCombobox(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    'mr-2 h-4 w-4',
+                                    settings.homePageId === page.id ? 'opacity-100' : 'opacity-0'
+                                  )}
+                                />
+                                <div className="flex flex-col">
+                                  <span>{page.title}</span>
+                                  <span className="text-xs text-muted-foreground">/{page.slug}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <p className="text-xs text-muted-foreground">
+                    Trang này sẽ hiển thị khi người dùng truy cập vào trang chủ (/)
+                  </p>
+                </div>
+              )}
+
+              {settings.homePageType === 'post' && (
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-900">
+                    Trang chủ sẽ hiển thị danh sách các bài viết blog mới nhất.
+                  </p>
+                </div>
+              )}
+
+              {!settings.homePageType && (
+                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                  <p className="text-sm text-gray-700">
+                    Sử dụng homepage tĩnh mặc định của theme.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         {/* SEO & Metadata Tab */}
         <TabsContent value="seo" className="space-y-4">

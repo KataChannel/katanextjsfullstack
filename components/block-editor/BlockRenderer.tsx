@@ -65,9 +65,44 @@ export function BlockRenderer({ block }: BlockRendererProps) {
           </a>
         );
 
-      case 'container':
+      case 'container': {
+        const containerContent = block.content as any;
+        const background = containerContent?.background;
+        
+        const getBackgroundStyle = () => {
+          if (!background || background.type === 'none') return {};
+          
+          const opacity = (background.opacity || 100) / 100;
+          
+          if (background.type === 'color') {
+            const hex = background.value || '#f3f4f6';
+            // Convert hex to rgba
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return {
+              backgroundColor: `rgba(${r}, ${g}, ${b}, ${opacity})`,
+            };
+          }
+          
+          if (background.type === 'image' && background.value) {
+            return {
+              backgroundImage: `url(${background.value})`,
+              backgroundSize: background.size || 'cover',
+              backgroundPosition: background.position || 'center',
+              backgroundRepeat: background.repeat || 'no-repeat',
+              opacity: opacity,
+            };
+          }
+          
+          return {};
+        };
+
         return (
-          <div className={block.styles.container || 'flex flex-col gap-4'}>
+          <div 
+            className={block.styles.container || 'flex flex-col gap-4'}
+            style={getBackgroundStyle()}
+          >
             {block.children?.map(child => (
               <BlockRenderer key={child.id} block={child} />
             ))}
@@ -78,6 +113,7 @@ export function BlockRenderer({ block }: BlockRendererProps) {
             )}
           </div>
         );
+      }
 
       case 'divider':
         return <hr className={block.styles.element || 'border-t border-gray-300 my-4'} />;

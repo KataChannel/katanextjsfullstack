@@ -84,6 +84,14 @@ export interface ContainerContent {
   direction?: 'row' | 'column';
   gap?: number;
   columns?: number; // For grid
+  background?: {
+    type: 'none' | 'color' | 'image';
+    value?: string; // Color hex or image URL
+    opacity?: number; // 0-100
+    size?: 'cover' | 'contain' | 'auto';
+    position?: 'center' | 'top' | 'bottom' | 'left' | 'right';
+    repeat?: 'no-repeat' | 'repeat' | 'repeat-x' | 'repeat-y';
+  };
 }
 
 // Union of all content types
@@ -311,6 +319,13 @@ export const DEFAULT_CONTENT: Record<ElementBlockType, BlockContent> = {
     layout: 'flex',
     direction: 'column',
     gap: 4,
+    background: {
+      type: 'none',
+      opacity: 100,
+      size: 'cover',
+      position: 'center',
+      repeat: 'no-repeat',
+    },
   },
   divider: {},
   spacer: {},

@@ -279,7 +279,7 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
           </div>
         )}
         
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto">
         <article className="mx-auto">
         {/* Header - Only show for posts or pages without V2 blocks/Page Builder */}
         {(type === 'post' || (!blocksV2 && !isPageBuilder)) && (
@@ -498,36 +498,59 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const slides = block.content?.slides || [];
             const autoplay = block.content?.autoplay ?? true;
             const interval = block.content?.interval || 5000;
+            const carouselStyles = block.styles?.element || block.styles?.container || '';
             
             return (
-              <CarouselBlock
-                key={blockId}
-                slides={slides}
-                autoplay={autoplay}
-                interval={interval}
-              />
+              <div key={blockId} className={carouselStyles || 'w-full'}>
+                <CarouselBlock
+                  slides={slides}
+                  autoplay={autoplay}
+                  interval={interval}
+                />
+              </div>
             );
 
           
           case 'text':
             // V2 text block with rich content
             const textContent = block.content?.text || block.content || '';
-            const textStyles = block.styles?.element || '';
-            return (
-              <div
-                key={blockId}
-                className={textStyles || 'prose prose-lg max-w-none'}
-                dangerouslySetInnerHTML={{ __html: textContent }}
-              />
-            );
+            const textTag = block.content?.tag || 'div';
+            const textStyles = block.styles?.element || block.styles?.container || '';
+            
+            // Render with appropriate tag
+            const validTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span'];
+            const safeTag = validTags.includes(textTag) ? textTag : 'div';
+            
+            switch (safeTag) {
+              case 'h1':
+                return <h1 key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              case 'h2':
+                return <h2 key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              case 'h3':
+                return <h3 key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              case 'h4':
+                return <h4 key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              case 'h5':
+                return <h5 key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              case 'h6':
+                return <h6 key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              case 'p':
+                return <p key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              case 'span':
+                return <span key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+              default:
+                return <div key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
+            }
 
           case 'image':
             // V2 image block
             const imageUrl = block.content?.url || block.content || '';
             const imageAlt = block.content?.alt || block.name || '';
+            const imageContainerStyles = block.styles?.container || '';
             const imageStyles = block.styles?.element || 'w-full h-auto rounded-lg';
+            
             return (
-              <figure key={blockId} className="my-8">
+              <figure key={blockId} className={imageContainerStyles || 'my-8'}>
                 <img
                   src={imageUrl}
                   alt={imageAlt}
@@ -540,17 +563,21 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             // V2 button block
             const buttonText = block.content?.text || block.content || 'Button';
             const buttonLink = block.content?.link || '#';
-            const buttonVariant = block.content?.variant || 'primary';
+            const buttonContainerStyles = block.styles?.container || '';
+            const buttonStyles = block.styles?.element || '';
+            
+            // Use custom styles if provided, otherwise use default variant styles
+            const defaultButtonStyles = buttonStyles || `inline-block px-6 py-3 rounded-lg font-semibold transition-colors ${
+              block.content?.variant === 'secondary'
+                ? 'bg-gray-200 text-gray-900 hover:bg-gray-300'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`;
             
             return (
-              <div key={blockId} className="my-6">
+              <div key={blockId} className={buttonContainerStyles || 'my-6'}>
                 <a
                   href={buttonLink}
-                  className={`inline-block px-6 py-3 rounded-lg font-semibold transition-colors ${
-                    buttonVariant === 'primary'
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-gray-200 text-gray-900 hover:bg-gray-300'
-                  }`}
+                  className={defaultButtonStyles}
                 >
                   {buttonText}
                 </a>
@@ -560,20 +587,42 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
           case 'container':
             // V2 container block - render with styles and nested children
             const containerStyles = block.styles?.container || '';
-            const elementStyles = block.styles?.element || '';
+            const containerElementStyles = block.styles?.element || '';
+            const containerBg = block.content?.background || {};
             const children = block.children || [];
             
+            // Build inline styles for background
+            const containerInlineStyles: React.CSSProperties = {};
+            
+            if (containerBg.type === 'color' && containerBg.value) {
+              containerInlineStyles.backgroundColor = containerBg.value;
+              if (containerBg.opacity !== undefined && containerBg.opacity !== 100) {
+                containerInlineStyles.opacity = containerBg.opacity / 100;
+              }
+            } else if (containerBg.type === 'image' && containerBg.value) {
+              containerInlineStyles.backgroundImage = `url(${containerBg.value})`;
+              containerInlineStyles.backgroundSize = containerBg.size || 'cover';
+              containerInlineStyles.backgroundPosition = containerBg.position || 'center';
+              containerInlineStyles.backgroundRepeat = containerBg.repeat || 'no-repeat';
+              if (containerBg.opacity !== undefined && containerBg.opacity !== 100) {
+                containerInlineStyles.opacity = containerBg.opacity / 100;
+              }
+            }
+            
             return (
-              <div key={blockId} className={containerStyles}>
-                {elementStyles && (
-                  <div className={elementStyles}>
+              <div 
+                key={blockId} 
+                className={containerStyles || 'w-full'}
+                style={Object.keys(containerInlineStyles).length > 0 ? containerInlineStyles : undefined}
+              >
+                {containerElementStyles ? (
+                  <div className={containerElementStyles}>
                     {children.length > 0 && (
                       <BlocksV2Renderer blocks={children} />
                     )}
                   </div>
-                )}
-                {!elementStyles && children.length > 0 && (
-                  <BlocksV2Renderer blocks={children} />
+                ) : (
+                  children.length > 0 && <BlocksV2Renderer blocks={children} />
                 )}
               </div>
             );
@@ -582,20 +631,33 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             // V2 heading block
             const headingText = block.content?.text || block.content || 'Heading';
             const headingLevel = block.content?.level || 2;
+            const headingStyles = block.styles?.element || block.styles?.container || '';
+            
+            // Default styles if no custom styles provided
+            const defaultHeadingStyles: Record<number, string> = {
+              1: 'text-4xl font-bold my-4',
+              2: 'text-3xl font-bold my-4',
+              3: 'text-2xl font-bold my-4',
+              4: 'text-xl font-bold my-4',
+              5: 'text-lg font-bold my-4',
+              6: 'text-base font-bold my-4',
+            };
+            
+            const finalHeadingStyles = headingStyles || defaultHeadingStyles[headingLevel] || defaultHeadingStyles[2];
             
             // Render heading based on level
             if (headingLevel === 1) {
-              return <h1 key={blockId} className="text-4xl font-bold my-4">{headingText}</h1>;
+              return <h1 key={blockId} className={finalHeadingStyles}>{headingText}</h1>;
             } else if (headingLevel === 2) {
-              return <h2 key={blockId} className="text-3xl font-bold my-4">{headingText}</h2>;
+              return <h2 key={blockId} className={finalHeadingStyles}>{headingText}</h2>;
             } else if (headingLevel === 3) {
-              return <h3 key={blockId} className="text-2xl font-bold my-4">{headingText}</h3>;
+              return <h3 key={blockId} className={finalHeadingStyles}>{headingText}</h3>;
             } else if (headingLevel === 4) {
-              return <h4 key={blockId} className="text-xl font-bold my-4">{headingText}</h4>;
+              return <h4 key={blockId} className={finalHeadingStyles}>{headingText}</h4>;
             } else if (headingLevel === 5) {
-              return <h5 key={blockId} className="text-lg font-bold my-4">{headingText}</h5>;
+              return <h5 key={blockId} className={finalHeadingStyles}>{headingText}</h5>;
             } else {
-              return <h6 key={blockId} className="text-base font-bold my-4">{headingText}</h6>;
+              return <h6 key={blockId} className={finalHeadingStyles}>{headingText}</h6>;
             }
 
           case 'html':
@@ -609,16 +671,80 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
                 <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
               </div>
             );
+            
+          case 'divider':
+            // V2 divider block
+            const dividerStyles = block.styles?.element || block.styles?.container || 'border-t border-gray-300 my-4';
+            return <hr key={blockId} className={dividerStyles} />;
+
+          case 'spacer':
+            // V2 spacer block
+            const spacerHeight = block.content?.height || '2rem';
+            const spacerStyles = block.styles?.element || block.styles?.container || '';
+            return (
+              <div 
+                key={blockId} 
+                className={spacerStyles}
+                style={{ height: spacerHeight }}
+              />
+            );
+
+          case 'video':
+            // V2 video block
+            const videoUrl = block.content?.url || '';
+            const videoProvider = block.content?.provider || 'youtube';
+            const videoContainerStyles = block.styles?.container || 'relative w-full my-8';
+            const videoStyles = block.styles?.element || 'w-full aspect-video';
+            
+            return (
+              <div key={blockId} className={videoContainerStyles}>
+                {videoUrl ? (
+                  <iframe
+                    src={videoUrl}
+                    className={videoStyles}
+                    allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  />
+                ) : (
+                  <div className={videoStyles + ' bg-muted flex items-center justify-center'}>
+                    <span className="text-muted-foreground">No video URL</span>
+                  </div>
+                )}
+              </div>
+            );
+
+          case 'icon':
+            // V2 icon block
+            const iconName = block.content?.name || 'star';
+            const iconSize = block.content?.size || 24;
+            const iconStyles = block.styles?.element || block.styles?.container || 'text-gray-900';
+            
+            return (
+              <div key={blockId} className={iconStyles}>
+                <svg
+                  width={iconSize}
+                  height={iconSize}
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="inline-block"
+                >
+                  {/* Simple star icon as default */}
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+              </div>
+            );
 
           default:
-            // Unknown block type - try to render content
+            // Unknown block type - try to render content with styles
             if (block.content) {
               const content = typeof block.content === 'string' 
                 ? block.content 
                 : block.content?.text || JSON.stringify(block.content);
               
+              const unknownBlockStyles = block.styles?.element || block.styles?.container || '';
+              
               return (
-                <div key={blockId} className="my-4">
+                <div key={blockId} className={unknownBlockStyles || 'my-4'}>
                   <div dangerouslySetInnerHTML={{ __html: content }} />
                 </div>
               );

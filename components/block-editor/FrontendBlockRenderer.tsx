@@ -82,8 +82,43 @@ export function FrontendBlockRenderer({ block }: FrontendBlockRendererProps) {
       }
 
       case 'container': {
+        const containerContent = block.content as any;
+        const background = containerContent?.background;
+        
+        const getBackgroundStyle = () => {
+          if (!background || background.type === 'none') return {};
+          
+          const opacity = (background.opacity || 100) / 100;
+          
+          if (background.type === 'color') {
+            const hex = background.value || '#f3f4f6';
+            // Convert hex to rgba
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return {
+              backgroundColor: `rgba(${r}, ${g}, ${b}, ${opacity})`,
+            };
+          }
+          
+          if (background.type === 'image' && background.value) {
+            return {
+              backgroundImage: `url(${background.value})`,
+              backgroundSize: background.size || 'cover',
+              backgroundPosition: background.position || 'center',
+              backgroundRepeat: background.repeat || 'no-repeat',
+              opacity: opacity,
+            };
+          }
+          
+          return {};
+        };
+        
         return (
-          <div className={cn(block.styles.container, block.styles.wrapper)}>
+          <div 
+            className={cn(block.styles.container, block.styles.wrapper)}
+            style={getBackgroundStyle()}
+          >
             {block.children?.map((child) => (
               <FrontendBlockRenderer key={child.id} block={child} />
             ))}

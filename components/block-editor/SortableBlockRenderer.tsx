@@ -4,7 +4,7 @@
  * Sortable Block Renderer - Draggable and sortable block
  */
 
-import { useSortable } from '@dnd-kit/sortable';
+import { useSortable, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useDroppable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useBlockEditorStore } from '@/lib/blocks/store';
@@ -87,6 +87,39 @@ export function SortableBlockRenderer({ block }: SortableBlockRendererProps) {
           data: { type: 'container', containerId: block.id },
         });
         
+        const containerContent = block.content as any;
+        const background = containerContent?.background;
+        const children = block.children || [];
+        
+        const getBackgroundStyle = () => {
+          if (!background || background.type === 'none') return {};
+          
+          const opacity = (background.opacity || 100) / 100;
+          
+          if (background.type === 'color') {
+            const hex = background.value || '#f3f4f6';
+            // Convert hex to rgba
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return {
+              backgroundColor: `rgba(${r}, ${g}, ${b}, ${opacity})`,
+            };
+          }
+          
+          if (background.type === 'image' && background.value) {
+            return {
+              backgroundImage: `url(${background.value})`,
+              backgroundSize: background.size || 'cover',
+              backgroundPosition: background.position || 'center',
+              backgroundRepeat: background.repeat || 'no-repeat',
+              opacity: opacity,
+            };
+          }
+          
+          return {};
+        };
+        
         return (
           <div
             ref={setDropRef}
@@ -94,11 +127,18 @@ export function SortableBlockRenderer({ block }: SortableBlockRendererProps) {
               ${block.styles.container || 'flex flex-col gap-4 p-4 border-2 border-dashed border-gray-300 rounded-lg'}
               ${isOver ? 'border-blue-500 bg-blue-50' : ''}
             `}
+            style={getBackgroundStyle()}
           >
-            {block.children?.map(child => (
-              <SortableBlockRenderer key={child.id} block={child} />
-            ))}
-            {(!block.children || block.children.length === 0) && (
+            {children.length > 0 ? (
+              <SortableContext 
+                items={children.map(c => c.id)} 
+                strategy={verticalListSortingStrategy}
+              >
+                {children.map(child => (
+                  <SortableBlockRenderer key={child.id} block={child} />
+                ))}
+              </SortableContext>
+            ) : (
               <div className="p-8 text-center text-gray-400">
                 Drop blocks here
               </div>

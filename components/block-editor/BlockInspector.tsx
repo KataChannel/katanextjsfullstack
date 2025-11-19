@@ -423,6 +423,297 @@ export function BlockInspector({ isOpen = true, onClose }: BlockInspectorProps) 
                 </div>
               </>
             )}
+
+            {selectedBlock.type === 'container' && (() => {
+              const containerContent = selectedBlock.content as any;
+              const background = containerContent?.background || {
+                type: 'none',
+                opacity: 100,
+                size: 'cover',
+                position: 'center',
+                repeat: 'no-repeat',
+              };
+
+              return (
+                <div className="space-y-4">
+                  {/* Layout Settings */}
+                  <div className="space-y-3 pb-3 border-b">
+                    <h3 className="text-sm font-semibold text-gray-900">Layout</h3>
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Loại layout</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant={containerContent?.layout === 'flex' ? 'default' : 'outline'}
+                          onClick={() => updateBlock(selectedBlock.id, {
+                            content: { ...containerContent, layout: 'flex' }
+                          })}
+                          className="h-9"
+                        >
+                          Flex
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={containerContent?.layout === 'grid' ? 'default' : 'outline'}
+                          onClick={() => updateBlock(selectedBlock.id, {
+                            content: { ...containerContent, layout: 'grid' }
+                          })}
+                          className="h-9"
+                        >
+                          Grid
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Hướng</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          size="sm"
+                          variant={containerContent?.direction === 'row' ? 'default' : 'outline'}
+                          onClick={() => updateBlock(selectedBlock.id, {
+                            content: { ...containerContent, direction: 'row' }
+                          })}
+                          className="h-9"
+                        >
+                          Ngang
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={containerContent?.direction === 'column' ? 'default' : 'outline'}
+                          onClick={() => updateBlock(selectedBlock.id, {
+                            content: { ...containerContent, direction: 'column' }
+                          })}
+                          className="h-9"
+                        >
+                          Dọc
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Khoảng cách (Gap)</Label>
+                      <Input
+                        type="number"
+                        placeholder="4"
+                        value={containerContent?.gap || 4}
+                        onChange={(e) => updateBlock(selectedBlock.id, {
+                          content: { ...containerContent, gap: parseInt(e.target.value) || 4 }
+                        })}
+                      />
+                    </div>
+
+                    {containerContent?.layout === 'grid' && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Số cột</Label>
+                        <Input
+                          type="number"
+                          placeholder="2"
+                          value={containerContent?.columns || 2}
+                          onChange={(e) => updateBlock(selectedBlock.id, {
+                            content: { ...containerContent, columns: parseInt(e.target.value) || 2 }
+                          })}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Background Settings */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-semibold text-gray-900">Background</h3>
+                    
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Loại background</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Button
+                          size="sm"
+                          variant={background.type === 'none' ? 'default' : 'outline'}
+                          onClick={() => updateBlock(selectedBlock.id, {
+                            content: {
+                              ...containerContent,
+                              background: { ...background, type: 'none' }
+                            }
+                          })}
+                          className="h-9 text-xs"
+                        >
+                          Không
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={background.type === 'color' ? 'default' : 'outline'}
+                          onClick={() => updateBlock(selectedBlock.id, {
+                            content: {
+                              ...containerContent,
+                              background: { ...background, type: 'color', value: '#f3f4f6' }
+                            }
+                          })}
+                          className="h-9 text-xs"
+                        >
+                          Màu
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={background.type === 'image' ? 'default' : 'outline'}
+                          onClick={() => updateBlock(selectedBlock.id, {
+                            content: {
+                              ...containerContent,
+                              background: { ...background, type: 'image', value: 'https://placehold.co/1200x800' }
+                            }
+                          })}
+                          className="h-9 text-xs"
+                        >
+                          Hình
+                        </Button>
+                      </div>
+                    </div>
+
+                    {background.type === 'color' && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Màu nền</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            type="color"
+                            value={background.value || '#f3f4f6'}
+                            onChange={(e) => updateBlock(selectedBlock.id, {
+                              content: {
+                                ...containerContent,
+                                background: { ...background, value: e.target.value }
+                              }
+                            })}
+                            className="h-10 w-16 p-1 cursor-pointer"
+                          />
+                          <Input
+                            type="text"
+                            placeholder="#f3f4f6"
+                            value={background.value || ''}
+                            onChange={(e) => updateBlock(selectedBlock.id, {
+                              content: {
+                                ...containerContent,
+                                background: { ...background, value: e.target.value }
+                              }
+                            })}
+                            className="flex-1"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {background.type === 'image' && (
+                      <>
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">URL hình ảnh</Label>
+                          <Input
+                            type="text"
+                            placeholder="https://placehold.co/1200x800"
+                            value={background.value || ''}
+                            onChange={(e) => updateBlock(selectedBlock.id, {
+                              content: {
+                                ...containerContent,
+                                background: { ...background, value: e.target.value }
+                              }
+                            })}
+                          />
+                          {background.value && (
+                            <div
+                              className="w-full h-32 rounded border bg-cover bg-center"
+                              style={{ backgroundImage: `url(${background.value})` }}
+                            />
+                          )}
+                          <p className="text-xs text-gray-500">
+                            Nhập URL hoặc chọn từ File Manager (coming soon)
+                          </p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Kích thước</Label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {(['cover', 'contain', 'auto'] as const).map((size) => (
+                              <Button
+                                key={size}
+                                size="sm"
+                                variant={background.size === size ? 'default' : 'outline'}
+                                onClick={() => updateBlock(selectedBlock.id, {
+                                  content: {
+                                    ...containerContent,
+                                    background: { ...background, size }
+                                  }
+                                })}
+                                className="h-8 text-xs"
+                              >
+                                {size === 'cover' ? 'Cover' : size === 'contain' ? 'Contain' : 'Auto'}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Vị trí</Label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {(['center', 'top', 'bottom'] as const).map((pos) => (
+                              <Button
+                                key={pos}
+                                size="sm"
+                                variant={background.position === pos ? 'default' : 'outline'}
+                                onClick={() => updateBlock(selectedBlock.id, {
+                                  content: {
+                                    ...containerContent,
+                                    background: { ...background, position: pos }
+                                  }
+                                })}
+                                className="h-8 text-xs capitalize"
+                              >
+                                {pos === 'center' ? 'Giữa' : pos === 'top' ? 'Trên' : 'Dưới'}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium">Lặp lại</Label>
+                          <div className="grid grid-cols-2 gap-2">
+                            {(['no-repeat', 'repeat'] as const).map((rep) => (
+                              <Button
+                                key={rep}
+                                size="sm"
+                                variant={background.repeat === rep ? 'default' : 'outline'}
+                                onClick={() => updateBlock(selectedBlock.id, {
+                                  content: {
+                                    ...containerContent,
+                                    background: { ...background, repeat: rep }
+                                  }
+                                })}
+                                className="h-8 text-xs"
+                              >
+                                {rep === 'no-repeat' ? 'Không' : 'Có'}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {background.type !== 'none' && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Độ mờ ({background.opacity}%)</Label>
+                        <Input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={background.opacity || 100}
+                          onChange={(e) => updateBlock(selectedBlock.id, {
+                            content: {
+                              ...containerContent,
+                              background: { ...background, opacity: parseInt(e.target.value) }
+                            }
+                          })}
+                          className="w-full"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </TabsContent>
 
           <TabsContent value="styles" className="flex-1 overflow-y-auto mt-0 px-4 py-4 space-y-4">
