@@ -75,6 +75,37 @@ export interface FiveFoundationsData {
   foundations: FoundationItem[];
 }
 
+export interface AtInnerBrightData {
+  title: string;
+  introText: string;
+  mainDescription: string;
+  secondaryDescription: string;
+  image: string;
+  imageAlt: string;
+}
+
+export interface TrainerData {
+  badge: string;
+  name: string;
+  titles: string[];
+  description: string[];
+  image: string;
+  imageAlt: string;
+}
+
+export interface Certification {
+  id: number;
+  logo: string;
+  name: string;
+  description: string;
+}
+
+export interface CertificationsData {
+  headerText: string;
+  certifications: Certification[];
+  backToTopText: string;
+}
+
 export interface VeInnerbrightPageData {
   hero: {
     slides: HeroSlide[];
@@ -84,4 +115,7 @@ export interface VeInnerbrightPageData {
   certificationSystem: CertificationSystemData;
   whyInnerBright: WhyInnerBrightData;
   fiveFoundations: FiveFoundationsData;
+  atInnerBright: AtInnerBrightData;
+  trainer: TrainerData;
+  certifications: CertificationsData;
 }

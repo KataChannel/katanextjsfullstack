@@ -4,7 +4,10 @@ import {
   PersonalDevelopmentSection,
   CertificationSystemSection,
   WhyInnerBrightSection,
-  FiveFoundationsSection
+  FiveFoundationsSection,
+  AtInnerBrightSection,
+  TrainerSection,
+  CertificationsSection
 } from "./components";
 import { defaultPageData } from "./data";
 
@@ -28,6 +31,15 @@ export default function VeInnerbrightPage() {
       
       {/* Five Foundations Section - Section 6 */}
       <FiveFoundationsSection data={defaultPageData.fiveFoundations} />
+      
+      {/* At InnerBright Section - Section 7 */}
+      <AtInnerBrightSection data={defaultPageData.atInnerBright} />
+      
+      {/* Trainer Section - Section 8 */}
+      <TrainerSection data={defaultPageData.trainer} />
+      
+      {/* Certifications Section - Section 9 */}
+      <CertificationsSection data={defaultPageData.certifications} />
     </div>
   );
 }
