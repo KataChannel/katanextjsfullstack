@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 import { 
   Menu, 
   X, 
@@ -34,6 +35,13 @@ const adminNavigation:any = [
 
 export function AdminHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut({ 
+      callbackUrl: "/auth/login",
+      redirect: true 
+    });
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 lg:left-64">
@@ -89,7 +97,11 @@ export function AdminHeader() {
                     </Link>
                   </Button>
                   <div className="border-t pt-1">
-                    <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive">
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start text-destructive hover:text-destructive"
+                      onClick={handleLogout}
+                    >
                       <LogOut className="mr-2 h-4 w-4" />
                       Đăng xuất
                     </Button>

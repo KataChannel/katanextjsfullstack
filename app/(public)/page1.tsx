@@ -19,7 +19,7 @@ export default async function Home() {
   const prisma = await getPrisma(domain || 'tazagroup.vn');
   
   // Check if a custom homepage is set
-  const seoSettings = await prisma.seoSettings.findUnique({
+  const websiteSettings = await prisma.websiteSettings.findUnique({
     where: { domain: domain || 'tazagroup.vn' },
     select: {
       homePageType: true,
@@ -28,10 +28,10 @@ export default async function Home() {
   });
 
   // If homepage is set to a page or post, render that instead
-  if (seoSettings?.homePageType && seoSettings?.homePageId) {
-    if (seoSettings.homePageType === "page") {
+  if (websiteSettings?.homePageType && websiteSettings?.homePageId) {
+    if (websiteSettings.homePageType === "page") {
       const page = await prisma.page.findUnique({
-        where: { id: seoSettings.homePageId },
+        where: { id: websiteSettings.homePageId },
         include: {
           author: {
             select: {
@@ -45,9 +45,9 @@ export default async function Home() {
       if (page && page.published) {
         return <CustomHomePage content={page} type="page" />;
       }
-    } else if (seoSettings.homePageType === "post") {
+    } else if (websiteSettings.homePageType === "post") {
       const post = await prisma.post.findUnique({
-        where: { id: seoSettings.homePageId },
+        where: { id: websiteSettings.homePageId },
         include: {
           author: {
             select: {

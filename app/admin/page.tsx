@@ -73,9 +73,9 @@ export default async function AdminPage() {
             </Link>
           </Button>
           <Button variant="outline" className="justify-start h-auto py-4" asChild>
-            <Link href="/admin/seo-settings">
+            <Link href="/admin/website-settings">
               <Settings className="mr-2 h-5 w-5" />
-              <div className="text-left"><div className="font-semibold">Cài đặt SEO</div><div className="text-xs text-muted-foreground">Cấu hình SEO</div></div>
+              <div className="text-left"><div className="font-semibold">Website & SEO</div><div className="text-xs text-muted-foreground">Cấu hình website và SEO</div></div>
             </Link>
           </Button>
           <Button variant="outline" className="justify-start h-auto py-4" asChild>

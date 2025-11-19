@@ -362,9 +362,9 @@ export default async function AnalyticsPage() {
             </Link>
           </Button>
           <Button variant="outline" className="justify-start h-auto py-3" asChild>
-            <Link href="/admin/seo-settings">
+            <Link href="/admin/website-settings">
               <Activity className="mr-2 h-4 w-4" />
-              Cài đặt SEO
+              Website & SEO
             </Link>
           </Button>
         </CardContent>

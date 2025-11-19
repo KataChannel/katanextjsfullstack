@@ -60,39 +60,17 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { 
-      domain = 'tazagroup.vn',
-      logo,
-      logoAlt,
-      headerHtml,
-      navigationMenu,
-      footerHtml,
-      footerText,
-      socialLinks,
-    } = body;
+    const { domain, ...settingsData } = body;
+    const targetDomain = domain || 'innerbright.vn';
 
-    const prisma = await getPrisma(domain);
+    const prisma = await getPrisma(targetDomain);
 
     const settings = await prisma.websiteSettings.upsert({
-      where: { domain },
-      update: {
-        logo,
-        logoAlt,
-        headerHtml,
-        navigationMenu,
-        footerHtml,
-        footerText,
-        socialLinks,
-      },
+      where: { domain: targetDomain },
+      update: settingsData,
       create: {
-        domain,
-        logo,
-        logoAlt,
-        headerHtml,
-        navigationMenu,
-        footerHtml,
-        footerText,
-        socialLinks,
+        domain: targetDomain,
+        ...settingsData,
       },
     });
 

@@ -598,6 +598,19 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
               return <h6 key={blockId} className="text-base font-bold my-4">{headingText}</h6>;
             }
 
+          case 'html':
+            // V2 HTML custom block
+            const htmlContent = block.content?.html || '';
+            const htmlContainerStyles = block.styles?.container || '';
+            
+            return (
+              <div 
+                key={blockId} 
+                className={htmlContainerStyles}
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
+              />
+            );
+
           default:
             // Unknown block type - try to render content
             if (block.content) {

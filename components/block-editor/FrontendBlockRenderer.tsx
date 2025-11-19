@@ -149,6 +149,18 @@ export function FrontendBlockRenderer({ block }: FrontendBlockRendererProps) {
         );
       }
 
+      case 'html': {
+        const content = block.content as any;
+        return (
+          <div
+            className={block.styles.container}
+            dangerouslySetInnerHTML={{
+              __html: content.html || '',
+            }}
+          />
+        );
+      }
+
       // Template blocks (Hero, Features, etc.)
       case 'hero-1':
       case 'hero-2':

@@ -351,6 +351,54 @@ export function BlockInspector({ isOpen = true, onClose }: BlockInspectorProps) 
                 <Input placeholder="Nhập văn bản..." defaultValue={(selectedBlock.content as any).text || ''} onChange={(e) => updateBlock(selectedBlock.id, { content: { ...selectedBlock.content, text: e.target.value } })} className="text-sm" />
               </div>
             )}
+            
+            {selectedBlock.type === 'html' && (
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium flex items-center gap-2">
+                    <Code className="w-4 h-4" />
+                    Custom HTML Code
+                  </Label>
+                  <Textarea
+                    placeholder="<div>Your HTML here...</div>"
+                    defaultValue={(selectedBlock.content as any).html || ''}
+                    onChange={(e) => updateBlock(selectedBlock.id, { content: { ...selectedBlock.content, html: e.target.value } })}
+                    className="font-mono text-xs min-h-[200px]"
+                    rows={10}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Nhập HTML tùy chỉnh. Code sẽ được render trực tiếp trên trang.
+                  </p>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="sanitize-html" className="text-xs font-medium cursor-pointer">
+                      Sanitize HTML
+                    </Label>
+                    <Badge variant="outline" className="text-[10px]">Tùy chọn</Badge>
+                  </div>
+                  <Switch
+                    id="sanitize-html"
+                    checked={(selectedBlock.content as any).sanitize || false}
+                    onCheckedChange={(checked) => updateBlock(selectedBlock.id, { content: { ...selectedBlock.content, sanitize: checked } })}
+                  />
+                </div>
+                
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
+                  <div className="flex items-center gap-2 text-blue-900">
+                    <Code className="w-4 h-4" />
+                    <span className="text-xs font-semibold">Tips</span>
+                  </div>
+                  <ul className="text-xs text-blue-800 space-y-1 pl-4">
+                    <li>• Sử dụng Tailwind CSS classes</li>
+                    <li>• Embed scripts, iframes, widgets</li>
+                    <li>• HTML tùy chỉnh hoàn toàn</li>
+                  </ul>
+                </div>
+              </div>
+            )}
+            
             {selectedBlock.type === 'button' && (
               <>
                 <div className="space-y-2">

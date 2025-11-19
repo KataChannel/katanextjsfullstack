@@ -6,7 +6,10 @@ import { Loader2 } from "lucide-react";
 
 export default function LogoutPage() {
   useEffect(() => {
-    signOut({ callbackUrl: "/auth/login" });
+    signOut({ 
+      callbackUrl: "/auth/login",
+      redirect: true 
+    });
   }, []);
 
   return (

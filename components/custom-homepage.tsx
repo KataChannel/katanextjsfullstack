@@ -192,6 +192,19 @@ function PageBlocksRenderer({ blocks }: { blocks: any[] }) {
               </div>
             );
 
+          case 'html':
+            // V2 HTML custom block
+            const htmlContent = block.content?.html || '';
+            const htmlContainerStyles = block.styles?.container || '';
+            
+            return (
+              <div 
+                key={block.id} 
+                className={htmlContainerStyles}
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
+              />
+            );
+
           default:
             // Unknown block type - try to render basic content
             if (block.content) {

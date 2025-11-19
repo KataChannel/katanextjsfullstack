@@ -15,7 +15,8 @@ export type ElementBlockType =
   | 'divider'    // HR separator
   | 'spacer'     // Empty space
   | 'video'      // Embed video
-  | 'icon';      // Icon display
+  | 'icon'       // Icon display
+  | 'html';      // Custom HTML code
 
 export type TemplateBlockType =
   | 'hero-1'         // Hero với image background
@@ -73,6 +74,11 @@ export interface IconContent {
   size?: number;
 }
 
+export interface HtmlContent {
+  html?: string; // Custom HTML code
+  sanitize?: boolean; // Whether to sanitize HTML (default: false for admin trust)
+}
+
 export interface ContainerContent {
   layout?: 'flex' | 'grid';
   direction?: 'row' | 'column';
@@ -87,6 +93,7 @@ export type BlockContent =
   | ButtonContent
   | VideoContent
   | IconContent
+  | HtmlContent
   | ContainerContent
   | Record<string, any>; // For custom blocks
 
@@ -280,6 +287,10 @@ export const DEFAULT_STYLES: Record<ElementBlockType, TailwindClasses> = {
   icon: {
     element: 'w-6 h-6 text-gray-900',
   },
+  html: {
+    container: 'w-full',
+    element: '',
+  },
 };
 
 export const DEFAULT_CONTENT: Record<ElementBlockType, BlockContent> = {
@@ -312,6 +323,10 @@ export const DEFAULT_CONTENT: Record<ElementBlockType, BlockContent> = {
   icon: {
     name: 'star',
     size: 24,
+  },
+  html: {
+    html: '<div class="p-4 bg-gray-100 rounded">\n  <p>Custom HTML here...</p>\n</div>',
+    sanitize: false,
   },
 };
 

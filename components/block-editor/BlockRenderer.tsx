@@ -81,6 +81,16 @@ export function BlockRenderer({ block }: BlockRendererProps) {
       case 'spacer':
         return <div className={block.styles.element || 'h-8'} />;
 
+      case 'html':
+        return (
+          <div
+            className={block.styles.container || 'w-full'}
+            dangerouslySetInnerHTML={{
+              __html: (block.content as any).html || '<p>No HTML content</p>',
+            }}
+          />
+        );
+
       default:
         return (
           <div className="p-4 bg-gray-100 rounded text-sm text-gray-500">

@@ -159,6 +159,16 @@ export function SortableBlockRenderer({ block }: SortableBlockRendererProps) {
           </div>
         );
 
+      case 'html': {
+        const htmlContent = (block.content as any).html || '<div class="p-4 bg-gray-100 rounded text-gray-500 text-sm">No HTML content</div>';
+        return (
+          <div
+            className={block.styles.container || 'w-full'}
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
+          />
+        );
+      }
+
       case 'carousel': {
         const slides = (block.content as any)?.slides || [];
         const autoplay = (block.content as any)?.autoplay ?? true;

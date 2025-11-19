@@ -28,15 +28,17 @@ async function main() {
 
   console.log('✅ Đã tạo users:', { admin: admin.email, editor: editor.email });
 
-  // 2. Tạo SEO Settings
-  const seoSettings = await prisma.seoSettings.upsert({
+  // 2. Tạo Website Settings
+  const websiteSettings = await prisma.websiteSettings.upsert({
     where: { domain: 'tazagroup.vn' },
     update: {},
     create: {
       domain: 'tazagroup.vn',
       siteName: 'Taza Group',
-      siteDescription: 'Taza Group - Hệ thống thẩm mỹ viện và spa hàng đầu Việt Nam',
-      defaultOgImage: '/images/og-default.jpg',
+      metaTitle: 'Taza Group - Hệ thống thẩm mỹ viện và spa hàng đầu Việt Nam',
+      metaDescription: 'Taza Group - Hệ thống thẩm mỹ viện và spa hàng đầu Việt Nam với công nghệ tiên tiến',
+      siteKeywords: 'thẩm mỹ viện, spa, làm đẹp, chăm sóc da',
+      siteOgImage: '/images/og-default.jpg',
       twitterHandle: '@tazagroup',
       googleAnalytics: 'G-XXXXXXXXXX',
       organizationSchema: {
@@ -49,7 +51,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Đã tạo SEO Settings cho:', seoSettings.domain);
+  console.log('✅ Đã tạo Website Settings cho:', websiteSettings.domain);
 
   // 3. Tạo Posts
   const posts = [

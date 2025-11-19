@@ -10,11 +10,14 @@ export default function UnauthorizedPage() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/auth/login" });
+    await signOut({ 
+      callbackUrl: "/auth/login",
+      redirect: true 
+    });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-red-50 via-orange-50 to-yellow-50 p-4">
       <Card className="w-full max-w-md shadow-xl border-red-200">
         <CardHeader className="text-center space-y-2">
           <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-2">

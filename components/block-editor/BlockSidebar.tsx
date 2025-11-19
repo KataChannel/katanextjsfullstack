@@ -26,6 +26,7 @@ import {
   Menu,
   ChevronLeft,
   Presentation,
+  Code,
 } from 'lucide-react';
 import type { ElementBlockType } from '@/lib/blocks/types';
 
@@ -44,6 +45,7 @@ const ELEMENT_BLOCKS: Array<{
   { type: 'spacer', label: 'Spacer', icon: Space, description: 'Empty space' },
   { type: 'video', label: 'Video', icon: Video, description: 'Embed video' },
   { type: 'icon', label: 'Icon', icon: Star, description: 'Icon display' },
+  { type: 'html', label: 'HTML', icon: Code, description: 'Custom HTML code' },
 ];
 
 function DraggableBlock({ type, label, icon: Icon, description }: any) {
