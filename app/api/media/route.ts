@@ -224,6 +224,7 @@ export async function POST(request: NextRequest) {
         filename,
         buffer,
         finalMimeType,
+        domainConfig.domain, // Pass domain for HTTPS URL generation
         {
           'alt': formData.get('alt') as string || '',
           'caption': formData.get('caption') as string || '',

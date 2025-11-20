@@ -74,14 +74,7 @@ const nextConfig: NextConfig = {
   },
 
   // Multi-domain support for production
-  // Uncomment khi deploy production với nhiều domains
-  // async rewrites() {
-  //   return {
-  //     beforeFiles: [
-  //       // Rewrites cho từng domain nếu cần
-  //     ],
-  //   };
-  // },
+  // MinIO images are proxied via API route: /api/minio-proxy/[...path]
 };
 
 export default nextConfig;

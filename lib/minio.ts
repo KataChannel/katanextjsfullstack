@@ -91,8 +91,27 @@ export async function ensureBucket(client: Minio.Client, bucketName: string): Pr
 }
 
 /**
+ * Convert MinIO internal URL to public HTTPS URL via Next.js API proxy
+ */
+export function getPublicMinioUrl(domain: string, bucketName: string, filename: string): string {
+  // For innerbright.vn, use HTTPS via Next.js API proxy
+  if (domain === 'innerbright.vn') {
+    return `https://innerbright.vn/api/minio-proxy/${bucketName}/${filename}`;
+  }
+  
+  // Fallback to direct MinIO URL for other domains
+  const config = MINIO_CONFIGS[domain];
+  if (!config) {
+    throw new Error(`MinIO config not found for domain: ${domain}`);
+  }
+  
+  const protocol = config.useSSL ? 'https' : 'http';
+  return `${protocol}://${config.endpoint}:${config.port}/${bucketName}/${filename}`;
+}
+
+/**
  * Upload file lên MinIO
- * @returns URL của file đã upload
+ * @returns URL của file đã upload (HTTPS via proxy for production)
  */
 export async function uploadToMinio(
   client: Minio.Client,
@@ -100,6 +119,7 @@ export async function uploadToMinio(
   filename: string,
   buffer: Buffer,
   mimeType: string,
+  domain: string,
   metadata?: Record<string, string>
 ): Promise<string> {
   await ensureBucket(client, bucketName);
@@ -110,17 +130,8 @@ export async function uploadToMinio(
     ...metadata,
   });
 
-  // Generate public URL
-  // Format: http://endpoint:port/bucket/filename
-  const config = Object.values(MINIO_CONFIGS).find(c => c.bucketName === bucketName);
-  if (!config) {
-    throw new Error(`Config not found for bucket: ${bucketName}`);
-  }
-
-  const protocol = config.useSSL ? 'https' : 'http';
-  const url = `${protocol}://${config.endpoint}:${config.port}/${bucketName}/${filename}`;
-  
-  return url;
+  // Return public HTTPS URL
+  return getPublicMinioUrl(domain, bucketName, filename);
 }
 
 /**
