@@ -204,224 +204,31 @@ export default async function Home() {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Carousel Section */}
-      <section className="relative w-full">
-        <CarouselComponent
-          slides={heroSlides}
-          autoPlay={true}
-          interval={5000}
-          showDots={true}
-          showArrows={true}
-          height={600}
-          className="w-full"
-        />
-      </section>
-
-      {/* Custom Page Builder Blocks */}
-      {customBlocks?.blocks && (
-        <section className="py-8 sm:py-12">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            {(customBlocks.blocks as unknown as Block[]).map((block) => (
-              <FrontendBlockRenderer key={block.id} block={block} />
-            ))}
+    <div className="min-h-screen flex items-center justify-center">
+      <Card className="w-full max-w-2xl mx-4">
+        <CardContent className="p-12 text-center space-y-6">
+          <div className="flex justify-center mb-4">
+            <Sparkles className="h-16 w-16 text-primary animate-pulse" />
           </div>
-        </section>
-      )}
-
-      <section className="py-8 sm:py-12 border-y bg-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                <p className="text-3xl sm:text-4xl font-bold">{postsCount}+</p>
-              </div>
-              <p className="text-sm sm:text-base text-muted-foreground">Bài viết chuyên sâu</p>
-            </div>
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-2">
-                <Award className="h-5 w-5 text-primary" />
-                <p className="text-3xl sm:text-4xl font-bold">{pagesCount}+</p>
-              </div>
-              <p className="text-sm sm:text-base text-muted-foreground">Dịch vụ chất lượng</p>
-            </div>
-            <div className="text-center space-y-2">
-              <div className="flex items-center justify-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <p className="text-3xl sm:text-4xl font-bold">10+</p>
-              </div>
-              <p className="text-sm sm:text-base text-muted-foreground">Năm kinh nghiệm</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-12 sm:py-16 lg:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">
-              Bài viết nổi bật
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Cập nhật những xu hướng làm đẹp mới nhất và kiến thức chăm sóc sắc đẹp từ chuyên gia
-            </p>
-          </div>
-
-          {featuredPosts.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">Chưa có bài viết nào. Vui lòng chạy seed để tạo dữ liệu mẫu.</p>
-                <Button variant="outline" className="mt-4" asChild>
-                  <Link href="/admin">Đi tới Admin</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredPosts.map((post: { id: string; title: string; slug: string; excerpt: string | null; createdAt: Date; author: { name: string | null; email: string } | null }) => (
-                <Card key={post.id} className="flex flex-col hover:shadow-lg transition-all duration-200">
-                  <CardHeader>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      <Clock className="h-3 w-3" />
-                      {new Date(post.createdAt).toLocaleDateString('vi-VN')}
-                    </div>
-                    <CardTitle className="line-clamp-2 hover:text-primary transition-colors">
-                      <Link href={`/posts/${post.slug}`}>
-                        {post.title}
-                      </Link>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1 flex flex-col">
-                    <CardDescription className="line-clamp-3 mb-4 flex-1">
-                      {post.excerpt || 'Đọc thêm để khám phá...'}
-                    </CardDescription>
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <span className="text-xs text-muted-foreground">
-                        {post.author?.name || post.author?.email || 'Anonymous'}
-                      </span>
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/posts/${post.slug}`}>
-                          Đọc thêm <ArrowRight className="ml-1 h-3 w-3" />
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          <div className="text-center mt-8 sm:mt-12">
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/posts">
-                Xem tất cả bài viết
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
+            Trang Chủ Đang Cập Nhật
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Chúng tôi đang hoàn thiện trang web để mang đến trải nghiệm tốt nhất cho bạn.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6">
+            <Button size="lg" asChild>
+              <Link href="/admin">
+                Đi tới Admin
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
+            <Button size="lg" variant="outline" asChild>
+              <Link href="/posts">Xem bài viết</Link>
+            </Button>
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials Carousel Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-linear-to-b from-background to-muted/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <Badge variant="secondary" className="mb-4">
-              <Star className="h-3 w-3 mr-1 fill-primary text-primary" />
-              Khách hàng nói gì về chúng tôi
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3">
-              Đánh giá từ khách hàng
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Hàng ngàn khách hàng tin tưởng và hài lòng với dịch vụ của Taza Group
-            </p>
-          </div>
-
-          <div className="w-full mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {testimonials.map((testimonial) => (
-                <Card key={testimonial.id} className="relative hover:shadow-lg transition-all duration-200">
-                  <CardContent className="p-6 space-y-4">
-                    <Quote className="h-8 w-8 text-primary/20" />
-                    <p className="text-sm sm:text-base text-muted-foreground italic">
-                      "{testimonial.content}"
-                    </p>
-                    <div className="flex items-center gap-1 text-yellow-500">
-                      {Array.from({ length: testimonial.rating }).map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-current" />
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-3 pt-4 border-t">
-                      <img
-                        src={testimonial.avatar}
-                        alt={testimonial.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                      <div>
-                        <p className="font-semibold text-sm">{testimonial.name}</p>
-                        <p className="text-xs text-muted-foreground">{testimonial.role}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Partners/Brands Section */}
-      <section className="py-8 sm:py-12 border-y bg-muted/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h3 className="text-xl sm:text-2xl font-bold mb-2">
-              Đối tác & Chứng nhận
-            </h3>
-            <p className="text-sm text-muted-foreground">
-              Được tin tưởng bởi các thương hiệu hàng đầu
-            </p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 items-center justify-items-center">
-            {partners.map((partner) => (
-              <div key={partner.id} className="grayscale hover:grayscale-0 transition-all duration-300 opacity-70 hover:opacity-100">
-                <img
-                  src={partner.logo}
-                  alt={partner.name}
-                  className="h-12 sm:h-16 w-auto object-contain"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-12 sm:py-16 lg:py-20 bg-primary/5">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="border-primary/20 bg-card/50 backdrop-blur">
-            <CardContent className="p-8 sm:p-12 text-center space-y-6">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
-                Bắt đầu hành trình làm đẹp của bạn
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
-                Đặt lịch tư vấn miễn phí ngay hôm nay và nhận ưu đãi đặc biệt cho khách hàng mới
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Button size="lg" asChild>
-                  <Link href="/lien-he">
-                    Liên hệ ngay
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/ve-chung-toi">Tìm hiểu thêm</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -105,7 +105,7 @@ export function Footer() {
             {/* Logo */}
             <div className="mb-6">
               <img 
-                src="http://116.118.49.243:12007/innerbright/1763620956393-ajrdh.webp"
+                src="https://116.118.49.243:12007/innerbright/1763620956393-ajrdh.webp"
                 alt="InnerBright Logo" 
                 className="h-16 w-auto"
               />
