@@ -1,4 +1,7 @@
+"use client";
+
 import TargetIcon from "./TargetIcon";
+import Image from "next/image";
 
 interface MissionVisionData {
   mission: {
@@ -86,7 +89,16 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
             {/* Center - Target Icon */}
             <div className="lg:col-span-4 flex justify-center items-center py-8 lg:py-0">
               <div className="relative w-full max-w-[400px] aspect-square">
-                <TargetIcon />
+                <Image
+                  src="http://116.118.49.243:12007/innerbright/1763602095486-fn4se.webp"
+                  alt="InnerBright Target Vision"
+                  fill
+                  className="object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
               </div>
             </div>
 

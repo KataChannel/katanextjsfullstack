@@ -47,7 +47,7 @@ export default async function MediaLibraryPage({
         <CardHeader>
           <CardTitle>Upload Media</CardTitle>
           <CardDescription>
-            Tải lên hình ảnh hoặc video (tối đa 10MB, tự động tối ưu sang WebP)
+            Tải lên hình ảnh hoặc video (tối đa 20MB, tự động tối ưu sang WebP)
           </CardDescription>
         </CardHeader>
         <CardContent>

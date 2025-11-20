@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { getPrisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { extractDomain } from "@/lib/database";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight, Sparkles, TrendingUp, Award, Clock, Star, Quote } from "lucide-react";
 import { CustomHomePage } from "@/components/custom-homepage";
@@ -24,8 +25,14 @@ export default async function Home() {
     select: {
       homePageType: true,
       homePageId: true,
+      homeRedirect: true,
     },
   });
+
+  // Check if homepage redirect is set
+  if (websiteSettings?.homeRedirect) {
+    redirect(websiteSettings.homeRedirect);
+  }
 
   // If homepage is set to a page or post, render that instead
   if (websiteSettings?.homePageType && websiteSettings?.homePageId) {

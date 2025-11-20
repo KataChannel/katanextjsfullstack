@@ -40,13 +40,13 @@ export default function CertificationSystemSection({ data }: CertificationSystem
       {
         id: 1,
         title: "HỌC VIÊN ĐÀO TẠO NLP",
-        image: "http://116.118.49.243:12007/innerbright/certificate-nlp.jpg",
+        image: "http://116.118.49.243:12007/innerbright/1763602544272-majm8r.webp",
         imageAlt: "Chứng chỉ Học viên Đào tạo NLP"
       },
       {
         id: 2,
         title: "HỌC VIÊN ĐÀO TẠO NLP COACHING",
-        image: "http://116.118.49.243:12007/innerbright/certificate-nlp-coaching.jpg",
+        image: "http://116.118.49.243:12007/innerbright/1763602544456-bdhxwe.webp",
         imageAlt: "Chứng chỉ Học viên Đào tạo NLP Coaching"
       }
     ]
@@ -71,49 +71,18 @@ export default function CertificationSystemSection({ data }: CertificationSystem
             
             {/* Left Side - Year Badge */}
             <div className="lg:col-span-3 flex justify-center lg:justify-start">
-              <div className="relative">
-                {/* Number 5 */}
-                <div className="relative">
-                  <svg viewBox="0 0 300 400" className="w-48 sm:w-56 lg:w-64 h-auto">
-                    {/* Outline of number 5 */}
-                    <text
-                      x="50%"
-                      y="50%"
-                      dominantBaseline="middle"
-                      textAnchor="middle"
-                      className="fill-none stroke-[#ffa500] stroke-[8px]"
-                      style={{
-                        fontSize: '280px',
-                        fontWeight: 'bold',
-                        fontFamily: 'system-ui, -apple-system, sans-serif'
-                      }}
-                    >
-                      {sectionData.yearBadge.number}
-                    </text>
-                    {/* Solid number 5 */}
-                    <text
-                      x="50%"
-                      y="50%"
-                      dominantBaseline="middle"
-                      textAnchor="middle"
-                      className="fill-white"
-                      style={{
-                        fontSize: '280px',
-                        fontWeight: 'bold',
-                        fontFamily: 'system-ui, -apple-system, sans-serif'
-                      }}
-                    >
-                      {sectionData.yearBadge.number}
-                    </text>
-                  </svg>
-                  
-                  {/* Text "NĂM" */}
-                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-                    <p className="text-4xl sm:text-5xl lg:text-6xl font-bold text-[#ffa500] uppercase whitespace-nowrap">
-                      {sectionData.yearBadge.text}
-                    </p>
-                  </div>
-                </div>
+              <div className="relative w-48 sm:w-56 lg:w-64">
+                <Image
+                  src="http://116.118.49.243:12007/innerbright/1763602103582-1nl7r.webp"
+                  alt="5 năm InnerBright"
+                  width={256}
+                  height={340}
+                  className="w-full h-auto object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                  }}
+                />
               </div>
             </div>
 

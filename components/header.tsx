@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Menu, X, Search, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -22,6 +23,7 @@ interface WebsiteSettings {
 }
 
 export function Header() {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [settings, setSettings] = useState<WebsiteSettings | null>(null);
   const [menus, setMenus] = useState<MenuItem[]>([]);
@@ -142,19 +144,22 @@ export function Header() {
 
         {/* Bottom Row: Navigation Menu - Desktop Only */}
         <div className="hidden md:flex items-center gap-1 py-3">
-          {menus.map((item, index) => (
-            <Link
-              key={item.id}
-              href={item.url}
-              className={`px-4 py-2 text-sm font-medium transition-all whitespace-nowrap rounded-lg ${
-                index === 0
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
-                  : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {menus.map((item) => {
+            const isActive = pathname === item.url || pathname?.startsWith(item.url + '/');
+            return (
+              <Link
+                key={item.id}
+                href={item.url}
+                className={`px-4 py-2 text-sm font-medium transition-all whitespace-nowrap rounded-lg ${
+                  isActive
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Mobile Navigation */}
@@ -182,16 +187,23 @@ export function Header() {
             </form>
 
             {/* Mobile Menu Items */}
-            {menus.map((item) => (
-              <Link
-                key={item.id}
-                href={item.url}
-                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {menus.map((item) => {
+              const isActive = pathname === item.url || pathname?.startsWith(item.url + '/');
+              return (
+                <Link
+                  key={item.id}
+                  href={item.url}
+                  className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-colors ${
+                    isActive
+                      ? 'bg-blue-600 text-white'
+                      : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             
             {/* Mobile User Link */}
             <div className="px-4 pt-2">

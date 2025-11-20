@@ -39,6 +39,11 @@ const nextConfig: NextConfig = {
   // Experimental features for performance
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    serverActions: {
+      bodySizeLimit: '25mb',
+    },
+    // Increase middleware body size limit
+    middlewareClientMaxBodySize: '25mb',
   },
 
   // Headers for security and SEO

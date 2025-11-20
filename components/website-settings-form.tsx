@@ -234,6 +234,19 @@ export function WebsiteSettingsForm({ domain, websiteSettings }: WebsiteSettings
               </div>
 
               <div className="space-y-2">
+                <Label htmlFor="homeRedirect">Homepage Redirect</Label>
+                <Input
+                  id="homeRedirect"
+                  name="homeRedirect"
+                  defaultValue={websiteSettings.homeRedirect || ""}
+                  placeholder="/ve-innerbright"
+                />
+                <p className="text-sm text-muted-foreground">
+                  URL để redirect khi truy cập trang chủ (VD: /ve-innerbright, /khoa-hoc). Để trống nếu không cần redirect.
+                </p>
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="robotsTxt">Robots.txt</Label>
                 <Textarea
                   id="robotsTxt"
@@ -455,7 +468,7 @@ export function WebsiteSettingsForm({ domain, websiteSettings }: WebsiteSettings
       </Tabs>
 
       {/* Submit Button - Fixed at bottom on mobile */}
-      <div className="sticky bottom-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t pt-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="sticky bottom-0 bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 border-t pt-4 -mx-4 px-4 sm:mx-0 sm:px-0">
         <Button
           type="submit"
           disabled={saving}

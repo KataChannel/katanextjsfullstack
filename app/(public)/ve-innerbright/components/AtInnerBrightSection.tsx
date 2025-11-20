@@ -21,7 +21,7 @@ export default function AtInnerBrightSection({ data }: AtInnerBrightSectionProps
     introText: "chúng tôi không chỉ trang bị cho bạn kiến thức NLP, chúng tôi dẫn dắt bạn thực sự thấu suốt bản chất của từng công cụ. Bạn sẽ hiểu tại sao chúng hoạt động, khi nào nên sử dụng và làm thế nào để tích hợp chúng một cách linh hoạt vào cuộc sống.",
     mainDescription: "Với tầm huyết truyện tài tinh thần chính trực của NLP, InnerBright không đơn thuần mang đến một hệ thống bài bản. Chúng tôi kiến tạo một hành trình phát triển bản thân toàn diện, hấp nhất sức mạnh nội tại của bạn với sự trưởng thành ở cả bốn khía cạnh then chốt: trí tuệ lý trí (mental intelligence), trí tuệ cảm xúc (emotional intelligence), trí tuệ thể chất (physical intelligence) và trí tuệ tâm linh (spiritual intelligence).",
     secondaryDescription: "Chúng tôi nuôi dưỡng những giá trị cốt lõi của bạn, tạo nên một hệ sinh thái nội tại vững mạnh và bền vững, giúp bạn phát triển toàn diện và sống một cuộc đời trọn vẹn.",
-    image: "http://116.118.49.243:12007/innerbright/group-photo.jpg",
+    image: "http://116.118.49.243:12007/innerbright/1763602544802-4u2nuh.webp",
     imageAlt: "InnerBright Team - Đội ngũ đào tạo"
   };
 

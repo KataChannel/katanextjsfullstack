@@ -241,6 +241,7 @@ model WebsiteSettings {
   // Homepage Settings
   homePageType String? // 'page' | 'post' | null (default static homepage)
   homePageId   String? // ID of page or post to use as homepage
+  homeRedirect String? // URL to redirect when accessing homepage (e.g., '/ve-innerbright')
   
   // Structured Data
   organizationSchema Json?
