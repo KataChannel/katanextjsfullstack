@@ -96,115 +96,159 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-gray-50 border-t border-gray-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <footer className="bg-white border-t border-gray-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           
           {/* Column 1: Logo & Contact Info */}
           <div className="space-y-6">
             {/* Logo */}
-            <div>
-              {settings?.logo ? (
-                <img 
-                  src={settings.logo} 
-                  alt={settings.logoAlt || 'Logo'} 
-                  className="h-16 w-auto mb-4"
-                />
-              ) : (
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">IB</span>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-gray-800">InnerBright</div>
-                    <div className="text-xs text-gray-600">Training & Coaching</div>
-                  </div>
-                </div>
-              )}
+            <div className="mb-6">
+              <img 
+                src="http://116.118.49.243:12007/innerbright/1763620956393-ajrdh.webp"
+                alt="InnerBright Logo" 
+                className="h-16 w-auto"
+              />
             </div>
 
             {/* Contact Info */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-gray-700">
-                <Phone className="h-5 w-5 shrink-0" />
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 text-gray-700">
+                <Phone className="h-5 w-5 shrink-0 mt-1" />
                 <a 
-                  href={`tel:${settings?.phone || '0908370968'}`} 
-                  className="hover:text-blue-600 transition-colors font-medium"
+                  href="tel:0908370968" 
+                  className="hover:text-blue-600 transition-colors font-medium text-lg"
                 >
-                  {settings?.phone || '090 837 09 68'}
+                  090 837 09 68
                 </a>
               </div>
-              <div className="flex items-center gap-3 text-gray-700">
-                <Mail className="h-5 w-5 shrink-0" />
+              <div className="flex items-start gap-3 text-gray-700">
+                <Mail className="h-5 w-5 shrink-0 mt-1" />
                 <a 
-                  href={`mailto:${settings?.email || 'info@innerbright.vn'}`}
+                  href="mailto:info@innerbright.vn"
                   className="hover:text-blue-600 transition-colors"
                 >
-                  {settings?.email || 'info@innerbright.vn'}
+                  info@innerbright.vn
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Column 2: INNNER (First menu group) */}
+          {/* Column 2: INNNER */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-800 uppercase">INNNER</h3>
+            <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide">INNNER</h3>
             <ul className="space-y-3">
-              {footerMenus.slice(0, 4).map((menu) => (
-                <li key={menu.id}>
-                  <Link
-                    href={menu.url}
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    {menu.label}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link href="/our-support" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Our Support
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact-us" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Contact us
+                </Link>
+              </li>
+              <li>
+                <Link href="/write-for-us" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Write For Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/group" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Group
+                </Link>
+              </li>
             </ul>
           </div>
 
-          {/* Column 3: OUR SERVICES (Second menu group) */}
+          {/* Column 3: OUR SERVICES */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-gray-800 uppercase">OUR SERVICES</h3>
+            <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide">OUR SERVICES</h3>
             <ul className="space-y-3">
-              {footerMenus.slice(4, 9).map((menu) => (
-                <li key={menu.id}>
-                  <Link
-                    href={menu.url}
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    {menu.label}
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link href="/dao-tao-doanh-nghiep" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Đào tạo doanh nghiệp
+                </Link>
+              </li>
+              <li>
+                <Link href="/khai-van-ca-nhan" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Khai vấn cá nhân
+                </Link>
+              </li>
+              <li>
+                <Link href="/dao-tao-doanh-nghiep" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Đào tạo doanh nghiệp
+                </Link>
+              </li>
+              <li>
+                <Link href="/khai-van-ca-nhan" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Khai vấn cá nhân
+                </Link>
+              </li>
+              <li>
+                <Link href="/dao-tao-doanh-nghiep" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  Đào tạo doanh nghiệp
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Column 4: Social Media Icons */}
           <div className="flex lg:justify-end items-start">
             <div className="flex gap-4">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-600 hover:text-blue-600 transition-colors"
-                  aria-label={social.name}
-                >
-                  {getSocialIcon(social.icon)}
-                </a>
-              ))}
+              <a
+                href="https://facebook.com/innerbright"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="h-6 w-6" />
+              </a>
+              <a
+                href="https://instagram.com/innerbright"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 hover:text-pink-600 transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="h-6 w-6" />
+              </a>
+              <a
+                href="https://tiktok.com/@innerbright"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 hover:text-gray-900 transition-colors"
+                aria-label="TikTok"
+              >
+                <SiTiktok className="h-6 w-6" />
+              </a>
+              <a
+                href="https://youtube.com/@innerbright"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 hover:text-red-600 transition-colors"
+                aria-label="Youtube"
+              >
+                <Youtube className="h-6 w-6" />
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom Copyright */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <p className="text-center text-sm text-gray-500 italic">
-            {settings?.footerText || 'Bản quyền InnerBright 2025 Bảo lưu mọi quyền'}
-          </p>
-        </div>
+        {/* Bottom Copyright - Optional, có thể bỏ nếu không cần */}
+        {settings?.footerText && (
+          <div className="mt-12 pt-8 border-t border-gray-200">
+            <p className="text-center text-sm text-gray-500">
+              {settings.footerText}
+            </p>
+          </div>
+        )}
       </div>
     </footer>
   );

@@ -70,23 +70,11 @@ export function Header() {
           {/* Logo */}
           <div className="shrink-0">
             <Link href="/" className="flex items-center">
-              {settings?.logo ? (
-                <img 
-                  src={settings.logo} 
-                  alt={settings.logoAlt || 'Logo'} 
-                  className="h-12 w-auto"
-                />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                    <span className="text-white font-bold text-xl">IB</span>
-                  </div>
-                  <div className="hidden sm:block">
-                    <div className="text-lg font-bold text-blue-800">InnerBright</div>
-                    <div className="text-xs text-gray-600">Training & Coaching</div>
-                  </div>
-                </div>
-              )}
+              <img 
+                src="http://116.118.49.243:12007/innerbright/1763620949996-bvu1vi.webp"
+                alt="InnerBright Logo" 
+                className="h-12 w-auto"
+              />
             </Link>
           </div>
 
