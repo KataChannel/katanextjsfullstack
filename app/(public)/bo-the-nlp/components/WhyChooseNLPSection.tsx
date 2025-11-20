@@ -63,68 +63,17 @@ export default function WhyChooseNLPSection({ data }: WhyChooseNLPSectionProps) 
               </div>
             </div>
 
-            {/* Right - Stacked Cards with Blurred Background */}
+            {/* Right - Single Image */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative w-full max-w-md lg:max-w-lg">
-                {/* Blurred Orange Background */}
-                <div className="absolute inset-0 bg-linear-to-br from-orange-300/40 to-orange-400/30 rounded-3xl blur-3xl scale-110" />
-                
-                {/* Cards Stack */}
-                <div className="relative">
-                  {/* Card 3 (Back) - Most rotated */}
-                  <div className="absolute top-8 left-8 right-8 z-10 transform rotate-6 opacity-90">
-                    <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-4 border-white">
-                      <div className="aspect-3/4 relative">
-                        <Image
-                          src={sectionData.cardImages[2]}
-                          alt="NLP Card 3"
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Card 2 (Middle) */}
-                  <div className="absolute top-4 left-4 right-4 z-20 transform -rotate-3 opacity-95">
-                    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white">
-                      <div className="aspect-3/4 relative">
-                        <Image
-                          src={sectionData.cardImages[1]}
-                          alt="NLP Card 2"
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Card 1 (Front) - No rotation */}
-                  <div className="relative z-30">
-                    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border-4 border-white hover:scale-105 transition-transform duration-300">
-                      <div className="aspect-3/4 relative">
-                        <Image
-                          src={sectionData.cardImages[0]}
-                          alt="NLP Card 1"
-                          fill
-                          className="object-cover"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.style.display = 'none';
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <Image
+                  src="http://116.118.49.243:12007/innerbright/1763619111383-jdm9ur.webp"
+                  alt="Tại sao chọn NLP"
+                  width={500}
+                  height={667}
+                  className="rounded-2xl shadow-2xl"
+                  priority
+                />
               </div>
             </div>
 
