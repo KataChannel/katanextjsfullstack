@@ -29,8 +29,14 @@ export default async function Home() {
     },
   });
 
+  // Debug logging
+  console.log('[Homepage] Domain:', domain);
+  console.log('[Homepage] Website Settings:', websiteSettings);
+  console.log('[Homepage] Home Redirect:', websiteSettings?.homeRedirect);
+
   // Check if homepage redirect is set
-  if (websiteSettings?.homeRedirect) {
+  if (websiteSettings?.homeRedirect && websiteSettings.homeRedirect.trim() !== '') {
+    console.log('[Homepage] Redirecting to:', websiteSettings.homeRedirect);
     redirect(websiteSettings.homeRedirect);
   }
 

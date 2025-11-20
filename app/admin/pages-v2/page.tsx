@@ -15,6 +15,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Plus, FileText, Edit, Trash2, Eye } from 'lucide-react';
 import { getPrisma } from '@/lib/prisma';
+import { DeletePageButton } from './delete-button';
+
 
 export const metadata: Metadata = {
   title: 'Pages V2 | Admin',
@@ -157,9 +159,7 @@ export default async function PagesV2Page() {
                         <Edit className="w-4 h-4" />
                       </Button>
                     </Link>
-                    <Button variant="ghost" size="sm" className="text-red-600">
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <DeletePageButton pageId={page.id} pageTitle={page.title} />
                   </div>
                 </div>
               </CardContent>

@@ -63,6 +63,10 @@ export async function POST(request: NextRequest) {
     const { domain, ...settingsData } = body;
     const targetDomain = domain || 'innerbright.vn';
 
+    console.log('[API] Updating website settings for domain:', targetDomain);
+    console.log('[API] Settings data:', JSON.stringify(settingsData, null, 2));
+    console.log('[API] homeRedirect:', settingsData.homeRedirect);
+
     const prisma = await getPrisma(targetDomain);
 
     const settings = await prisma.websiteSettings.upsert({
@@ -73,6 +77,8 @@ export async function POST(request: NextRequest) {
         ...settingsData,
       },
     });
+
+    console.log('[API] Settings saved successfully:', settings.homeRedirect);
 
     return NextResponse.json(settings);
   } catch (error) {
