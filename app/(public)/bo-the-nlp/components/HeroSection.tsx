@@ -46,7 +46,7 @@ export default function HeroSection() {
                 {/* Card 1 - Green/Teal (Back Left - Bottom) */}
                 <div className="absolute top-[100px] lg:top-[120px] left-0 w-[220px] lg:w-[260px] z-10 transform -rotate-12">
                   <Image
-                    src="http://116.118.49.243:12007/innerbright/1763613727282-rb4pf.webp"
+                    src="http://116.118.48.208:9000/innerbright/1763613727282-rb4pf.webp"
                     alt="NLP Card - Green"
                     width={260}
                     height={370}
@@ -58,7 +58,7 @@ export default function HeroSection() {
                 {/* Card 2 - Orange (Center - Middle) */}
                 <div className="absolute top-10 lg:top-[50px] left-20 lg:left-[100px] w-60 lg:w-[280px] z-20 transform rotate-[7deg]">
                   <Image
-                    src="http://116.118.49.243:12007/innerbright/1763613726960-381wim.webp"
+                    src="http://116.118.48.208:9000/innerbright/1763613726960-381wim.webp"
                     alt="NLP Card - Orange Main"
                     width={280}
                     height={400}
@@ -70,7 +70,7 @@ export default function HeroSection() {
                 {/* Card 3 - White/Blue (Front Right - Top) */}
                 <div className="absolute top-0 left-[180px] lg:left-[220px] w-[200px] lg:w-60 z-30 transform rotate-[15deg] hover:rotate-[17deg] transition-transform duration-300">
                   <Image
-                    src="http://116.118.49.243:12007/innerbright/1763613730899-6rsfgc.webp"
+                    src="http://116.118.48.208:9000/innerbright/1763613730899-6rsfgc.webp"
                     alt="NLP Card - White Blue"
                     width={240}
                     height={340}

@@ -23,7 +23,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
     nlpTitle: "NLP",
     nlpSubtitle: "(Neuro Linguistic Programming)",
     description: "Lập trình ngôn ngữ tư duy, không chỉ là một tập hợp các kỹ thuật, mà là một hành trình khám phá sức mạnh nội tại để tạo ra sự chuyển hóa sâu sắc. Để ứng dụng NLP hiệu quả, sự thấu hiểu cội nguồn và nguyên lý hoạt động là then chốt.",
-    image: "http://116.118.49.243:12007/innerbright/1763611178370-rxn0rl.webp",
+    image: "http://116.118.48.208:9000/innerbright/1763611178370-rxn0rl.webp",
     imageAlt: "Vì sao chọn InnerBright"
   };
 

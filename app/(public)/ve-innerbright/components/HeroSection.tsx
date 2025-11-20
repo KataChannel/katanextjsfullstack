@@ -28,7 +28,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
       description: "InnerBright Training & Coaching",
       subDescription: "được thành lập từ năm 2020",
       badge: "Bởi nhà đào tạo\nCHLOE QUÝ CHÂU",
-      image: "http://116.118.49.243:12007/innerbright/1763602085989-jm48us.webp"
+      image: "http://116.118.48.208:9000/innerbright/1763602085989-jm48us.webp"
     }
   ];
 

@@ -90,7 +90,7 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
             <div className="lg:col-span-4 flex justify-center items-center py-8 lg:py-0">
               <div className="relative w-full max-w-[400px] aspect-square">
                 <Image
-                  src="http://116.118.49.243:12007/innerbright/1763602095486-fn4se.webp"
+                  src="http://116.118.48.208:9000/innerbright/1763602095486-fn4se.webp"
                   alt="InnerBright Target Vision"
                   fill
                   className="object-contain"

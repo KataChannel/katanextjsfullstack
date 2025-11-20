@@ -40,13 +40,13 @@ export default function CertificationSystemSection({ data }: CertificationSystem
       {
         id: 1,
         title: "HỌC VIÊN ĐÀO TẠO NLP",
-        image: "http://116.118.49.243:12007/innerbright/1763602544272-majm8r.webp",
+        image: "http://116.118.48.208:9000/innerbright/1763602544272-majm8r.webp",
         imageAlt: "Chứng chỉ Học viên Đào tạo NLP"
       },
       {
         id: 2,
         title: "HỌC VIÊN ĐÀO TẠO NLP COACHING",
-        image: "http://116.118.49.243:12007/innerbright/1763602544456-bdhxwe.webp",
+        image: "http://116.118.48.208:9000/innerbright/1763602544456-bdhxwe.webp",
         imageAlt: "Chứng chỉ Học viên Đào tạo NLP Coaching"
       }
     ]
@@ -73,7 +73,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
             <div className="lg:col-span-3 flex justify-center lg:justify-start">
               <div className="relative w-48 sm:w-56 lg:w-64">
                 <Image
-                  src="http://116.118.49.243:12007/innerbright/1763602103582-1nl7r.webp"
+                  src="http://116.118.48.208:9000/innerbright/1763602103582-1nl7r.webp"
                   alt="5 năm InnerBright"
                   width={256}
                   height={340}

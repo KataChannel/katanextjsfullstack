@@ -19,17 +19,17 @@ export interface MinioConfig {
  */
 export const MINIO_CONFIGS: Record<string, MinioConfig> = {
   'innerbright.vn': {
-    endpoint: '116.118.49.243',
-    port: 12007,
+    endpoint: '116.118.48.208',
+    port: 9000,
     useSSL: false,
-    accessKey: 'minio-admin',
-    secretKey: 'minio-secret-2025',
+    accessKey: 'minioadmin',
+    secretKey: '97G6UiPTilf2',
     bucketName: 'innerbright',
   },
   // TODO: Thêm config cho các domain khác khi cần
   // 'tazagroup.vn': {
-  //   endpoint: '116.118.49.243',
-  //   port: 12007,
+  //   endpoint: '116.118.48.208',
+  //   port: 9000,
   //   useSSL: false,
   //   accessKey: 'minio-admin',
   //   secretKey: 'minio-secret-2025',

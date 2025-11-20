@@ -25,25 +25,25 @@ export default function CertificationsSection({ data }: CertificationsSectionPro
     certifications: [
       {
         id: 1,
-        logo: "http://116.118.49.243:12007/innerbright/1763602554133-uyfzx.webp",
+        logo: "http://116.118.48.208:9000/innerbright/1763602554133-uyfzx.webp",
         name: "HIỆP HỘI ABNLP",
         description: "Chứng nhận năng lực khai vấn bằng công cụ NLP."
       },
       {
         id: 2,
-        logo: "http://116.118.49.243:12007/innerbright/1763602554318-301m9.webp",
+        logo: "http://116.118.48.208:9000/innerbright/1763602554318-301m9.webp",
         name: "TỔ CHỨC HUẤN LUYỆN DOANH NGHIỆP ACTIONCOACH",
         description: "Chứng nhận khả năng huấn luyện và phát triển doanh nghiệp."
       },
       {
         id: 3,
-        logo: "http://116.118.49.243:12007/innerbright/1763602560452-zahjek.webp",
+        logo: "http://116.118.48.208:9000/innerbright/1763602560452-zahjek.webp",
         name: "HIỆP HỘI TIME LINE THERAPY®",
         description: "Chứng nhận năng lực trị liệu và khai vấn bằng kỹ thuật Time Line Therapy."
       },
       {
         id: 4,
-        logo: "http://116.118.49.243:12007/innerbright/1763602561852-kd2qgi.webp",
+        logo: "http://116.118.48.208:9000/innerbright/1763602561852-kd2qgi.webp",
         name: "TƯ VẤN HÌNH ẢNH FIRST IMPRESSIONS IMAGE INTERNATIONAL (SINGAPORE)",
         description: "Mở rộng phạm vi chuyên môn, hỗ trợ sự phát triển toàn diện cho cá nhân và doanh nghiệp."
       }
