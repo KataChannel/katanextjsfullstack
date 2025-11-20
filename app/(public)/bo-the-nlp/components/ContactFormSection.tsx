@@ -30,7 +30,7 @@ export default function ContactFormSection({ data }: ContactFormSectionProps) {
   const defaultData = {
     formTitle: "FROM ĐĂNG KÝ",
     formSubtitle: "ĐĂNG KÝ NHẬN TƯ VẤN",
-    productImage: "http://116.118.49.243:12007/innerbright/contact-products.jpg",
+    productImage: "http://116.118.49.243:12007/innerbright/1763613751013-p217o.webp",
     placeholders: {
       name: "Họ tên (Bắt buộc)",
       email: "Email (Bắt buộc)",

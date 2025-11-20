@@ -20,9 +20,7 @@ export default function WhyChooseNLPSection({ data }: WhyChooseNLPSectionProps) 
       "Hãy chọn một thẻ bài bất kỳ vào mỗi ngày để đọc, chiêm nghiệm và thực hành dựa trên kiến thức, phương pháp tư duy hoặc kỹ thuật mà chiếc thẻ gợi ý."
     ],
     cardImages: [
-      "http://116.118.49.243:12007/innerbright/why-card-1.png",
-      "http://116.118.49.243:12007/innerbright/why-card-2.png",
-      "http://116.118.49.243:12007/innerbright/why-card-3.png"
+      "http://116.118.49.243:12007/innerbright/1763619111383-jdm9ur.webp",
     ]
   };
 
