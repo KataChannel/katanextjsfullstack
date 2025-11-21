@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { getImageUrl } from "@/lib/image-utils";
 
 interface Certificate {
   id: number;
@@ -40,13 +41,13 @@ export default function CertificationSystemSection({ data }: CertificationSystem
       {
         id: 1,
         title: "HỌC VIÊN ĐÀO TẠO NLP",
-        image: "http://116.118.48.208:9000/innerbright/1763602544272-majm8r.webp",
+        image: "/api/minio-proxy/innerbright/1763602544272-majm8r.webp",
         imageAlt: "Chứng chỉ Học viên Đào tạo NLP"
       },
       {
         id: 2,
         title: "HỌC VIÊN ĐÀO TẠO NLP COACHING",
-        image: "http://116.118.48.208:9000/innerbright/1763602544456-bdhxwe.webp",
+        image: "/api/minio-proxy/innerbright/1763602544456-bdhxwe.webp",
         imageAlt: "Chứng chỉ Học viên Đào tạo NLP Coaching"
       }
     ]
@@ -73,7 +74,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
             <div className="lg:col-span-3 flex justify-center lg:justify-start">
               <div className="relative w-48 sm:w-56 lg:w-64">
                 <Image
-                  src="http://116.118.48.208:9000/innerbright/1763602103582-1nl7r.webp"
+                  src="/api/minio-proxy/innerbright/1763602103582-1nl7r.webp"
                   alt="5 năm InnerBright"
                   width={256}
                   height={340}
@@ -111,7 +112,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
                 {/* Certificate Image */}
                 <div className="relative w-full aspect-4/3 rounded-xl overflow-hidden shadow-2xl ring-2 ring-gray-200 hover:ring-[#1e4cb8] transition-all duration-300 hover:shadow-3xl hover:scale-[1.02]">
                   <Image
-                    src={cert.image}
+                    src={getImageUrl(cert.image)}
                     alt={cert.imageAlt}
                     fill
                     className="object-contain bg-white p-4"

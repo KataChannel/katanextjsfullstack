@@ -7,6 +7,7 @@ import { Menu, X, Search, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useSession } from "next-auth/react";
+import { getImageUrl } from "@/lib/image-utils";
 
 interface MenuItem {
   id: string;
@@ -66,14 +67,14 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Global">
         {/* Top Row: Logo | Search | User */}
-        <div className="flex h-16 items-center justify-between gap-4 border-b border-gray-100">
+        <div className="flex h-24 items-center justify-between gap-4 border-b border-gray-100">
           {/* Logo */}
           <div className="shrink-0">
             <Link href="/" className="flex items-center">
               <img 
-                src="http://116.118.48.208:9000/innerbright/1763620949996-bvu1vi.webp"
+                src={getImageUrl("https://116.118.49.243:12007/innerbright/1763620949996-bvu1vi.webp")}
                 alt="InnerBright Logo" 
-                className="h-12 w-auto"
+                className="h-24 w-auto"
               />
             </Link>
           </div>

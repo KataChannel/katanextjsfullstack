@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { getImageUrl } from "@/lib/image-utils";
 
 interface WhyInnerBrightData {
   title: string;
@@ -23,7 +24,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
     nlpTitle: "NLP",
     nlpSubtitle: "(Neuro Linguistic Programming)",
     description: "Lập trình ngôn ngữ tư duy, không chỉ là một tập hợp các kỹ thuật, mà là một hành trình khám phá sức mạnh nội tại để tạo ra sự chuyển hóa sâu sắc. Để ứng dụng NLP hiệu quả, sự thấu hiểu cội nguồn và nguyên lý hoạt động là then chốt.",
-    image: "http://116.118.48.208:9000/innerbright/1763611178370-rxn0rl.webp",
+    image: "/api/minio-proxy/innerbright/1763611178370-rxn0rl.webp",
     imageAlt: "Vì sao chọn InnerBright"
   };
 
@@ -107,7 +108,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
               {/* Main image container */}
               <div className="relative w-full aspect-16/10 rounded-[2.5rem] overflow-hidden bg-white/5 backdrop-blur-sm ring-2 ring-white/20">
                 <Image
-                  src={sectionData.image}
+                  src={getImageUrl(sectionData.image)}
                   alt={sectionData.imageAlt}
                   fill
                   className="object-cover"

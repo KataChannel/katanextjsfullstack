@@ -12,8 +12,11 @@ export async function GET(
     const params = await context.params;
     const path = params.path.join('/');
     
-    // MinIO endpoint trong Docker network - dùng IP internal
-    const minioUrl = `http://172.18.0.4:9000/${path}`;
+    // MinIO endpoint - support both Docker network and external access
+    // In production Docker: use internal IP 172.18.0.4:9000
+    // In local dev: use external IP 116.118.48.208:9000
+    const minioHost = process.env.MINIO_INTERNAL_HOST || '116.118.48.208:9000';
+    const minioUrl = `http://${minioHost}/${path}`;
     
     console.log('[MinIO Proxy] Fetching:', minioUrl);
     

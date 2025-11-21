@@ -53,6 +53,34 @@ async function main() {
 
   console.log('✅ Đã tạo Website Settings cho:', websiteSettings.domain);
 
+  // 2b. Tạo Website Settings cho innerbright.vn
+  const innerbrightSettings = await prisma.websiteSettings.upsert({
+    where: { domain: 'innerbright.vn' },
+    update: {
+      homeRedirect: '/ve-innerbright',
+    },
+    create: {
+      domain: 'innerbright.vn',
+      siteName: 'InnerBright Training & Coaching',
+      metaTitle: 'InnerBright - Đào tạo NLP & Coaching chuyên nghiệp',
+      metaDescription: 'InnerBright Training & Coaching - Đào tạo NLP và Coaching chuyên nghiệp, chứng nhận ABNLP',
+      siteKeywords: 'NLP, coaching, đào tạo NLP, ABNLP, phát triển bản thân',
+      siteOgImage: '/images/innerbright-og.jpg',
+      twitterHandle: '@innerbright',
+      googleAnalytics: 'G-XXXXXXXXXX',
+      homeRedirect: '/ve-innerbright',
+      organizationSchema: {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'InnerBright Training & Coaching',
+        url: 'https://innerbright.vn',
+        logo: 'https://innerbright.vn/logo.png',
+      },
+    },
+  });
+
+  console.log('✅ Đã tạo Website Settings cho:', innerbrightSettings.domain, '- Trang chủ:', innerbrightSettings.homeRedirect);
+
   // 3. Tạo Posts
   const posts = [
     {

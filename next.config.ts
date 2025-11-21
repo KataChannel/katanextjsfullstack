@@ -14,9 +14,24 @@ const nextConfig: NextConfig = {
         hostname: '**',
       },
       {
+        protocol: 'https',
+        hostname: '116.118.49.243',
+        port: '12007',
+      },
+      {
         protocol: 'http',
         hostname: '116.118.49.243',
         port: '12007',
+      },
+      {
+        protocol: 'https',
+        hostname: '116.118.48.208',
+        port: '9000',
+      },
+      {
+        protocol: 'http',
+        hostname: '116.118.48.208',
+        port: '9000',
       },
       {
         protocol: 'http',

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { getImageUrl } from "@/lib/image-utils";
 
 interface HeroSlide {
   id: number;
@@ -28,7 +29,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
       description: "InnerBright Training & Coaching",
       subDescription: "được thành lập từ năm 2020",
       badge: "Bởi nhà đào tạo\nCHLOE QUÝ CHÂU",
-      image: "http://116.118.48.208:9000/innerbright/1763602085989-jm48us.webp"
+      image: "/api/minio-proxy/innerbright/1763602085989-jm48us.webp"
     }
   ];
 
@@ -118,7 +119,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
             <div className="relative w-full max-w-[500px] lg:max-w-[600px] h-full">
               <div className="absolute inset-0 bg-linear-to-t from-transparent via-transparent to-[#0a2351]/20"></div>
               <Image
-                src={currentSlideData.image}
+                src={getImageUrl(currentSlideData.image)}
                 alt="Chloe Quý Châu - Nhà đào tạo InnerBright"
                 fill
                 className="object-contain object-bottom"

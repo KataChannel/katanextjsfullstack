@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Facebook, Instagram, Youtube, Mail, Phone } from "lucide-react";
 import { SiTiktok } from "react-icons/si";
+import { getImageUrl } from "@/lib/image-utils";
 
 interface SocialLink {
   name?: string;
@@ -105,9 +106,9 @@ export function Footer() {
             {/* Logo */}
             <div className="mb-6">
               <img 
-                src="http://116.118.48.208:9000/innerbright/1763620956393-ajrdh.webp"
+                src={getImageUrl("https://116.118.49.243:12007/innerbright/1763620956393-ajrdh.webp")}
                 alt="InnerBright Logo" 
-                className="h-16 w-auto"
+                className="h-24 w-auto"
               />
             </div>
 
