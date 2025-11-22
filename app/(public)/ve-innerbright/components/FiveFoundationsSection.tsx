@@ -107,10 +107,10 @@ export default function FiveFoundationsSection({ data }: FiveFoundationsSectionP
         
         {/* Title */}
         <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#ffa500] uppercase mb-2">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-orange uppercase mb-2">
             {sectionData.mainTitle}
           </h2>
-          <p className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-[#1e4cb8] uppercase">
+          <p className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[#1e4cb8] uppercase">
             {sectionData.subtitle}
           </p>
         </div>

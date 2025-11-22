@@ -111,7 +111,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
                   src={getImageUrl(sectionData.image)}
                   alt={sectionData.imageAlt}
                   fill
-                  className="object-cover"
+                  className="object-contain p-4"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 550px"
                   priority
                   onError={(e) => {

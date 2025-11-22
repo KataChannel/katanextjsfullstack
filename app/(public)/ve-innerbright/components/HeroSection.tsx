@@ -59,12 +59,12 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-end h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full py-8">
           {/* Left Content */}
           <div className="text-white space-y-4 lg:space-y-6">
             {/* Title with Arrow */}
             <div className="flex items-center gap-3">
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-wide text-[#FFB340]">
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-wide text-brand-orange">
                 {currentSlideData.title}
               </h3>
               <svg 
@@ -99,8 +99,8 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
                 <Image
                   src={getImageUrl(currentSlideData.nameBackground)}
                   alt="Chloe Quý Châu Badge"
-                  // width={280}
-                  // height={90}
+                  width={280}
+                  height={90}
                   className="object-contain"
                   priority
                 />
