@@ -7,6 +7,7 @@ import { headers } from "next/headers";
 import { extractDomain } from "@/lib/database";
 import { getPrisma } from "@/lib/prisma";
 import { generateMetadataFromSettings, generateViewportFromSettings } from "@/lib/metadata";
+import { svnOpinion } from "@/lib/fonts";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -84,6 +85,13 @@ export default async function RootLayout({
     console.error("Error fetching website settings:", error);
   }
 
+  // Determine which font to use based on domain
+  const isInnerbrightDomain = domain === "innerbright.vn" || domain === "innerbright";
+  
+  // Always include all font variables, apply via CSS class
+  const fontVariables = `${geistSans.variable} ${geistMono.variable} ${svnOpinion.variable}`;
+  const fontClass = isInnerbrightDomain ? "font-sans-innerbright" : "";
+
   return (
     <html lang="vi">
       <head>
@@ -101,7 +109,7 @@ export default async function RootLayout({
         )}
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${fontVariables} ${fontClass} antialiased`}
       >
         {/* Custom CSS from settings */}
         {websiteSettings?.customCss && (

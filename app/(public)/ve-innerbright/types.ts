@@ -8,6 +8,8 @@ export interface HeroSlide {
   subDescription: string;
   badge: string;
   image: string;
+  avatar?: string;
+  nameBackground?: string;
 }
 
 export interface MissionVisionData {

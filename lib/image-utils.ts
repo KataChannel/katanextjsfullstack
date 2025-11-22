@@ -24,6 +24,11 @@ const MINIO_SERVERS = [
  *   → /api/minio-proxy/innerbright/image.webp (unchanged)
  */
 export function getImageUrl(url: string): string {
+  // Return empty string or fallback if url is invalid
+  if (!url || typeof url !== 'string') {
+    return '';
+  }
+
   // If already a proxy URL, return as-is
   if (url.startsWith('/api/minio-proxy/')) {
     return url;
@@ -32,6 +37,15 @@ export function getImageUrl(url: string): string {
   // If relative URL, return as-is
   if (url.startsWith('/') && !url.startsWith('//')) {
     return url;
+  }
+
+  // Handle URLs with domain (e.g., https://innerbright.vn/api/minio-proxy/...)
+  // Extract just the path part
+  if (url.includes('/api/minio-proxy/')) {
+    const match = url.match(/\/api\/minio-proxy\/.*$/);
+    if (match) {
+      return match[0];
+    }
   }
 
   // Convert production MinIO URL to proxy URL
