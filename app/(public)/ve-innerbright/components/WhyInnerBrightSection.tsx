@@ -47,7 +47,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           
           {/* Left Side - Content */}
-          <div className="text-white space-y-6 lg:space-y-8">
+          <div className="text-white space-y-6 lg:space-y-8 animate-fade-in-left">
             {/* Title */}
             <div className="space-y-2">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#ffa500] leading-tight">
@@ -77,7 +77,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
           </div>
 
           {/* Right Side - Image */}
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-end animate-fade-in-right">
             <div className="relative w-full max-w-[550px] z-20">
               
               {/* Main image container */}

@@ -41,9 +41,9 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
   const currentSlideData = slides[currentSlide] || slides[0];
   
   return (
-    <section className="relative h-[500px] md:h-[600px] lg:h-[650px] overflow-hidden">
+    <section className="relative h-[500px] md:h-[600px] lg:h-[650px] overflow-hidden animate-fade-in">
       {/* Background Image with Overlay */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 animate-scale-in">
         {currentSlideData.image && (
           <Image
             src={getImageUrl(currentSlideData.image)}

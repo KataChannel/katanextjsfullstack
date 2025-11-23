@@ -33,7 +33,7 @@ export default function AtInnerBrightSection({ data }: AtInnerBrightSectionProps
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Title */}
-        <div className="text-center mb-8 lg:mb-12">
+        <div className="text-center mb-8 lg:mb-12 animate-fade-in-up">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#ffa500] uppercase mb-6">
             {sectionData.title}
           </h2>
@@ -49,7 +49,7 @@ export default function AtInnerBrightSection({ data }: AtInnerBrightSectionProps
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             
             {/* Left Side - Image */}
-            <div className="relative">
+            <div className="relative animate-fade-in-left">
               {/* Decorative border accent */}
               <div className="absolute -top-3 left-0 w-24 sm:w-32 lg:w-80 h-3 bg-[#ffa500]"></div>
                 <div className="absolute -bottom-3 -right-3 w-24 sm:w-32 lg:w-[102%] h-3 bg-[#1e4cb8] rounded-br-4xl"></div>
@@ -72,7 +72,7 @@ export default function AtInnerBrightSection({ data }: AtInnerBrightSectionProps
             </div>
 
             {/* Right Side - Description */}
-            <div className="text-xl space-y-6 lg:space-y-8 text-justify">
+            <div className="text-xl space-y-6 lg:space-y-8 text-justify animate-fade-in-right">
               {/* Main Description */}
               <p className="leading-relaxed text-gray-600">
                 {sectionData.mainDescription}

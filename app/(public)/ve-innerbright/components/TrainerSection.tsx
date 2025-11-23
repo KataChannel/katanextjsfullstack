@@ -42,7 +42,7 @@ export default function TrainerSection({ data }: TrainerSectionProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             
             {/* Left Side - Content */}
-            <div className="space-y-2 order-2 lg:order-1">
+            <div className="space-y-2 order-2 lg:order-1 animate-fade-in-left">
               {/* Badge */}
               <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-[#ffb366] uppercase tracking-wide">
                 {sectionData.badge}
@@ -76,7 +76,7 @@ export default function TrainerSection({ data }: TrainerSectionProps) {
             </div>
 
             {/* Right Side - Image */}
-            <div className="flex justify-center lg:justify-end order-1 lg:order-2">
+            <div className="flex justify-center lg:justify-end order-1 lg:order-2 animate-fade-in-right">
               <div className="relative w-full max-w-[500px] lg:max-w-[600px]">
                 {/* Main image container */}
                 <div className="relative w-full z-10">

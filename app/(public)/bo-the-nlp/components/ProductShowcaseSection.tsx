@@ -118,12 +118,12 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
                   key={card.id}
                   className="bg-white rounded-2xl shadow-xl overflow-hidden hover:scale-105 transition-transform duration-300"
                 >
-                  <div className="aspect-3/4 relative">
+                  <div className="relative w-full h-[280px] sm:h-80 lg:h-[380px]">
                     <Image
                       src={card.image}
                       alt={`Card ${card.number}`}
                       fill
-                      className="object-cover"
+                      className="object-contain p-2"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.style.display = 'none';

@@ -31,7 +31,7 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
   return (
     <section className="py-16 lg:py-24 relative overflow-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 animate-scale-in">
         <Image
           src="/api/minio-proxy/innerbright/1763882937290-vfejy.webp"
           alt="Background"
@@ -50,7 +50,7 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           
           {/* Left Side - Content */}
-          <div className="text-white space-y-6 text-justify">
+          <div className="text-white space-y-6 text-justify animate-fade-in-left">
             {/* Title */}
             <div className="space-y-2">
               <h2 className="text-center text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase leading-tight border-b">
@@ -75,7 +75,7 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
           </div>
 
           {/* Right Side - Image */}
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex justify-center lg:justify-end animate-fade-in-right">
             <div className="relative w-full max-w-[500px] aspect-4/3 lg:aspect-3/4">
               <div className="relative w-full h-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/20">
                 <Image

@@ -6,13 +6,13 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-screen bg-linear-to-br from-blue-700 via-blue-600 to-blue-800 overflow-hidden">
       {/* Large N Watermark Background */}
-      <div className="absolute left-0 top-0 bottom-0 w-1/3 opacity-10 pointer-events-none">
-        <div className="text-[40rem] font-black text-white leading-none select-none">
-          N
+      <div className="absolute left-0 top-0 bottom-0 w-1/5 opacity-10 pointer-events-none">
+        <div className="text-[18rem] font-black text-white leading-none select-none">
+          N L P
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="w-4/5 container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* Left Content */}
@@ -40,40 +40,40 @@ export default function HeroSection() {
 
           {/* Right Content - Cards */}
           <div className="relative z-10 flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-md lg:max-w-[500px] h-[450px] lg:h-[550px]">
+            <div className="relative w-full max-w-md lg:max-w-[550px] h-[500px] lg:h-[600px]">
               {/* Card Stack - 3 Real Images */}
               <div className="relative w-full h-full">
                 {/* Card 1 - Green/Teal (Back Left - Bottom) */}
-                <div className="absolute top-[100px] lg:top-[120px] left-0 w-[220px] lg:w-[260px] z-10 transform -rotate-12">
+                <div className="absolute bottom-[20px] lg:bottom-[30px] left-[-20px] lg:left-[-150px] w-[200px] lg:w-[240px] z-10 transform -rotate-[25deg]">
                   <Image
                     src="/api/minio-proxy/innerbright/1763613727282-rb4pf.webp"
                     alt="NLP Card - Green"
-                    width={260}
-                    height={370}
+                    width={240}
+                    height={340}
                     className="rounded-2xl shadow-2xl border-[6px] lg:border-8 border-white"
                     priority
                   />
                 </div>
 
-                {/* Card 2 - Orange (Center - Middle) */}
-                <div className="absolute top-10 lg:top-[50px] left-20 lg:left-[100px] w-60 lg:w-[280px] z-20 transform rotate-[7deg]">
+                {/* Card 2 - Orange (Center - Main/Largest) */}
+                <div className="absolute top-[80px] lg:top-[100px] left-[60px] lg:left-[80px] w-[260px] lg:w-[320px] z-30 transform">
                   <Image
                     src="/api/minio-proxy/innerbright/1763613726960-381wim.webp"
                     alt="NLP Card - Orange Main"
-                    width={280}
-                    height={400}
+                    width={320}
+                    height={450}
                     className="rounded-2xl shadow-2xl border-[6px] lg:border-8 border-white"
                     priority
                   />
                 </div>
 
                 {/* Card 3 - White/Blue (Front Right - Top) */}
-                <div className="absolute top-0 left-[180px] lg:left-[220px] w-[200px] lg:w-60 z-30 transform rotate-[15deg] hover:rotate-[17deg] transition-transform duration-300">
+                <div className="absolute top-[40px] lg:top-[150px] right-[-10px] lg:right-[-20px] w-[180px] lg:w-[220px] z-10 transform rotate-[36deg]">
                   <Image
                     src="/api/minio-proxy/innerbright/1763613730899-6rsfgc.webp"
                     alt="NLP Card - White Blue"
-                    width={240}
-                    height={340}
+                    width={220}
+                    height={310}
                     className="rounded-2xl shadow-2xl border-[6px] lg:border-8 border-white"
                     priority
                   />

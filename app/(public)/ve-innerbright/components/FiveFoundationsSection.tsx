@@ -106,7 +106,7 @@ export default function FiveFoundationsSection({ data }: FiveFoundationsSectionP
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Title */}
-        <div className="text-center mb-12 lg:mb-16">
+        <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-orange uppercase mb-2">
             {sectionData.mainTitle}
           </h2>

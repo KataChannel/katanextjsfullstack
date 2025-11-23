@@ -60,7 +60,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Title */}
-        <div className="text-center mb-12 lg:mb-16">
+        <div className="text-center mb-12 lg:mb-16 animate-fade-in-up">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-[#1e4cb8] uppercase">
             {sectionData.mainTitle}
           </h2>
@@ -71,7 +71,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12 lg:mb-16">
             
             {/* Left Side - Year Badge */}
-            <div className="lg:col-span-3 flex justify-center lg:justify-start">
+            <div className="lg:col-span-3 flex justify-center lg:justify-start animate-fade-in-left">
               <div className="relative w-48 sm:w-56 lg:w-64">
                 <Image
                   src="/api/minio-proxy/innerbright/1763602103582-1nl7r.webp"
@@ -88,7 +88,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
             </div>
 
             {/* Right Side - Description */}
-            <div className="lg:col-span-9 space-y-4 text-2xl">
+            <div className="lg:col-span-9 space-y-4 text-2xl animate-fade-in-right">
               {sectionData.description.map((paragraph, index) => (
                 <p 
                   key={index}
@@ -106,7 +106,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
           </div>
 
           {/* Certificates Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 animate-fade-in-up">
             {sectionData.certificates.map((cert) => (
               <div key={cert.id} className="space-y-4">
                 {/* Certificate Image */}

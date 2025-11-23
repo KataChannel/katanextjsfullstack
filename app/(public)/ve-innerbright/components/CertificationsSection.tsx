@@ -63,7 +63,7 @@ export default function CertificationsSection({ data }: CertificationsSectionPro
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Text */}
-        <div className="max-w-5xl mx-auto text-center mb-12 lg:mb-16">
+        <div className="max-w-5xl mx-auto text-center mb-12 lg:mb-16 animate-fade-in-up">
           <p className="text-lg sm:text-xl lg:text-2xl text-gray-500 italic leading-relaxed">
             {sectionData.headerText}
           </p>
@@ -72,10 +72,10 @@ export default function CertificationsSection({ data }: CertificationsSectionPro
         {/* Certifications Grid */}
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {sectionData.certifications.map((cert) => (
+            {sectionData.certifications.map((cert, index) => (
               <div 
                 key={cert.id}
-                className="bg-gray-100 rounded-2xl p-6 lg:p-8 flex flex-col items-center text-center space-y-4 hover:bg-gray-50 transition-colors duration-300 hover:shadow-lg"
+                className={`bg-gray-100 rounded-2xl p-6 lg:p-8 flex flex-col items-center text-center space-y-4 hover:bg-gray-50 transition-colors duration-300 hover:shadow-lg animate-fade-in-up animate-delay-${index * 100}`}
               >
                 {/* Logo */}
                 <div className="relative w-32 h-32 lg:w-40 lg:h-40 flex items-center justify-center">
