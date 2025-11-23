@@ -83,6 +83,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
               <h1 className="whitespace-nowrap text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                 {currentSlideData.subtitle}
               </h1>
+              <hr className="border-t border-[#FFB03E] w-2/3 mt-2 mb-4" />
               <p className="font-normal">{currentSlideData.description}</p>
               <p className="font-light text-white/90">{currentSlideData.subDescription}</p>
             </div>

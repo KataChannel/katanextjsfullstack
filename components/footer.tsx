@@ -98,9 +98,8 @@ export function Footer() {
 
   return (
     <footer className="bg-white border-t border-gray-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          
           {/* Column 1: Logo & Contact Info */}
           <div className="space-y-6">
             {/* Logo */}
@@ -200,7 +199,7 @@ export function Footer() {
           </div>
 
           {/* Column 4: Social Media Icons */}
-          <div className="flex lg:justify-end items-start">
+          <div className="flex items-start">
             <div className="flex gap-4">
               <a
                 href="https://facebook.com/innerbright"

@@ -46,16 +46,17 @@ export default function AtInnerBrightSection({ data }: AtInnerBrightSectionProps
 
         {/* Content Grid */}
         <div className="max-w-7xl mx-auto mt-12 lg:mt-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             
             {/* Left Side - Image */}
             <div className="relative">
               {/* Decorative border accent */}
-              <div className="absolute -top-3 -left-3 w-24 sm:w-32 lg:w-40 h-1 bg-[#1e4cb8]"></div>
-              <div className="absolute -top-3 -left-3 w-1 h-24 sm:h-32 lg:h-40 bg-[#ffa500]"></div>
+              <div className="absolute -top-3 left-0 w-24 sm:w-32 lg:w-80 h-3 bg-[#ffa500]"></div>
+                <div className="absolute -bottom-3 -right-3 w-24 sm:w-32 lg:w-[102%] h-3 bg-[#1e4cb8] rounded-br-4xl"></div>
+                <div className="absolute -bottom-3 -right-3 w-3 h-24 sm:h-32 lg:h-[80%] bg-[#1e4cb8] rounded-br-4xl"></div>
               
               {/* Image Container */}
-              <div className="relative w-full aspect-4/3 rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-200">
+              <div className="relative w-full aspect-4/3 overflow-hidden shadow-2xl ring-1 ring-gray-200">
                 <Image
                   src={getImageUrl(sectionData.image)}
                   alt={sectionData.imageAlt}
@@ -71,14 +72,14 @@ export default function AtInnerBrightSection({ data }: AtInnerBrightSectionProps
             </div>
 
             {/* Right Side - Description */}
-            <div className="space-y-6 lg:space-y-8">
+            <div className="text-xl space-y-6 lg:space-y-8 text-justify">
               {/* Main Description */}
-              <p className="text-base sm:text-lg leading-relaxed text-gray-600">
+              <p className="leading-relaxed text-gray-600">
                 {sectionData.mainDescription}
               </p>
 
               {/* Secondary Description */}
-              <p className="text-base sm:text-lg leading-relaxed text-gray-600">
+              <p className="leading-relaxed text-gray-600">
                 {sectionData.secondaryDescription}
               </p>
             </div>

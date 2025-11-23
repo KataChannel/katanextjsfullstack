@@ -155,7 +155,7 @@ export default function FiveFoundationsSection({ data }: FiveFoundationsSectionP
                 >
                   <div className={`${getCardColor(foundation.color)} rounded-3xl p-6 lg:p-8 text-white h-full shadow-xl`}>
                     {/* Number Badge */}
-                    <div className="flex items-start gap-4 mb-4">
+                    <div className="flex items-start gap-4 mb-2 py-2 border-b">
                       <div className="shrink-0 w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-white flex items-center justify-center">
                         <span className="text-2xl lg:text-3xl font-bold text-[#1e4cb8]">
                           {foundation.number}

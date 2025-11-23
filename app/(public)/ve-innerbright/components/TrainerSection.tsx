@@ -26,7 +26,7 @@ export default function TrainerSection({ data }: TrainerSectionProps) {
     ],
     description: [
       "Trong quá trình học tập và huấn luyện tại Việt Nam, Chloe Quý Châu là chuyên gia nguyên vật liệu, kiến trúc ABNLP Coaching Division cấp phép đào tạo NLP Master Coach. Chloe tập trung truyền tải nguyên bản công cụ NLP để học viên hiểu rõ, đúng, đủ và ứng dụng linh hoạt vào cuộc sống.",
-      "Chloe cũng là một trong số ít người Việt đầu tiên được chứng nhận đào tạo Time Line Therapy® trực tiếp từ hiệp hội, một phương pháp mạnh mẽ giúp xử lý sâu sắc các cảm xúc"
+      "Chloe cũng là một trong số ít người Việt đầu tiên được chứng nhận đào tạo <strong>Time Line Therapy®</strong> trực tiếp từ hiệp hội, một phương pháp mạnh mẽ giúp xử lý sâu sắc các cảm xúc"
     ],
     image: "/api/minio-proxy/innerbright/1763602545461-ewwycu.webp",
     imageAlt: "Chloe Quý Châu - Chuyên gia đào tạo NLP"
@@ -42,7 +42,7 @@ export default function TrainerSection({ data }: TrainerSectionProps) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             
             {/* Left Side - Content */}
-            <div className="space-y-6 lg:space-y-8 order-2 lg:order-1">
+            <div className="space-y-2 order-2 lg:order-1">
               {/* Badge */}
               <p className="text-lg sm:text-xl lg:text-2xl font-semibold text-[#ffb366] uppercase tracking-wide">
                 {sectionData.badge}
@@ -66,9 +66,11 @@ export default function TrainerSection({ data }: TrainerSectionProps) {
               {/* Description */}
               <div className="space-y-4 lg:space-y-6 pt-4">
                 {sectionData.description.map((paragraph, index) => (
-                  <p key={index} className="text-base sm:text-lg leading-relaxed text-gray-700">
-                    {paragraph}
-                  </p>
+                  <p 
+                    key={index} 
+                    className="text-base sm:text-lg leading-relaxed text-gray-700"
+                    dangerouslySetInnerHTML={{ __html: paragraph }}
+                  />
                 ))}
               </div>
             </div>
@@ -76,33 +78,13 @@ export default function TrainerSection({ data }: TrainerSectionProps) {
             {/* Right Side - Image */}
             <div className="flex justify-center lg:justify-end order-1 lg:order-2">
               <div className="relative w-full max-w-[500px] lg:max-w-[600px]">
-                {/* Decorative circles */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {/* Orange circle - outer */}
-                  <div 
-                    className="absolute w-[90%] h-[90%] rounded-full"
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(255, 165, 0, 0.3) 0%, rgba(255, 179, 102, 0.2) 100%)',
-                      transform: 'scale(1.1)'
-                    }}
-                  ></div>
-                  
-                  {/* Blue circle - behind */}
-                  <div 
-                    className="absolute w-[85%] h-[85%] rounded-full bg-[#4a7cd8]"
-                    style={{
-                      transform: 'translate(-5%, 5%)',
-                      zIndex: 0
-                    }}
-                  ></div>
-                </div>
-
                 {/* Main image container */}
-                <div className="relative w-full aspect-square rounded-full overflow-hidden shadow-2xl ring-4 ring-white z-10">
+                <div className="relative w-full z-10">
                   <Image
                     src={getImageUrl(sectionData.image)}
                     alt={sectionData.imageAlt}
-                    fill
+                    width={600}
+                    height={400}
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 600px"
                     priority

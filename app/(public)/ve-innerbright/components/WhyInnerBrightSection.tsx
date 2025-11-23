@@ -33,16 +33,15 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
   return (
     <section className="relative py-16 lg:py-24 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-0">
         <Image
           src="/api/minio-proxy/innerbright/1763884854233-528uu.webp"
           alt="Background"
           fill
-          className="object-cover"
+          className="object-contain"
           priority
         />
       </div>
-      
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
@@ -79,15 +78,15 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
 
           {/* Right Side - Image */}
           <div className="flex justify-center lg:justify-end">
-            <div className="relative w-full max-w-[550px]">
+            <div className="relative w-full max-w-[550px] z-20">
               
               {/* Main image container */}
-              <div className="relative w-full rounded-[2.5rem]">
+              <div className="relative w-full p-4">
                 <Image
                   src={getImageUrl(sectionData.image)}
                   alt={sectionData.imageAlt}
-                  className="object-contain p-4"     
-                  width={300}
+                  className="object-contain relative z-30"     
+                  width={550}
                   height={400}
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 550px"
                   priority
@@ -99,8 +98,8 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
               </div>
 
               {/* Decorative corner accents */}
-              <div className="absolute -top-4 -right-4 w-32 h-32 bg-[#ffa500]/20 rounded-full blur-3xl"></div>
-              <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+              <div className="absolute -top-4 -right-4 w-32 h-32 bg-[#ffa500]/20 rounded-full blur-3xl z-10"></div>
+              <div className="absolute -bottom-6 -left-6 w-40 h-40 bg-white/10 rounded-full blur-3xl z-10"></div>
             </div>
           </div>
 
