@@ -29,34 +29,46 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
   const sectionData = data || defaultData;
 
   return (
-    <section className="py-16 lg:py-24 bg-linear-to-br from-[#ff9933] via-[#ffaa44] to-[#ffbb55] relative overflow-hidden">
+    <section className="py-16 lg:py-24 relative overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/api/minio-proxy/innerbright/1763882937290-vfejy.webp"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/30"></div>
+      </div>
+      
       {/* Decorative elements */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           
           {/* Left Side - Content */}
-          <div className="text-white space-y-6">
+          <div className="text-white space-y-6 text-justify">
             {/* Title */}
             <div className="space-y-2">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase leading-tight">
+              <h2 className="text-center text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase leading-tight border-b">
                 {sectionData.title}
               </h2>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-medium uppercase leading-snug">
+              <p className="text-center text-xl sm:text-2xl lg:text-3xl font-medium uppercase leading-snug">
                 {sectionData.subtitle}
               </p>
             </div>
 
             {/* Description */}
             <div className="space-y-4">
-              <p className="text-base sm:text-lg leading-relaxed text-white/95">
+              <p className="text-center text-base sm:text-lg leading-relaxed text-white/95">
                 {sectionData.description}
               </p>
 
               {/* Highlight Text */}
-              <p className="text-base sm:text-lg leading-relaxed font-semibold text-white">
+              <p className="text-center text-base sm:text-lg leading-relaxed font-semibold text-white">
                 {sectionData.highlight}
               </p>
             </div>

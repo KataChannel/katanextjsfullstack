@@ -88,11 +88,11 @@ export default function CertificationSystemSection({ data }: CertificationSystem
             </div>
 
             {/* Right Side - Description */}
-            <div className="lg:col-span-9 space-y-4">
+            <div className="lg:col-span-9 space-y-4 text-2xl">
               {sectionData.description.map((paragraph, index) => (
                 <p 
                   key={index}
-                  className={`text-base sm:text-lg leading-relaxed ${
+                  className={`text-base sm:text-lg lg:text-2xl leading-relaxed ${
                     index === 1 
                       ? 'font-bold text-gray-900' 
                       : 'text-gray-700'
@@ -126,10 +126,10 @@ export default function CertificationSystemSection({ data }: CertificationSystem
                 
                 {/* Certificate Title */}
                 <div className="text-center">
+                  <div className="h-0.5 w-96 bg-[#1e4cb8] mx-auto my-2"></div>
                   <h3 className="text-xl sm:text-2xl font-bold text-[#1e4cb8] uppercase">
                     {cert.title}
                   </h3>
-                  <div className="h-1 w-24 bg-[#1e4cb8] mx-auto mt-2"></div>
                 </div>
               </div>
             ))}

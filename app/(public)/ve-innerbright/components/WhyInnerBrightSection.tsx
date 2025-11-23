@@ -33,36 +33,16 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
   return (
     <section className="relative py-16 lg:py-24 overflow-hidden">
       {/* Background */}
-      <div 
-        className="absolute inset-0 bg-linear-to-br from-[#2851b8] via-[#3665cc] to-[#4a7cd8]"
-        style={{
-          backgroundImage: `
-            radial-gradient(circle at 20% 50%, rgba(52, 152, 219, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 80% 30%, rgba(74, 124, 199, 0.15) 0%, transparent 50%),
-            linear-gradient(135deg, #2851b8 0%, #3665cc 50%, #4a7cd8 100%)
-          `
-        }}
-      >
-        {/* Decorative dots pattern - Left */}
-        <div 
-          className="absolute top-1/4 left-0 w-[120px] h-[400px] opacity-40"
-          style={{
-            backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.6) 2px, transparent 2px)`,
-            backgroundSize: '20px 20px',
-            backgroundPosition: '0 0'
-          }}
-        />
-        
-        {/* Decorative dots pattern - Right */}
-        <div 
-          className="absolute top-1/3 right-0 w-[100px] h-[350px] opacity-30"
-          style={{
-            backgroundImage: `radial-gradient(circle, rgba(255, 255, 255, 0.5) 2px, transparent 2px)`,
-            backgroundSize: '18px 18px',
-            backgroundPosition: '0 0'
-          }}
+      <div className="absolute inset-0">
+        <Image
+          src="/api/minio-proxy/innerbright/1763884854233-528uu.webp"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
         />
       </div>
+      
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
@@ -100,18 +80,15 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
           {/* Right Side - Image */}
           <div className="flex justify-center lg:justify-end">
             <div className="relative w-full max-w-[550px]">
-              {/* Decorative shape behind image */}
-              <div 
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[95%] bg-white/10 rounded-[3rem] rotate-6 blur-sm"
-              ></div>
               
               {/* Main image container */}
-              <div className="relative w-full aspect-16/10 rounded-[2.5rem] overflow-hidden bg-white/5 backdrop-blur-sm ring-2 ring-white/20">
+              <div className="relative w-full rounded-[2.5rem]">
                 <Image
                   src={getImageUrl(sectionData.image)}
                   alt={sectionData.imageAlt}
-                  fill
-                  className="object-contain p-4"
+                  className="object-contain p-4"     
+                  width={300}
+                  height={400}
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 550px"
                   priority
                   onError={(e) => {
