@@ -101,7 +101,7 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Header Text */}
-          <div className="text-center mb-8 lg:mb-12 space-y-3">
+          <div className="text-center mb-8 lg:mb-12 space-y-3 animate-fade-in-up">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">
               {sectionData.headerTitle}
             </h2>
@@ -110,32 +110,34 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
             </p>
           </div>
 
-          {/* Cards Grid */}
-            <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-              {sectionData.cards.map((card) => (
-              <div 
-                key={card.id}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden hover:scale-105 transition-transform duration-300 ${
-                card.id === 2 || card.id === 4 ? 'mt-[50px]' : ''
-                }`}
-              >
-                <div className="relative w-full h-[280px] sm:h-80 lg:h-[380px]">
-                <Image
-                  src={card.image}
-                  alt={`Card ${card.number}`}
-                  fill
-                  className="object-contain p-2"
-                  onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  }}
-                />
+          {/* Cards Grid - 4 Cards with Staggered Layout */}
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              {sectionData.cards.map((card, index) => (
+                <div 
+                  key={card.id}
+                  className={`flex flex-col items-center space-y-4 ${
+                    index === 1 || index === 3 ? 'lg:mt-12' : ''
+                  }`}
+                >
+                  <div className="bg-white rounded-3xl shadow-2xl overflow-hidden hover:scale-105 transition-transform duration-300 w-full">
+                    <div className="relative w-full h-[280px] sm:h-80 lg:h-[400px]">
+                      <Image
+                        src={card.image}
+                        alt={`Card ${card.number}`}
+                        fill
+                        className="object-contain p-4"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
               ))}
             </div>
-            </div>
+          </div>
 
         </div>
       </div>
@@ -145,7 +147,7 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Title Section */}
-          <div className="max-w-4xl mx-auto text-justify">
+          <div className="max-w-4xl mx-auto text-justify animate-fade-in-up">
             <h3 className="text-2xl sm:text-3xl lg:text-4xl text-blue-700">
               {sectionData.mainTitle}
             </h3>
@@ -158,23 +160,22 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
           </div>
 
           {/* Quote */}
-          <div className="text-justify max-w-4xl mx-auto mb-12 lg:mb-16">
+          <div className="text-justify max-w-4xl mx-auto mb-12 lg:mb-16 animate-fade-in-up animate-delay-200">
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 italic leading-relaxed">
               {sectionData.quote}
             </p>
           </div>
 
-          {/* Product Images Grid */}
+          {/* Product Images Grid - Masonry Layout */}
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {sectionData.productImages.map((product) => (
-                <div 
-                  key={product.id}
-                  className="relative aspect-4/3 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300"
-                >
+            {/* First Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 mb-4 lg:mb-6">
+              {/* Image 1 - Top Left Square */}
+              <div className="lg:col-span-1 animate-fade-in-up animate-delay-100">
+                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
                   <Image
-                    src={product.image}
-                    alt={product.alt}
+                    src={sectionData.productImages[0].image}
+                    alt={sectionData.productImages[0].alt}
                     fill
                     className="object-cover"
                     onError={(e) => {
@@ -183,7 +184,90 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
                     }}
                   />
                 </div>
-              ))}
+              </div>
+
+              {/* Image 2 - Top Center Large Horizontal */}
+              <div className="lg:col-span-1 animate-fade-in-up animate-delay-200">
+                <div className="relative aspect-[4/3] lg:aspect-[3/2] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                  <Image
+                    src={sectionData.productImages[1].image}
+                    alt={sectionData.productImages[1].alt}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Image 3 - Top Right Square */}
+              <div className="lg:col-span-1 animate-fade-in-up animate-delay-300">
+                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                  <Image
+                    src={sectionData.productImages[2].image}
+                    alt={sectionData.productImages[2].alt}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Second Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+              {/* Image 4 - Bottom Left Square on Orange */}
+              <div className="lg:col-span-1 animate-fade-in-up animate-delay-400">
+                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                  <Image
+                    src={sectionData.productImages[3].image}
+                    alt={sectionData.productImages[3].alt}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Image 5 - Bottom Center Square */}
+              <div className="lg:col-span-1 animate-fade-in-up animate-delay-500">
+                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                  <Image
+                    src={sectionData.productImages[4].image}
+                    alt={sectionData.productImages[4].alt}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Image 6 - Bottom Right Tall Portrait */}
+              <div className="lg:col-span-1 animate-fade-in-up">
+                <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                  <Image
+                    src={sectionData.productImages[5].image}
+                    alt={sectionData.productImages[5].alt}
+                    fill
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

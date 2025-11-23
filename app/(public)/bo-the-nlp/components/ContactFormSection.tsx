@@ -65,11 +65,11 @@ export default function ContactFormSection({ data }: ContactFormSectionProps) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Content Card */}
-        <div className="max-w-7xl mx-auto bg-blue-600 rounded-3xl lg:rounded-[3rem] p-6 sm:p-8 lg:p-12 shadow-2xl">
+        <div className="max-w-7xl mx-auto bg-blue-600 rounded-3xl lg:rounded-[3rem] p-6 sm:p-8 lg:p-12 shadow-2xl animate-fade-in-up">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             
             {/* Left - Product Image */}
-            <div className="order-2 lg:order-1">
+            <div className="order-2 lg:order-1 animate-fade-in-left">
               <div className="relative aspect-4/3 rounded-2xl lg:rounded-3xl overflow-hidden shadow-xl">
                 <Image
                   src={sectionData.productImage}
@@ -85,7 +85,7 @@ export default function ContactFormSection({ data }: ContactFormSectionProps) {
             </div>
 
             {/* Right - Form */}
-            <div className="order-1 lg:order-2">
+            <div className="order-1 lg:order-2 animate-fade-in-right">
               <div className="space-y-6 lg:space-y-8">
                 
                 {/* Form Header */}

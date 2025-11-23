@@ -57,13 +57,13 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Text */}
-        <div className="max-w-5xl mx-auto text-center mb-12 lg:mb-16">
+        <div className="max-w-5xl mx-auto text-center mb-12 lg:mb-16 animate-fade-in-up">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-800 leading-relaxed">
             {sectionData.headerText}
           </h2>
         </div>
 
-        {/* Benefits Grid */}
+        {/* Benefits Grid - 3 Circular Images */}
         <div className="max-w-7xl mx-auto mb-16 lg:mb-24">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {sectionData.benefits.map((benefit) => (
@@ -72,7 +72,7 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
                 className="flex flex-col items-center text-center space-y-6"
               >
                 {/* Circular Image */}
-                <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden shadow-xl hover:scale-105 transition-transform duration-300">
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden shadow-xl hover:scale-105 transition-transform duration-300 ring-4 ring-blue-600">
                   <Image
                     src={benefit.image}
                     alt={benefit.title}
@@ -86,7 +86,7 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
                 </div>
 
                 {/* Title */}
-                <h3 className="h-22 text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight px-4">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight px-4">
                   {benefit.title}
                 </h3>
 
@@ -104,7 +104,7 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             
             {/* Left: Product Images */}
-            <div className="flex justify-center lg:justify-end order-2 lg:order-1">
+            <div className="flex justify-center lg:justify-end order-2 lg:order-1 animate-fade-in-left">
               <div className="relative w-full max-w-md lg:max-w-lg">
                 <Image
                   src={sectionData.productImage}
@@ -121,7 +121,7 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
             </div>
 
             {/* Right: Product Description */}
-            <div className="space-y-6 lg:space-y-8 order-1 lg:order-2">
+            <div className="space-y-6 lg:space-y-8 order-1 lg:order-2 animate-fade-in-right">
               {/* Title */}
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-orange-500 leading-tight">
                 {sectionData.productTitle}

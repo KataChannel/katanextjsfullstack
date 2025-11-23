@@ -34,7 +34,7 @@ export default function WhyChooseNLPSection({ data }: WhyChooseNLPSectionProps) 
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             
             {/* Left Content */}
-            <div className="space-y-6 lg:space-y-8">
+            <div className="space-y-6 lg:space-y-8 animate-fade-in-left">
               {/* Title */}
               <div className="space-y-2">
                 <h3 className="text-xl sm:text-2xl lg:text-3xl text-orange-500 font-medium">
@@ -64,7 +64,7 @@ export default function WhyChooseNLPSection({ data }: WhyChooseNLPSectionProps) 
             </div>
 
             {/* Right - Single Image */}
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-center lg:justify-end animate-fade-in-right">
               <div className="relative w-full max-w-md lg:max-w-lg">
                 <Image
                   src="/api/minio-proxy/innerbright/1763619111383-jdm9ur.webp"
