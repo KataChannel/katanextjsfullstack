@@ -111,31 +111,35 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
           </div>
 
           {/* Cards Grid */}
-            <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {sectionData.cards.map((card) => (
-              <div 
-                key={card.id}
-                className={`bg-white rounded-2xl shadow-xl overflow-hidden hover:scale-105 transition-transform duration-300 ${
-                card.id === 2 || card.id === 4 ? 'mt-[50px]' : ''
-                }`}
-              >
-                <div className="relative w-full h-[280px] sm:h-80 lg:h-[380px]">
-                <Image
-                  src={card.image}
-                  alt={`Card ${card.number}`}
-                  fill
-                  className="object-contain p-2"
-                  onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  }}
-                />
+                <div 
+                  key={card.id}
+                  className="flex flex-col items-center space-y-3"
+                >
+                  <div className="bg-white rounded-3xl shadow-2xl overflow-hidden hover:scale-105 transition-transform duration-300 w-full">
+                    <div className="relative w-full h-[280px] sm:h-80 lg:h-[400px]">
+                      <Image
+                        src={card.image}
+                        alt={`Card ${card.number}`}
+                        fill
+                        className="object-contain p-4"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {/* Card Number */}
+                  <div className="text-white text-lg sm:text-xl font-bold">
+                    {card.number}
+                  </div>
                 </div>
-              </div>
               ))}
             </div>
-            </div>
+          </div>
 
         </div>
       </div>
@@ -145,11 +149,11 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Title Section */}
-          <div className="max-w-4xl mx-auto text-justify">
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl text-blue-700">
+          <div className="text-center mb-12 lg:mb-16 space-y-3">
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-700">
               {sectionData.mainTitle}
             </h3>
-            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-700">
+            <p className="text-xl sm:text-2xl lg:text-3xl text-gray-700">
               {sectionData.mainSubtitle}
             </p>
             <h2 className="text-4xl sm:text-5xl lg:text-7xl font-black text-blue-800 leading-tight">
@@ -158,8 +162,8 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
           </div>
 
           {/* Quote */}
-          <div className="text-justify max-w-4xl mx-auto mb-12 lg:mb-16">
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 italic leading-relaxed">
+          <div className="max-w-4xl mx-auto mb-12 lg:mb-16">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 italic leading-relaxed text-center">
               {sectionData.quote}
             </p>
           </div>

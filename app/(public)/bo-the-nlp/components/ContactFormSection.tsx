@@ -61,7 +61,7 @@ export default function ContactFormSection({ data }: ContactFormSectionProps) {
   };
 
   return (
-    <section className="py-16 lg:py-24 bg-linear-to-br from-blue-700 to-blue-900">
+    <section className="">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Content Card */}
@@ -89,11 +89,11 @@ export default function ContactFormSection({ data }: ContactFormSectionProps) {
               <div className="space-y-6 lg:space-y-8">
                 
                 {/* Form Header */}
-                <div className="text-center lg:text-left space-y-2">
+                <div className="text-center space-y-2">
                   <p className="text-base sm:text-lg text-white font-medium">
                     | {sectionData.formTitle} |
                   </p>
-                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-orange-400">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-orange-400">
                     {sectionData.formSubtitle}
                   </h2>
                 </div>
