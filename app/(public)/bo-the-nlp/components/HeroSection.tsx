@@ -4,15 +4,19 @@ import Image from "next/image";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen bg-linear-to-br from-blue-700 via-blue-600 to-blue-800 overflow-hidden animate-fade-in">
-      {/* Large N Watermark Background */}
-      <div className="absolute left-0 top-0 bottom-0 w-1/3 opacity-10 pointer-events-none animate-fade-in-left">
-        <div className="text-[18rem] font-black text-white leading-none select-none">
-         
-        </div>
+    <section className="relative overflow-hidden animate-fade-in">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/api/minio-proxy/innerbright/1764000629425-fy0koi.webp"
+          alt="Background"
+          fill
+          className="object-contain"
+          priority
+        />
       </div>
 
-      <div className="w-4/5 container mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="relative z-10 w-4/5 container mx-auto px-6 sm:px-8 lg:px-16">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           {/* Left Content */}
@@ -25,7 +29,7 @@ export default function HeroSection() {
               <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black leading-tight">
                 ỨNG DỤNG NLP
               </h1>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-light text-orange-400">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-400">
                 Neuro - Linguistic Programming
               </p>
             </div>
@@ -44,19 +48,19 @@ export default function HeroSection() {
               {/* Card Stack - 3 Real Images */}
               <div className="relative w-full h-full">
                 {/* Card 1 - Green/Teal (Back Left - Bottom) */}
-                <div className="absolute bottom-[20px] lg:bottom-[30px] left-[-20px] lg:left-[-30px] w-[200px] lg:w-[240px] z-10 transform -rotate-[25deg] animate-fade-in-left animate-delay-200">
+                <div className="absolute bottom-5 lg:bottom-20 -left-5 w-[200px] lg:w-60 z-10 transform -rotate-25 animate-fade-in-left animate-delay-200">
                   <Image
                     src="/api/minio-proxy/innerbright/1763613727282-rb4pf.webp"
                     alt="NLP Card - Green"
                     width={240}
                     height={340}
-                    className="rounded-2xl shadow-2xl border-[6px] lg:border-8 border-white"
+                    className="rounded-2xl shadNeuro - Linguistic Programmingow-2xl border-[6px] lg:border-8 border-white"
                     priority
                   />
                 </div>
 
                 {/* Card 2 - Orange (Center - Main/Largest) */}
-                <div className="absolute top-[80px] lg:top-[100px] left-[60px] lg:left-[80px] w-[260px] lg:w-[320px] z-30 transform animate-scale-in animate-delay-300">
+                <div className="absolute top-20 lg:top-10 left-[60px] lg:left-40 w-[260px] lg:w-[320px] z-30 transform animate-scale-in animate-delay-300">
                   <Image
                     src="/api/minio-proxy/innerbright/1763613726960-381wim.webp"
                     alt="NLP Card - Orange Main"
@@ -68,7 +72,7 @@ export default function HeroSection() {
                 </div>
 
                 {/* Card 3 - White/Blue (Front Right - Top) */}
-                <div className="absolute top-[40px] lg:top-[150px] right-[-10px] lg:right-[-20px] w-[180px] lg:w-[220px] z-10 transform rotate-[36deg] animate-fade-in-right animate-delay-400">
+                <div className="absolute top-10 lg:top-[150px] -right-2.5 lg:-right-28 w-[180px] lg:w-[220px] z-10 transform rotate-36 animate-fade-in-right animate-delay-400">
                   <Image
                     src="/api/minio-proxy/innerbright/1763613730899-6rsfgc.webp"
                     alt="NLP Card - White Blue"
@@ -81,12 +85,8 @@ export default function HeroSection() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
-
-      {/* Decorative Elements */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-black/10 to-transparent pointer-events-none" />
     </section>
   );
 }

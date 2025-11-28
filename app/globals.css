@@ -121,7 +121,6 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -523,4 +522,11 @@
 .animate-scale-in,
 .animate-slide-in-up {
   opacity: 0;
+}
+
+/* Container max-width override */
+.container {
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }

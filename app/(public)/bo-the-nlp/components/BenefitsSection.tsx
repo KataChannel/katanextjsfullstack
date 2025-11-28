@@ -72,7 +72,7 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
                 className="flex flex-col items-center text-center space-y-6"
               >
                 {/* Circular Image */}
-                <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden shadow-xl hover:scale-105 transition-transform duration-300 ring-4 ring-blue-600">
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden shadow-xl hover:scale-105 transition-transform duration-300">
                   <Image
                     src={benefit.image}
                     alt={benefit.title}

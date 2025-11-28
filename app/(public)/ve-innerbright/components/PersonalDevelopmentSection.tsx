@@ -39,7 +39,6 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-black/30"></div>
       </div>
       
       {/* Decorative elements */}
@@ -77,7 +76,7 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
           {/* Right Side - Image */}
           <div className="flex justify-center lg:justify-end animate-fade-in-right">
             <div className="relative w-full max-w-[500px] aspect-4/3 lg:aspect-3/4">
-              <div className="relative w-full h-full rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/20">
+              <div className="relative w-full h-full">
                 <Image
                   src={getImageUrl(sectionData.image)}
                   alt={sectionData.imageAlt}

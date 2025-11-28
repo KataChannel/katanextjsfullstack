@@ -41,7 +41,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
   const currentSlideData = slides[currentSlide] || slides[0];
   
   return (
-    <section className="relative h-[500px] md:h-[600px] lg:h-[650px] overflow-hidden animate-fade-in">
+    <section className="relative h-[650px] md:h-[600px] lg:h-[650px] overflow-hidden animate-fade-in">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 animate-scale-in">
         {currentSlideData.image && (
@@ -64,51 +64,51 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
           <div className="text-white space-y-4 lg:space-y-6">
             {/* Title with Arrow */}
             <div className="flex items-center gap-3">
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold uppercase tracking-wide text-brand-orange">
+              <h3 className="text-2xl lg:text-7xl font-bold uppercase tracking-wide text-brand-orange">
                 {currentSlideData.title}
               </h3>
-              <svg 
-                className="w-6 h-6 sm:w-8 sm:h-8 text-brand-orange"
-                fill="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-                <path d="M12.59 16.59L17.17 12l-4.58-4.59L14 6l6 6-6 6-1.41-1.41z"/>
-              </svg>
+              <Image
+                src="/api/minio-proxy/innerbright/1763998388399-lt1gtw.svg"
+                alt="Arrow decoration"
+                width={120}
+                height={60}
+                className="w-16 h-10 sm:w-20 sm:h-12 lg:w-24 lg:h-14"
+                priority
+              />
             </div>
 
 
             {/* Description */}
-            <div className="space-y-1 text-base sm:text-lg lg:text-xl">
-              <h1 className="whitespace-nowrap text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+            <div className="space-y-1">
+              <h1 className="whitespace-nowrap text-4xl lg:text-[110px] font-bold">
                 {currentSlideData.subtitle}
               </h1>
               <hr className="border-t border-[#FFB03E] w-2/3 mt-2 mb-4" />
-              <p className="font-normal">{currentSlideData.description}</p>
-              <p className="font-light text-white/90">{currentSlideData.subDescription}</p>
+              <p className="font-normal text-4xl">{currentSlideData.description}</p>
+              <p className="text-4xl font-light text-white/90">{currentSlideData.subDescription}</p>
             </div>
           </div>
 
           {/* Right Image - Person */}
             <div className="relative h-[350px] lg:h-[550px] flex items-end justify-center lg:justify-end">
             {/* Trainer Badge with Name Background */}
-            <div className="absolute bottom-0 left-0 lg:left-auto lg:right-[60%] z-10">
+            <div className="absolute bottom-0 left-0 lg:left-auto lg:right-[40%] z-10">
               {currentSlideData.nameBackground ? (
               <div className="relative">
                 {/* Name Background Image */}
-                <div className="relative w-auto inline-block">
+                <div className="relative inline-block w-[574px] h-[167px]">
                 <Image
                   src={getImageUrl(currentSlideData.nameBackground)}
                   alt="Chloe Quý Châu Badge"
-                  width={280}
-                  height={90}
+                  width={574}
+                  height={167}
                   className="object-contain"
                   priority
                 />
                 {/* Text Overlay on Background Image */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="text-sm sm:text-base text-white/90 mb-1">Bởi nhà đào tạo</p>
-                  <p className="text-lg sm:text-xl lg:text-2xl font-bold uppercase tracking-wide text-white">
+                  <p className="text-2xl text-white/90 mb-1">Bởi nhà đào tạo</p>
+                  <p className="text-4xl font-bold uppercase tracking-wide text-white">
                   CHLOE QUÝ CHÂU
                   </p>
                 </div>
@@ -130,7 +130,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
             </div>
             
             {/* Person Image */}
-            <div className="relative w-full max-w-[400px] lg:max-w-[500px] h-full">
+            <div className="relative w-full max-w-[440px] h-full">
               <Image
               src={getImageUrl(currentSlideData.avatar)}
               alt="Chloe Quý Châu - Nhà đào tạo InnerBright"

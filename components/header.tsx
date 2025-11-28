@@ -67,7 +67,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full bg-white shadow-sm">
       <nav className="container mx-auto px-4 sm:px-6 lg:px-8" aria-label="Global">
         {/* Top Row: Logo | Search | User */}
-        <div className="flex h-24 items-center justify-between gap-4 border-b border-gray-100">
+        <div className="flex h-24 items-center justify-between gap-4">
           {/* Logo */}
           <div className="shrink-0">
             <Link href="/" className="flex items-center">
@@ -132,7 +132,7 @@ export function Header() {
         </div>
 
         {/* Bottom Row: Navigation Menu - Desktop Only */}
-        <div className="hidden md:flex items-center gap-1 py-3">
+        <div className="w-[90%] hidden md:flex items-center my-2 mx-auto justify-between bg-[#EDEDED] rounded-lg">
           {menus.map((item) => {
             const isActive = pathname === item.url || pathname?.startsWith(item.url + '/');
             return (
@@ -141,8 +141,8 @@ export function Header() {
                 href={item.url}
                 className={`px-4 py-2 text-sm font-medium transition-all whitespace-nowrap rounded-lg ${
                   isActive
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'text-gray-700 hover:text-blue-600 hover:bg-blue-50'
+                    ? 'bg-[#0047C6] text-white hover:bg-[#0047C6]'
+                    : 'text-gray-700 hover:text-[#0047C6] hover:bg-[#F8F8F8]'
                 }`}
               >
                 {item.label}
