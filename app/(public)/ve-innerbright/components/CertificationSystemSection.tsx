@@ -32,10 +32,8 @@ export default function CertificationSystemSection({ data }: CertificationSystem
       text: "NĂM"
     },
     description: [
-      "InnerBright Training & Coaching tự hào là thành viên chính thức và uy tín của Hiệp Hội NLP Hoa Kỳ (ABNLP) trong hơn 5 năm liên tục.",
-      "ABNLP",
-      "Với vai trò là tổ chức lớn nhất và lâu đời nhất về Lập Trình Ngôn Ngữ Tư Duy (NLP - Neuro Linguistic Programming) tại Hoa Kỳ, có chứng nhận sự chuyên nghiệp và chất lượng đào tạo của InnerBright.",
-      "Đặc biệt, InnerBright là đơn vị tiên phong tại Việt Nam được Ban Cố"
+      "InnerBright Training & Coaching tự hào là thành viên chính thức và uy tín của Hiệp Hội NLP Hoa Kỳ (ABNLP) trong hơn 5 năm liên tục. ABNLP với vai trò là tổ chức lớn nhất và lâu đời nhất về Lập Trình Ngôn Ngữ Tư Duy (NLP - Neuro Linguistic Programming) tại Hoa Kỳ, có chứng nhận sự chuyên nghiệp và chất lượng đào tạo của InnerBright.",
+      "Đặc biệt, InnerBright là đơn vị tiên phong tại Việt Nam được Ban Cố Vấn (Board of Advisors) của Hiệp Hội ABNLP chứng thực bằng chương trình NLP Master Coach Quốc Tế. Điều này đảm bảo rằng không chỉ về kiến thức chuyên môn, mà còn về đạo đức nghề nghiệp, InnerBright mang đến chương trình đào tạo NLP Coaching chuẩn quốc tế tại Việt Nam."
     ],
     certificates: [
       {
@@ -92,11 +90,7 @@ export default function CertificationSystemSection({ data }: CertificationSystem
               {sectionData.description.map((paragraph, index) => (
                 <p 
                   key={index}
-                  className={`text-base sm:text-lg lg:text-2xl leading-relaxed ${
-                    index === 1 
-                      ? 'font-bold text-gray-900' 
-                      : 'text-gray-700'
-                  }`}
+                  className={`text-base sm:text-lg lg:text-2xl leading-relaxed text-gray-700`}
                 >
                   {paragraph}
                 </p>

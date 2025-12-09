@@ -1,0 +1,95 @@
+[0;36m============================================[0m
+[0;36m🚀 Quick Deploy - Code Mới[0m
+[0;36m============================================[0m
+[0;34mDomain: innerbright.vn[0m
+[0;34mServer: 116.118.48.208[0m
+
+[1;33m[1/6] Git Commit[0m
+[1;33m⊘ Skipped git commit[0m
+
+[1;33m[2/6] Building Docker Image...[0m
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.64kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/oven/bun:1
+#2 DONE 0.8s
+
+#3 [internal] load metadata for docker.io/oven/bun:1-slim
+#3 DONE 0.9s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 1.39kB done
+#4 DONE 0.0s
+
+#5 [runner  1/11] FROM docker.io/oven/bun:1-slim@sha256:5d55d9702e1c634a931f048d0ec84d35583450d6059327cb88d82edd55068556
+#5 DONE 0.0s
+
+#6 [runner  2/11] WORKDIR /app
+#6 CACHED
+
+#7 [runner  4/11] RUN addgroup --system --gid 1001 nodejs
+#7 CACHED
+
+#8 [runner  3/11] RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [runner  5/11] RUN adduser --system --uid 1001 nextjs
+#9 CACHED
+
+#10 [deps 1/7] FROM docker.io/oven/bun:1@sha256:fbf8e67e9d3b806c86be7a2f2e9bae801f2d9212a21db4dcf8cc9889f5a3c9c4
+#10 DONE 0.0s
+
+#11 [internal] load build context
+#11 transferring context: 17.90kB 3.7s done
+#11 DONE 3.7s
+
+#12 [builder 4/9] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [builder 7/9] COPY . .
+#13 CACHED
+
+#14 [deps 2/7] WORKDIR /app
+#14 CACHED
+
+#15 [deps 3/7] RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+#15 CACHED
+
+#16 [deps 4/7] COPY package.json bun.lock* ./
+#16 CACHED
+
+#17 [deps 7/7] RUN bunx prisma generate || echo "Warning: Prisma generate failed"
+#17 CACHED
+
+#18 [builder 5/9] COPY --from=deps /app/package.json ./package.json
+#18 CACHED
+
+#19 [deps 5/7] COPY prisma ./prisma/
+#19 CACHED
+
+#20 [deps 6/7] RUN bun install --frozen-lockfile
+#20 CACHED
+
+#21 [builder 6/9] COPY prisma ./prisma/
+#21 CACHED
+
+#22 [builder 8/9] RUN if [ ! -d "node_modules/.prisma/client" ]; then         bunx prisma generate ||         (sleep 5 && bunx prisma generate) ||         (sleep 10 && bunx prisma generate) ||         echo "ERROR: Failed to generate Prisma Client";     fi
+#22 CACHED
+
+#23 [builder 9/9] RUN bun run build
+#23 0.244 $ bun --bun next build
+#23 0.596 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#23 2.070  ⚠ `experimental.middlewareClientMaxBodySize` is deprecated. Please use `experimental.proxyClientMaxBodySize` instead in next.config.ts.
+#23 2.108    ▲ Next.js 16.0.1 (Turbopack)
+#23 2.108    - Environments: .env.production
+#23 2.109    - Experiments (use with caution):
+#23 2.109      · middlewareClientMaxBodySize: "25mb"
+#23 2.109      · optimizePackageImports
+#23 2.109      · serverActions
+#23 2.109 
+#23 2.114  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+#23 2.165    Creating an optimized production build ...
+#23 2.344 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`

@@ -148,7 +148,7 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
           
           {/* Title Section */}
           <div className="max-w-4xl mx-auto text-justify animate-fade-in-up">
-            <h3 className="text-2xl sm:text-3xl lg:text-4xl text-blue-700">
+            <h3 className="text-2xl sm:text-3xl lg:text-6xl text-black">
               {sectionData.mainTitle}
             </h3>
             <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-700">
@@ -166,108 +166,29 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
             </p>
           </div>
 
-          {/* Product Images Grid - Masonry Layout */}
+          {/* Product Images Grid - Uniform Square Grid */}
           <div className="max-w-7xl mx-auto">
-            {/* First Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 mb-4 lg:mb-6">
-              {/* Image 1 - Top Left Square */}
-              <div className="lg:col-span-1 animate-fade-in-up animate-delay-100">
-                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                  <Image
-                    src={sectionData.productImages[0].image}
-                    alt={sectionData.productImages[0].alt}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+              {sectionData.productImages.map((image, index) => (
+                <div 
+                  key={image.id} 
+                  className={`animate-fade-in-up`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                    <Image
+                      src={image.image}
+                      alt={image.alt}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-
-              {/* Image 2 - Top Center Large Horizontal */}
-              <div className="lg:col-span-1 animate-fade-in-up animate-delay-200">
-                <div className="relative aspect-[4/3] lg:aspect-[3/2] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                  <Image
-                    src={sectionData.productImages[1].image}
-                    alt={sectionData.productImages[1].alt}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Image 3 - Top Right Square */}
-              <div className="lg:col-span-1 animate-fade-in-up animate-delay-300">
-                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                  <Image
-                    src={sectionData.productImages[2].image}
-                    alt={sectionData.productImages[2].alt}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Second Row */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
-              {/* Image 4 - Bottom Left Square on Orange */}
-              <div className="lg:col-span-1 animate-fade-in-up animate-delay-400">
-                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                  <Image
-                    src={sectionData.productImages[3].image}
-                    alt={sectionData.productImages[3].alt}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Image 5 - Bottom Center Square */}
-              <div className="lg:col-span-1 animate-fade-in-up animate-delay-500">
-                <div className="relative aspect-square rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                  <Image
-                    src={sectionData.productImages[4].image}
-                    alt={sectionData.productImages[4].alt}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Image 6 - Bottom Right Tall Portrait */}
-              <div className="lg:col-span-1 animate-fade-in-up">
-                <div className="relative aspect-[3/4] rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow duration-300">
-                  <Image
-                    src={sectionData.productImages[5].image}
-                    alt={sectionData.productImages[5].alt}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                    }}
-                  />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 

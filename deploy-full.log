@@ -1,0 +1,240 @@
+nohup: đang bỏ qua dữ liệu vào
+[0;36m============================================[0m
+[0;36m🚀 Quick Deploy - Code Mới[0m
+[0;36m============================================[0m
+[0;34mDomain: innerbright.vn[0m
+[0;34mServer: 116.118.48.208[0m
+
+[1;33m[1/6] Git Commit[0m
+[1;33m⊘ Skipped git commit[0m
+
+[1;33m[2/6] Building Docker Image...[0m
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile:
+#1 transferring dockerfile: 2.81kB done
+#1 DONE 0.2s
+
+#2 [internal] load metadata for docker.io/oven/bun:1
+#2 ...
+
+#3 [internal] load metadata for docker.io/oven/bun:1-slim
+#3 DONE 0.4s
+
+#2 [internal] load metadata for docker.io/oven/bun:1
+#2 DONE 0.4s
+
+#4 [internal] load .dockerignore
+#4 transferring context:
+#4 transferring context: 1.39kB done
+#4 DONE 0.3s
+
+#5 [runner  1/11] FROM docker.io/oven/bun:1-slim@sha256:5d55d9702e1c634a931f048d0ec84d35583450d6059327cb88d82edd55068556
+#5 DONE 0.0s
+
+#6 [runner  2/11] WORKDIR /app
+#6 CACHED
+
+#7 [runner  3/11] RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [runner  4/11] RUN addgroup --system --gid 1001 nodejs
+#8 CACHED
+
+#9 [runner  5/11] RUN adduser --system --uid 1001 nextjs
+#9 CACHED
+
+#10 [deps 1/7] FROM docker.io/oven/bun:1@sha256:fbf8e67e9d3b806c86be7a2f2e9bae801f2d9212a21db4dcf8cc9889f5a3c9c4
+#10 DONE 0.0s
+
+#11 [internal] load build context
+#11 transferring context: 1.16MB 4.8s
+#11 transferring context: 13.42MB 5.0s done
+#11 DONE 6.6s
+
+#12 [builder 6/9] COPY prisma ./prisma/
+#12 CACHED
+
+#13 [builder 7/9] COPY . .
+#13 DONE 4.0s
+
+#14 [builder 8/9] RUN if [ ! -d "node_modules/.prisma/client" ]; then         bunx prisma generate ||         (sleep 5 && bunx prisma generate) ||         (sleep 10 && bunx prisma generate) ||         echo "ERROR: Failed to generate Prisma Client";     fi
+#14 DONE 0.8s
+
+#15 [builder 9/9] RUN bun run build
+#15 1.982 $ bun --bun next build
+#15 2.620 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 4.588  ⚠ `experimental.middlewareClientMaxBodySize` is deprecated. Please use `experimental.proxyClientMaxBodySize` instead in next.config.ts.
+#15 4.613    ▲ Next.js 16.0.1 (Turbopack)
+#15 4.613    - Environments: .env.production
+#15 4.613    - Experiments (use with caution):
+#15 4.613      · middlewareClientMaxBodySize: "25mb"
+#15 4.613      · optimizePackageImports
+#15 4.613      · serverActions
+#15 4.613 
+#15 4.616  ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+#15 4.658    Creating an optimized production build ...
+#15 4.830 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 20.30  ✓ Compiled successfully in 14.4s
+#15 20.31    Running TypeScript ...
+#15 35.16    Collecting page data ...
+#15 36.49 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 36.49 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 36.49 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 36.49 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please up
+#23 36.49 [baseline-browser-mapping] The data in#15 36.49 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 36.49 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 36.50 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 39.48 Error generating static params: Error: Database connection skipped during build
+#15 39.48     at k (.next/server/chunks/ssr/[root-of-the-server]__46f232f9._.js:1:4820)
+#15 39.48     at k (.next/server/chunks/ssr/[root-of-the-server]__46f232f9._.js:1:4808)
+#15 39.48     at j (.next/server/chunks/ssr/[root-of-the-server]__d641eac8._.js:1:12874)
+#15 39.48     at j (.next/server/chunks/ssr/[root-of-the-server]__d641eac8._.js:1:12852)
+#15 39.48     at processTicksAndRejections (null)
+#15 39.50 Error generating static params: Error: Database connection skipped during build
+#15 39.50     at k (.next/server/chunks/ssr/[root-of-the-server]__46f232f9._.js:1:4820)
+#15 39.50     at k (.next/server/chunks/ssr/[root-of-the-server]__46f232f9._.js:1:4808)
+#15 39.50     at f7 (.next/server/chunks/ssr/_c485a0f7._.js:404:85623)
+#15 39.50     at f7 (.next/server/chunks/ssr/_c485a0f7._.js:404:85601)
+#15 39.50     at processTicksAndRejections (null)
+#15 39.95    Generating static pages (0/54) ...
+#15 40.10 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 40.10 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 40.10 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+#15 40.77    Generating static pages (13/54) 
+#15 40.88 Error fetching users: Error: Database connection skipped during build
+#15 40.88     at k (.next/server/chunks/ssr/[root-of-the-server]__46f232f9._.js:1:4820)
+#15 40.88     at k (.next/server/chunks/ssr/[root-of-the-server]__46f232f9._.js:1:4808)
+#15 40.88     at f (.next/server/chunks/ssr/_96c8585c._.js:9:901)
+#15 40.88     at f (.next/server/chunks/ssr/_96c8585c._.js:9:879)
+#15 40.88     at h (.next/server/chunks/ssr/[root-of-the-server]__17b24a34._.js:1:2389)
+#15 40.88     at h (.next/server/chunks/ssr/[root-of-the-server]__17b24a34._.js:1:2371)
+#15 41.01    Generating static pages (26/54) 
+#15 41.09    Generating static pages (40/54) 
+#15 41.31  ✓ Generating static pages (54/54) in 1364.1ms
+#15 41.34    Finalizing page optimization ...
+#15 41.94 
+#15 41.94 Route (app)
+#15 41.94 ┌ ƒ /
+#15 41.94 ├ ƒ /_not-found
+#15 41.94 ├ ● /[slug]
+#15 41.94 ├ ƒ /admin
+#15 41.94 ├ ƒ /admin/analytics
+#15 41.94 ├ ƒ /admin/block-templates
+#15 41.94 ├ ƒ /admin/content
+#15 41.94 ├ ƒ /admin/content/[id]
+#15 41.94 ├ ƒ /admin/media
+#15 41.94 ├ ƒ /admin/menu-permissions
+#15 41.94 ├ ƒ /admin/menus
+#15 41.94 ├ ƒ /admin/pages-v2
+#15 41.94 ├ ƒ /admin/pages-v2/edit/[id]
+#15 41.94 ├ ƒ /admin/pages-v2/new
+#15 41.94 ├ ƒ /admin/seo-settings
+#15 41.94 ├ ƒ /admin/users
+#15 41.94 ├ ƒ /admin/website-settings
+#15 41.94 ├ ƒ /api/admin/block-templates
+#15 41.94 ├ ƒ /api/admin/content
+#15 41.94 ├ �#23 41.94 ├ ƒ /admin/content
+#23 41.94 ├ ƒ /admin/content/[id]
+#23 41.94 ├ ƒ /admin/media
+#23 41.94 ├ ƒ /admin/menu-permissions
+#23 41.94 ├ ƒ /admin/menus
+#23 41.94 ├ ƒ /admin/pages-v2
+#23 41.94 ├ ƒ /admin/pages-v2/edit/[id]
+#23 41.94 ├ ƒ /admin/pages-v2/new
+#23 41.94 ├ ƒ /admin/seo-settings
+#23 41.94 ├ ƒ /admin/users
+#23 41.94 ├ ƒ /admin/website-settings
+#23 41.94 ├ ƒ /api/admin/block-templates
+#23 41.94 ├ ƒ /api/admin/content
+#23 41.94 ├ ƒ /api/admin/menu-permissions
+#23 41.94 ├ ƒ /api/admin/menus
+#23 41.94 ├ ƒ /api/auth/[...nextauth]
+#23 41.94 ├ ƒ /api/auth/force-logout
+#23 41.94 ├ ƒ /api/auth/forgot-password
+#23 41.94 ├ ƒ /api/auth/refresh-session
+#23 41.94 ├ ƒ /api/auth/register
+#23 41.94 ├ ƒ /api/auth/reset-password
+#23 41.94 ├ ƒ /api/auth/verify-otp
+#23 41.94 ├ ƒ /api/block-templates
+#23 41.94 ├ ƒ /api/block-templates-v2
+#23 41.94 ├ ƒ /api/block-templates-v2/[id]
+#23 41.94 ├ ƒ /api/contact
+#23 41.94 ├ ƒ /api/health
+#23 41.94 ├ ƒ /api/media
+#23 41.94 ├ ƒ /api/media/[id]
+#23 41.94 ├ ƒ /api/menu-permissions
+#23 41.94 ├ ƒ /api/menus
+#23 41.94 ├ ƒ /api/minio-proxy/[...path]
+#23 41.94 ├ ƒ /api/pages
+#23 41.94 ├ ƒ /api/pages-v2
+#23 41.94 ├ ƒ /api/pages-v2/[id]
+#23 41.94 ├ ƒ /api/pages/#15 
+#23 41.94 ├ ƒ /api/po#15 #23 41.94 ├ ƒ /api
+#15 41.94 ├ ƒ /pages
+#15 41.94 ├ ● /pages/[slug]
+#15 41.94 ├ ƒ /posts
+#15 41.94 ├ ƒ /posts/[slug]
+#15 41.94 ├ ○ /robots.txt
+#15 41.94 ├ ƒ /sitemap.xml
+#15 41.94 └ ƒ /ve-innerbright
+#15 41.94 
+#15 41.94 
+#15 41.94 ƒ Proxy (Middleware)
+#15 41.94 
+#15 41.94 ○  (Static)   prerendered as static content
+#15 41.94 ●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+#15 41.94 ƒ  (Dynamic)  server-rendered on demand
+#15 41.94 
+#15 DONE 49.9s
+
+#16 [runner  6/11] COPY --from=builder /app/public ./public
+#16 DONE 0.1s
+
+#17 [runner  7/11] COPY --from=builder /app/.next/standalone ./
+#17 DONE 0.6s
+
+#18 [runner  8/11] COPY --from=builder /app/.next/static ./.next/static
+#18 DONE 0.1s
+
+#19 [runner  9/11] COPY --from=builder /app/prisma ./prisma
+#19 DONE 0.0s
+
+#20 [runner 10/11] COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+#20 DONE 0.1s
+
+#21 [runner 11/11] RUN mkdir -p ./public/uploads && chown -R nextjs:nodejs ./public/uploads
+#21 DONE 0.2s
+
+#22 exporting to image
+#22 exporting layers
+#22 exporting layers 1.2s done
+#22 writing image sha256:6435eca505883f4abfe2ca5020041a60eb4798e93b8c472e7a5a4abaa84cad70 done
+#22 naming to docker.io/library/innerbright-web:latest done
+#22 DONE 1.2s
+[0;32m✓ Image built[0m
+
+[1;33m[3/6] Exporting image...[0m
+[0;32m✓ Exported: 158M[0m
+
+[1;33m[4/6] Transferring to server...[0m
+Connection closed by 116.118.48.208 port 22
+scp: Connection closed
+js ./public/uploads
+#29 DONE 0.2s
+
+#30 exporting to image
+#30 exporting layers
+#30 exporting layers 1.2s done
+#30 writing image sha256:6435eca505883f4abfe2ca5020041a60eb4798e93b8c472e7a5a4abaa84cad70 done
+#30 naming to docker.io/library/innerbright-web:latest done
+#30 DONE 1.2s
+[0;32m✓ Image built[0m
+
+[1;33m[3/6] Exporting image...[0m
+[0;32m✓ Exported: 158M[0m
+
+[1;33m[4/6] Transferring to server...[0m
+Connection closed by 116.118.48.208 port 22
+scp: Connection closed

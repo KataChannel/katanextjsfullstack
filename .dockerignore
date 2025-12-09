@@ -1,9 +1,10 @@
 # .dockerignore - Files to exclude from Docker build
 
-# Dependencies
+# Dependencies - Exclude to reduce context size
 node_modules
 .pnp
 .pnp.js
+# bun.lock - KEEP for frozen lockfile
 
 # Testing
 coverage
@@ -25,12 +26,16 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+build.log
 
 # Local env files
 .env
 .env*.local
 .env.development
 .env.test
+.env.old
+.env.example
+.env.docker.example
 
 # Vercel
 .vercel
@@ -60,11 +65,57 @@ logs
 # Documentation
 *.md
 docs/
+promt/
 
 # Scripts (not needed in container)
 scripts/
+menu.sh
+*.sh
 
 # Docker files
 Dockerfile*
 docker-compose*.yml
 .dockerignore
+nginx.innerbright.conf
+
+# Backups and archives
+backups/
+*.tar.gz
+*.zip
+*.sql
+
+# Test exports
+test-export/
+test-export-fixed/
+
+# Images and media (except necessary public assets)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.webp
+*.mp4
+*.mov
+
+# Keep only necessary public assets
+!public/**/*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!public/**/*.gif
+!public/**/*.svg
+!public/**/*.webp
+!public/**/*.ico
+
+# Deploy scripts
+deploy/
+deploy-with-default.sh
+quick-deploy-new.sh
+super-quick-deploy.sh
+
+# Other
+COMMIT_MESSAGE.md
+DEPLOY_GUIDE.md
+DEPLOY_NOW.md
+DEPLOY_README.md
+PROJECT_REVIEW_SUMMARY.md

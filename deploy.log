@@ -1,0 +1,130 @@
+[0;36m============================================[0m
+[0;36m🚀 Quick Deploy - Code Mới[0m
+[0;36m============================================[0m
+[0;34mDomain: innerbright.vn[0m
+[0;34mServer: 116.118.48.208[0m
+
+[1;33m[1/6] Git Commit[0m
+[1;33m⊘ Skipped git commit[0m
+
+[1;33m[2/6] Building Docker Image...[0m
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.88kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/oven/bun:1-slim
+#2 DONE 0.3s
+
+#3 [internal] load metadata for docker.io/oven/bun:1
+#3 DONE 0.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 1.32kB 0.0s done
+#4 DONE 0.0s
+
+#5 [runner  1/11] FROM docker.io/oven/bun:1-slim@sha256:5d55d9702e1c634a931f048d0ec84d35583450d6059327cb88d82edd55068556
+#5 DONE 0.0s
+
+#6 [deps 1/7] FROM docker.io/oven/bun:1@sha256:fbf8e67e9d3b806c86be7a2f2e9bae801f2d9212a21db4dcf8cc9889f5a3c9c4
+#6 DONE 0.0s
+
+#7 [deps 2/7] WORKDIR /app
+#7 CACHED
+
+#8 [deps 3/7] RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [internal] load build context
+#9 transferring context: 17.87kB 2.8s done
+#9 DONE 2.8s
+
+#10 [deps 4/7] COPY package.json bun.lock* ./
+#10 DONE 0.0s
+
+#11 [deps 5/7] COPY prisma ./prisma/
+#11 DONE 0.0s
+
+#12 [deps 6/7] RUN bun install --frozen-lockfile --production=false
+#12 0.168 error: The argument '--production' does not take a value.
+#12 0.168 
+#12 0.168 Usage: bun install [flags] <name>@<version>
+#12 0.168 Alias: bun i
+#12 0.168 
+#12 0.168   Install the dependencies listed in package.json.
+#12 0.168 
+#12 0.168 Flags:
+#12 0.168   -c, --config=<val>                 Specify path to config file (bunfig.toml)
+#12 0.168   -y, --yarn                         Write a yarn.lock file (yarn v1)
+#12 0.168   -p, --production                   Don't install devDependencies
+#12 0.168       --no-save                      Don't update package.json or save a lockfile
+#12 0.168       --save                         Save to package.json (true by default)
+#12 0.168       --ca=<val>                     Provide a Certificate Authority signing certificate
+#12 0.168       --cafile=<val>                 The same as `--ca`, but is a file path to the certificate
+#12 0.168       --dry-run                      Don't install anything
+#12 0.168       --frozen-lockfile              Disallow changes to lockfile
+#12 0.168   -f, --force                        Always request the latest versions from the registry & reinstall all dependencies
+#12 0.168       --cache-dir=<val>              Store & load cached data from a specific directory path
+#12 0.168       --no-cache                     Ignore manifest cache entirely
+#12 0.168       --silent                       Don't log anything
+#12 0.168       --quiet                        Only show tarball name when packing
+#12 0.168       --verbose                      Excessively verbose logging
+#12 0.168       --no-progress                  Disable the progress bar
+#12 0.168       --no-summary                   Don't print a summary
+#12 0.168       --no-verify                    Skip verifying integrity of newly downloaded packages
+#12 0.168       --ignore-scripts               Skip lifecycle scripts in the project's package.json (dependency scripts are never run)
+#12 0.168       --trust                        Add to trustedDependencies in the project's package.json and install the package(s)
+#12 0.168   -g, --global                       Install globally
+#12 0.168       --cwd=<val>                    Set a specific cwd
+#12 0.168       --backend=<val>                Platform-specific optimizations for installing dependencies. Possible values: "hardlink" (default), "symlink", "copyfile"
+#12 0.168       --registry=<val>               Use a specific registry by default, overriding .npmrc, bunfig.toml and environment variables
+#12 0.168       --concurrent-scripts=<val>     Maximum number of concurrent jobs for lifecycle scripts (default 5)
+#12 0.168       --network-concurrency=<val>    Maximum number of concurrent network requests (default 48)
+#12 0.168       --save-text-lockfile           Save a text-based lockfile
+#12 0.168       --omit=<val>                   Exclude 'dev', 'optional', or 'peer' dependencies from install
+#12 0.168       --lockfile-only                Generate a lockfile without installing dependencies
+#12 0.168       --linker=<val>                 Linker strategy (one of "isolated" or "hoisted")
+#12 0.168       --minimum-release-age=<val>    Only install packages published at least N seconds ago (security feature)
+#12 0.168       --cpu=<val>                    Override CPU architecture for optional dependencies (e.g., x64, arm64, * for all)
+#12 0.168       --os=<val>                     Override operating system for optional dependencies (e.g., linux, darwin, * for all)
+#12 0.168   -h, --help                         Print this help menu
+#12 0.168   -d, --dev                          Add dependency to "devDependencies"
+#12 0.168       --optional                     Add dependency to "optionalDependencies"
+#12 0.168       --peer                         Add dependency to "peerDependencies"
+#12 0.168   -E, --exact                        Add the exact version instead of the ^range
+#12 0.168       --filter=<val>                 Install packages for the matching workspaces
+#12 0.168   -a, --analyze                      Analyze & install all dependencies of files passed as arguments recursively (using Bun's bundler)
+#12 0.168       --only-missing                 Only add dependencies to package.json if they are not already present
+#12 0.168 
+#12 0.168 Examples:
+#12 0.168   Install the dependencies for the current project
+#12 0.168   bun install
+#12 0.168 
+#12 0.168   Skip devDependencies
+#12 0.168   bun install --production
+#12 0.168 
+#12 0.168 Full documentation is available at https://bun.com/docs/cli/install.
+#12 ERROR: process "/bin/sh -c bun install --frozen-lockfile --production=false" did not complete successfully: exit code: 1
+------
+ > [deps 6/7] RUN bun install --frozen-lockfile --production=false:
+0.168       --only-missing                 Only add dependencies to package.json if they are not already present
+0.168 
+0.168 Examples:
+0.168   Install the dependencies for the current project
+0.168   bun install
+0.168 
+0.168   Skip devDependencies
+0.168   bun install --production
+0.168 
+0.168 Full documentation is available at https://bun.com/docs/cli/install.
+------
+Dockerfile:22
+--------------------
+  20 |     
+  21 |     # Install dependencies with frozen lockfile (faster, no resolution)
+  22 | >>> RUN bun install --frozen-lockfile --production=false
+  23 |     
+  24 |     # Generate Prisma Client with multiple fallback attempts
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c bun install --frozen-lockfile --production=false" did not complete successfully: exit code: 1

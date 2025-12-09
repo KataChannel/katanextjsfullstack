@@ -55,32 +55,44 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
 
         {/* Target Diagram */}
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-            
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center relative">
+
             {/* Left Side - Mission & Vision */}
-            <div className="lg:col-span-4 space-y-8 lg:space-y-12">
+            <div className="lg:col-span-4 space-y-8 lg:space-y-16 relative">
               {/* Mission */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#ffa500] uppercase">
-                    {sectionData.mission.title}
-                  </h4>
-                  <div className="h-0.5 flex-1 bg-[#ffa500]"></div>
+              <div className="space-y-4 relative">
+                <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#ffa500] uppercase">
+                  {sectionData.mission.title}
+                </h4>
+                {/* Line from Mission to Target - diagonal down */}
+                <div className="hidden lg:block absolute top-[25%] w-[625px] h-[120px] z-10">
+                  <Image
+                    src="https://innerbright.vn/api/minio-proxy/innerbright/1764353085526-xlcc7r.webp"
+                    alt="Decorative line"
+                    fill
+                    className="object-contain"
+                  />
                 </div>
-                <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
+                <p className="text-gray-700 max-w-[320px] text-base sm:text-lg leading-relaxed pr-8 lg:pr-0">
                   {sectionData.mission.description}
                 </p>
               </div>
 
               {/* Vision */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#ffa500] uppercase">
-                    {sectionData.vision.title}
-                  </h4>
-                  <div className="h-0.5 flex-1 bg-[#ffa500]"></div>
+              <div className="space-y-4 relative pt-12">
+                <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#ffa500] uppercase">
+                  {sectionData.vision.title}
+                </h4>
+                {/* Line from Vision to Target - diagonal up */}
+                <div className="hidden lg:block absolute w-[150%] h-full bottom-[30%] z-10">
+                  <Image
+                    src="https://innerbright.vn/api/minio-proxy/innerbright/1764353087530-gsy3i.webp"
+                    alt="Decorative line"
+                    fill
+                    className="object-contain"
+                  />
                 </div>
-                <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
+                <p className="text-gray-700 text-base sm:text-lg leading-relaxed pr-8 lg:pr-0">
                   {sectionData.vision.description}
                 </p>
               </div>
@@ -88,7 +100,7 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
 
             {/* Center - Target Icon */}
             <div className="lg:col-span-4 flex justify-center items-center py-8 lg:py-0">
-              <div className="relative w-full max-w-[400px] aspect-square">
+              <div className="relative w-[490px] aspect-square">
                 <Image
                   src="/api/minio-proxy/innerbright/1763602095486-fn4se.webp"
                   alt="InnerBright Target Vision"
@@ -103,13 +115,21 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
             </div>
 
             {/* Right Side - Core Values */}
-            <div className="lg:col-span-4 space-y-4">
-              <div className="flex items-center gap-3 mb-6">
-                <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#ffa500] uppercase whitespace-nowrap">
-                  {sectionData.coreValues.title}
-                </h4>
-                <div className="h-0.5 flex-1 bg-[#ffa500]"></div>
+            <div className="lg:col-span-4 space-y-4 relative flex justify-between">
+              {/* Line from Target to Core Values - horizontal */}
+              <div className="hidden lg:block absolute w-[125%] h-full bottom-[20%] right-0 z-10">
+                <Image
+                  src="https://innerbright.vn/api/minio-proxy/innerbright/1764353089929-j8pthb.webp"
+                  alt="Decorative line"
+                  fill
+                  className="object-contain"
+                />
               </div>
+              <div className="w-full"></div>
+              <div className="flex flex-col mt-[-20%]">
+              <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#ffa500] uppercase whitespace-nowrap mb-6">
+                {sectionData.coreValues.title}
+              </h4>
               
               <ul className="space-y-4">
                 {sectionData.coreValues.values.map((value, index) => (
@@ -119,6 +139,7 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
                   </li>
                 ))}
               </ul>
+              </div>
             </div>
 
           </div>

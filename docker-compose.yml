@@ -17,6 +17,9 @@ services:
       PORT: 3005
       HOSTNAME: 0.0.0.0
       
+      # Default hostname for multi-tenant database routing fallback
+      DEFAULT_HOSTNAME: innerbright.vn
+      
       # Database
       DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/innerv2core
       

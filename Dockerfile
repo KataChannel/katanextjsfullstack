@@ -11,21 +11,17 @@ WORKDIR /app
 RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # Copy package files
-COPY package.json bun.lockb* ./
+COPY package.json bun.lock* ./
 COPY prisma ./prisma/
 
-# Set environment for Prisma - skip postinstall
-ENV PRISMA_SKIP_POSTINSTALL_GENERATE=1
+# Set environment for Prisma
 ENV PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
 
-# Install dependencies without generating Prisma
-RUN bun install --no-save
+# Install dependencies - use frozen lockfile for speed
+RUN bun install --frozen-lockfile
 
-# Generate Prisma Client with multiple fallback attempts
-RUN bunx prisma generate || \
-    (sleep 5 && bunx prisma generate) || \
-    (sleep 10 && bunx prisma generate) || \
-    echo "Warning: Prisma generate failed, will try in builder stage"
+# Generate Prisma Client
+RUN bunx prisma generate || echo "Warning: Prisma generate failed"
 
 # Stage 2: Builder
 FROM oven/bun:1 AS builder
@@ -58,6 +54,9 @@ RUN if [ ! -d "node_modules/.prisma/client" ]; then \
 # Build application
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# Skip database connection during build - will use runtime values
+ENV SKIP_DB_DURING_BUILD=1
+ENV DATABASE_URL="postgresql://skip:skip@localhost:5432/skip?schema=public"
 
 RUN bun run build
 
@@ -65,15 +64,15 @@ RUN bun run build
 FROM oven/bun:1-slim AS runner
 WORKDIR /app
 
-# Install curl for healthcheck
+# Install curl for healthcheck and shadow package for user management
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Create non-root user using useradd (available in slim image)
+RUN groupadd --system --gid 1001 nodejs
+RUN useradd --system --uid 1001 --gid nodejs nextjs
 
 # Copy necessary files from builder
 COPY --from=builder /app/public ./public

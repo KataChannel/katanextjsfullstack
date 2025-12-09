@@ -54,3 +54,5 @@ middleware.js
 *.tar.gz
 /export-data
 /import-data
+*.tar
+*.tar.gz

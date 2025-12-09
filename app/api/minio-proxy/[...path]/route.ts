@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Force dynamic rendering để đọc env vars runtime
+export const dynamic = 'force-dynamic';
+
 /**
  * API Route để proxy MinIO images
  * Giải quyết Mixed Content error bằng cách serve images qua HTTPS
@@ -12,10 +15,12 @@ export async function GET(
     const params = await context.params;
     const path = params.path.join('/');
     
-    // MinIO endpoint - support both Docker network and external access
-    // In production Docker: use internal IP 172.18.0.4:9000
-    // In local dev: use external IP 116.118.48.208:9000
-    const minioHost = process.env.MINIO_INTERNAL_HOST || '116.118.48.208:9000';
+    // MinIO endpoint - support Docker network
+    // Use MINIO_ENDPOINT (hostname) + MINIO_PORT from docker-compose
+    // Fallback to internal IP if not set
+    const minioEndpoint = process.env.MINIO_ENDPOINT || 'minio';
+    const minioPort = process.env.MINIO_PORT || '9000';
+    const minioHost = `${minioEndpoint}:${minioPort}`;
     const minioUrl = `http://${minioHost}/${path}`;
     
     console.log('[MinIO Proxy] Fetching:', minioUrl);

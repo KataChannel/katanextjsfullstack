@@ -59,7 +59,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-full relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full">
           {/* Left Content */}
           <div className="text-white space-y-4 lg:space-y-6">
             {/* Title with Arrow */}
@@ -72,7 +72,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
                 alt="Arrow decoration"
                 width={120}
                 height={60}
-                className="w-16 h-10 sm:w-20 sm:h-12 lg:w-24 lg:h-14"
+                className="w-16 h-10 sm:w-20 sm:h-12 lg:w-24 lg:h-12"
                 priority
               />
             </div>
@@ -90,13 +90,13 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
           </div>
 
           {/* Right Image - Person */}
-            <div className="relative h-[350px] lg:h-[550px] flex items-end justify-center lg:justify-end">
+            <div className="relative h-[350px] lg:h-[550px] flex items-end justify-center lg:justify-end mt-auto">
             {/* Trainer Badge with Name Background */}
             <div className="absolute bottom-0 left-0 lg:left-auto lg:right-[40%] z-10">
               {currentSlideData.nameBackground ? (
               <div className="relative">
                 {/* Name Background Image */}
-                <div className="relative inline-block w-[574px] h-[167px]">
+                <div className="relative inline-block w-[500px] h-[150px]">
                 <Image
                   src={getImageUrl(currentSlideData.nameBackground)}
                   alt="Chloe Quý Châu Badge"
@@ -106,7 +106,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
                   priority
                 />
                 {/* Text Overlay on Background Image */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="absolute inset-0 flex flex-col px-12 justify-center">
                   <p className="text-2xl text-white/90 mb-1">Bởi nhà đào tạo</p>
                   <p className="text-4xl font-bold uppercase tracking-wide text-white">
                   CHLOE QUÝ CHÂU

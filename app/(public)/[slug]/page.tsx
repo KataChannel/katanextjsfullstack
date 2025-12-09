@@ -7,6 +7,9 @@ import { PageLayoutWrapper } from '@/components/page-layout-wrapper';
 import { auth } from '@/lib/auth';
 import { CarouselBlock } from '@/components/carousel-block';
 
+// Force dynamic rendering for this route
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{
     slug: string;
@@ -18,44 +21,51 @@ interface PageProps {
 
 // Generate metadata for SEO
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const prisma = await getPrisma();
-  
-  // Try to find as page first
-  const page = await prisma.page.findUnique({
-    where: { slug },
-  });
-
-  if (page) {
-    return generateSEOMetadata({
-      title: page.metaTitle || page.title,
-      description: page.metaDescription || page.content?.substring(0, 160) || '',
-      keywords: page.metaKeywords || undefined,
-      ogImage: page.ogImage || undefined,
-      ogType: page.ogType || 'website',
-      canonicalUrl: page.canonicalUrl || undefined,
+  try {
+    const { slug } = await params;
+    const prisma = await getPrisma();
+    
+    // Try to find as page first
+    const page = await prisma.page.findUnique({
+      where: { slug },
     });
-  }
 
-  // Try to find as post
-  const post = await prisma.post.findUnique({
-    where: { slug },
-  });
+    if (page) {
+      return generateSEOMetadata({
+        title: page.metaTitle || page.title,
+        description: page.metaDescription || page.content?.substring(0, 160) || '',
+        keywords: page.metaKeywords || undefined,
+        ogImage: page.ogImage || undefined,
+        ogType: page.ogType || 'website',
+        canonicalUrl: page.canonicalUrl || undefined,
+      });
+    }
 
-  if (post) {
-    return generateSEOMetadata({
-      title: post.metaTitle || post.title,
-      description: post.metaDescription || post.excerpt || post.content?.substring(0, 160) || '',
-      keywords: post.metaKeywords || undefined,
-      ogImage: post.ogImage || undefined,
-      ogType: post.ogType || 'article',
-      canonicalUrl: post.canonicalUrl || undefined,
+    // Try to find as post
+    const post = await prisma.post.findUnique({
+      where: { slug },
     });
-  }
 
-  return {
-    title: 'Không tìm thấy trang',
-  };
+    if (post) {
+      return generateSEOMetadata({
+        title: post.metaTitle || post.title,
+        description: post.metaDescription || post.excerpt || post.content?.substring(0, 160) || '',
+        keywords: post.metaKeywords || undefined,
+        ogImage: post.ogImage || undefined,
+        ogType: post.ogType || 'article',
+        canonicalUrl: post.canonicalUrl || undefined,
+      });
+    }
+
+    return {
+      title: 'Không tìm thấy trang',
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Không tìm thấy trang',
+    };
+  }
 }
 
 // Generate static params for static generation
@@ -93,71 +103,38 @@ export async function generateStaticParams() {
 }
 
 export default async function PageDetail({ params, searchParams }: PageProps) {
-  const { slug } = await params;
-  
-  // Redirect slug "/" to homepage (handled by app/(public)/page.tsx)
-  if (slug === '/') {
-    redirect('/');
-  }
-  
-  const { preview } = await searchParams;
-  const prisma = await getPrisma();
+  try {
+    const { slug } = await params;
+    
+    // Redirect slug "/" to homepage (handled by app/(public)/page.tsx)
+    if (slug === '/') {
+      redirect('/');
+    }
+    
+    const { preview } = await searchParams;
+    const prisma = await getPrisma();
 
-  // Check if preview mode and user is authenticated
-  const isPreview = preview === 'true';
-  let canPreview = false;
-  
-  if (isPreview) {
-    const session = await auth();
-    canPreview = !!session?.user;
-  }
+    // Check if preview mode and user is authenticated
+    const isPreview = preview === 'true';
+    let canPreview = false;
+    
+    if (isPreview) {
+      const session = await auth();
+      canPreview = !!session?.user;
+    }
 
-  // Try to find as page first
-  const page = await prisma.page.findUnique({
-    where: { slug },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      content: true,
-      published: true,
-      blocks: true,
-      blocksV2: true,
-      version: true,
-      metaTitle: true,
-      metaDescription: true,
-      metaKeywords: true,
-      ogImage: true,
-      ogType: true,
-      canonicalUrl: true,
-      showHeader: true,
-      showFooter: true,
-      createdAt: true,
-      updatedAt: true,
-      author: {
-        select: {
-          name: true,
-          email: true,
-        },
-      },
-    },
-  });
-
-  // If page found and (published OR preview mode with auth), use page data
-  if (page && (page.published || (isPreview && canPreview))) {
-    // Continue with page render logic below
-  } else {
-    // Try to find as post
-    const post = await prisma.post.findUnique({
+    // Try to find as page first
+    const page = await prisma.page.findUnique({
       where: { slug },
       select: {
         id: true,
         title: true,
         slug: true,
         content: true,
-        excerpt: true,
         published: true,
         blocks: true,
+        blocksV2: true,
+        version: true,
         metaTitle: true,
         metaDescription: true,
         metaKeywords: true,
@@ -177,17 +154,55 @@ export default async function PageDetail({ params, searchParams }: PageProps) {
       },
     });
 
-    // If post found and (published OR preview mode with auth), render it directly (no redirect)
-    if (post && (post.published || (isPreview && canPreview))) {
-      return renderContent(post, 'post', post.showHeader, post.showFooter, isPreview && !post.published);
+    // If page found and (published OR preview mode with auth), use page data
+    if (page && (page.published || (isPreview && canPreview))) {
+      // Continue with page render logic below
+    } else {
+      // Try to find as post
+      const post = await prisma.post.findUnique({
+        where: { slug },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          content: true,
+          excerpt: true,
+          published: true,
+          blocks: true,
+          metaTitle: true,
+          metaDescription: true,
+          metaKeywords: true,
+          ogImage: true,
+          ogType: true,
+          canonicalUrl: true,
+          showHeader: true,
+          showFooter: true,
+          createdAt: true,
+          updatedAt: true,
+          author: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      // If post found and (published OR preview mode with auth), render it directly (no redirect)
+      if (post && (post.published || (isPreview && canPreview))) {
+        return renderContent(post, 'post', post.showHeader, post.showFooter, isPreview && !post.published);
+      }
+
+      // Neither page nor post found
+      notFound();
     }
 
-    // Neither page nor post found
+    // At this point, page is guaranteed to exist and (published OR preview)
+    return renderContent(page, 'page', page.showHeader, page.showFooter, isPreview && !page.published);
+  } catch (error) {
+    console.error('Error in PageDetail:', error);
     notFound();
   }
-
-  // At this point, page is guaranteed to exist and (published OR preview)
-  return renderContent(page, 'page', page.showHeader, page.showFooter, isPreview && !page.published);
 }
 
 // Helper function to render page or post content

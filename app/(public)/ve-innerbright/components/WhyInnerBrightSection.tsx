@@ -78,7 +78,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
 
           {/* Right Side - Image */}
           <div className="flex justify-center lg:justify-end animate-fade-in-right">
-            <div className="relative w-full max-w-[550px] z-20">
+            <div className="relative w-full max-w-[600px] z-20">
               
               {/* Main image container */}
               <div className="relative w-full p-4">

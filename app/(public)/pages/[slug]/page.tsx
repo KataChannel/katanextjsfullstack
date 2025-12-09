@@ -32,16 +32,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  const prisma = await getPrisma('tazagroup.vn');
-  
-  const pages = await prisma.page.findMany({
-    where: { published: true },
-    select: { slug: true },
-  });
+  try {
+    const prisma = await getPrisma('tazagroup.vn');
+    
+    const pages = await prisma.page.findMany({
+      where: { published: true },
+      select: { slug: true },
+    });
 
-  return pages.map((page: { slug: string }) => ({
-    slug: page.slug,
-  }));
+    return pages.map((page: { slug: string }) => ({
+      slug: page.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
 
 export default async function DynamicPage({ params }: PageProps) {

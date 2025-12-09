@@ -105,12 +105,12 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
             
             {/* Left: Product Images */}
             <div className="flex justify-center lg:justify-end order-2 lg:order-1 animate-fade-in-left">
-              <div className="relative w-full max-w-md lg:max-w-lg">
+              <div className="relative w-full">
                 <Image
                   src={sectionData.productImage}
                   alt="Bộ thẻ ứng dụng NLP"
-                  width={600}
-                  height={600}
+                  width={800}
+                  height={800}
                   className="w-full h-auto drop-shadow-2xl"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
