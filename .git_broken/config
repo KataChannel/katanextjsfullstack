@@ -1,0 +1,40 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/KataChannel/katanextjsfullstack.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+[branch "webseo"]
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/webseo
+[branch "webseo_dev1"]
+	github-pr-base-branch = "KataChannel#katanextjsfullstack#webseo"
+	vscode-merge-base = origin/webseo
+	remote = origin
+	merge = refs/heads/webseo_dev1
+[branch "webseo_dev1_debug"]
+	github-pr-base-branch = "KataChannel#katanextjsfullstack#webseo_dev1"
+	vscode-merge-base = origin/webseo_dev1
+	remote = origin
+	merge = refs/heads/webseo_dev1_debug
+[branch "webseo_dev2_pagebuilder"]
+	github-pr-base-branch = "KataChannel#katanextjsfullstack#webseo_dev1_debug"
+	vscode-merge-base = origin/webseo_dev1_debug
+	remote = origin
+	merge = refs/heads/webseo_dev2_pagebuilder
+[branch "webseo_dev3_alldomain"]
+	github-pr-base-branch = "KataChannel#katanextjsfullstack#webseo_dev2_pagebuilder"
+	vscode-merge-base = origin/webseo_dev2_pagebuilder
+	remote = origin
+	merge = refs/heads/webseo_dev3_alldomain
+[branch "webseo_dev4_inner_test"]
+	github-pr-base-branch = "KataChannel#katanextjsfullstack#webseo_dev3_alldomain"
+	vscode-merge-base = origin/webseo_dev3_alldomain
+	remote = origin
+	merge = refs/heads/webseo_dev4_inner_test
