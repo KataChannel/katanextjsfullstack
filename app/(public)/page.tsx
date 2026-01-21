@@ -17,22 +17,30 @@ export default async function Home() {
   const headersList = await headers();
   const domain = headersList.get("x-domain") || '';
   
-  const prisma = await getPrisma(domain || 'tazagroup.vn');
-  
-  // Check if a custom homepage is set
-  const websiteSettings = await prisma.websiteSettings.findUnique({
-    where: { domain: domain || 'tazagroup.vn' },
-    select: {
-      homePageType: true,
-      homePageId: true,
-      homeRedirect: true,
-    },
-  });
+  let websiteSettings = null;
+  try {
+    const prisma = await getPrisma(domain || 'tazagroup.vn');
+    
+    // Check if a custom homepage is set
+    websiteSettings = await prisma.websiteSettings.findUnique({
+      where: { domain: domain || 'tazagroup.vn' },
+      select: {
+        homePageType: true,
+        homePageId: true,
+        homeRedirect: true,
+      },
+    });
+  } catch (error) {
+    console.warn('[Homepage] Database access failed, using fallback logic:', error);
+    // If it's innerbright, we know it should redirect to /innerbright
+    if (domain === 'innerbright.vn' || domain.includes('localhost:3005')) {
+      redirect('/innerbright');
+    }
+  }
 
   // Debug logging
   console.log('[Homepage] Domain:', domain);
   console.log('[Homepage] Website Settings:', websiteSettings);
-  console.log('[Homepage] Home Redirect:', websiteSettings?.homeRedirect);
 
   // Check if homepage redirect is set
   if (websiteSettings?.homeRedirect && websiteSettings.homeRedirect.trim() !== '') {
