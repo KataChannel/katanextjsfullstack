@@ -20,7 +20,7 @@ export default function BoTheNLPPage() {
       <QuestionsSection />
 
       {/* Nhân Vật Mục Tiêu */}
-      <TargetAudienceSection />
+      {/* <TargetAudienceSection /> */}
 
       {/* NLP là gì? */}
       <WhatIsNLPSection />
