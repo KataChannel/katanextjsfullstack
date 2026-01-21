@@ -29,22 +29,22 @@ export default function BoTheNLPPage() {
       <ValuesSection />
 
       {/* Why Choose NLP Section */}
-      <WhyChooseNLPSection />
+      {/* <WhyChooseNLPSection /> */}
 
       {/* Product Showcase Section / Ứng dụng & Bộ thẻ */}
-      <ProductShowcaseSection />
+      {/* <ProductShowcaseSection /> */}
 
       {/* Lược sử NLP */}
-      <HistorySection />
+      {/* <HistorySection /> */}
 
       {/* Đội ngũ & Người thầy */}
-      <TeachersSection />
+      {/* <TeachersSection /> */}
 
       {/* Chứng nhận */}
-      <CertificationsSection />
+      {/* <CertificationsSection /> */}
 
       {/* Contact Form Section */}
-      <ContactFormSection />
+      {/* <ContactFormSection /> */}
     </div>
   );
 }
