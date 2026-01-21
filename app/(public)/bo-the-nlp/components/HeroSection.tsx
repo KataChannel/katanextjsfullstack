@@ -8,7 +8,7 @@ export default function HeroSection() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/api/minio-proxy/innerbright/1764000629425-fy0koi.webp"
+          src="/innerbright/1764000629425-fy0koi.webp"
           alt="Background"
           fill
           className="object-contain"
@@ -50,7 +50,7 @@ export default function HeroSection() {
                 {/* Card 1 - Green/Teal (Back Left - Bottom) */}
                 <div className="absolute bottom-5 lg:bottom-20 -left-5 w-[200px] lg:w-60 z-10 transform -rotate-25 animate-fade-in-left animate-delay-200">
                   <Image
-                    src="/api/minio-proxy/innerbright/1763613727282-rb4pf.webp"
+                    src="/innerbright/1763613727282-rb4pf.webp"
                     alt="NLP Card - Green"
                     width={240}
                     height={340}
@@ -62,7 +62,7 @@ export default function HeroSection() {
                 {/* Card 2 - Orange (Center - Main/Largest) */}
                 <div className="absolute top-20 lg:top-10 left-[60px] lg:left-40 w-[260px] lg:w-[320px] z-30 transform animate-scale-in animate-delay-300">
                   <Image
-                    src="/api/minio-proxy/innerbright/1763613726960-381wim.webp"
+                    src="/innerbright/1763613726960-381wim.webp"
                     alt="NLP Card - Orange Main"
                     width={320}
                     height={450}
@@ -74,7 +74,7 @@ export default function HeroSection() {
                 {/* Card 3 - White/Blue (Front Right - Top) */}
                 <div className="absolute top-10 lg:top-[150px] -right-2.5 lg:-right-28 w-[180px] lg:w-[220px] z-10 transform rotate-36 animate-fade-in-right animate-delay-400">
                   <Image
-                    src="/api/minio-proxy/innerbright/1763613730899-6rsfgc.webp"
+                    src="/innerbright/1763613730899-6rsfgc.webp"
                     alt="NLP Card - White Blue"
                     width={220}
                     height={310}

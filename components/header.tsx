@@ -72,7 +72,7 @@ export function Header() {
           <div className="shrink-0">
             <Link href="/" className="flex items-center">
               <img 
-                src={getImageUrl("https://116.118.49.243:12007/innerbright/1763620949996-bvu1vi.webp")}
+                src={getImageUrl("/innerbright/1763620949996-bvu1vi.webp")}
                 alt="InnerBright Logo" 
                 className="h-24 w-auto"
               />

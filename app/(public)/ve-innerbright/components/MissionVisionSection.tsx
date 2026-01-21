@@ -67,7 +67,7 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
                 {/* Line from Mission to Target - diagonal down */}
                 <div className="hidden lg:block absolute top-[25%] w-[625px] h-[120px] z-10">
                   <Image
-                    src="https://innerbright.vn/api/minio-proxy/innerbright/1764353085526-xlcc7r.webp"
+                    src="/innerbright/1764353085526-xlcc7r.webp"
                     alt="Decorative line"
                     fill
                     className="object-contain"
@@ -86,7 +86,7 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
                 {/* Line from Vision to Target - diagonal up */}
                 <div className="hidden lg:block absolute w-[150%] h-full bottom-[30%] z-10">
                   <Image
-                    src="https://innerbright.vn/api/minio-proxy/innerbright/1764353087530-gsy3i.webp"
+                    src="/innerbright/1764353087530-gsy3i.webp"
                     alt="Decorative line"
                     fill
                     className="object-contain"
@@ -102,7 +102,7 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
             <div className="lg:col-span-4 flex justify-center items-center py-8 lg:py-0">
               <div className="relative w-[490px] aspect-square">
                 <Image
-                  src="/api/minio-proxy/innerbright/1763602095486-fn4se.webp"
+                  src="/innerbright/1763602095486-fn4se.webp"
                   alt="InnerBright Target Vision"
                   fill
                   className="object-contain"
@@ -119,7 +119,7 @@ export default function MissionVisionSection({ data }: MissionVisionSectionProps
               {/* Line from Target to Core Values - horizontal */}
               <div className="hidden lg:block absolute w-[125%] h-full bottom-[20%] right-0 z-10">
                 <Image
-                  src="https://innerbright.vn/api/minio-proxy/innerbright/1764353089929-j8pthb.webp"
+                  src="/innerbright/1764353089929-j8pthb.webp"
                   alt="Decorative line"
                   fill
                   className="object-contain"

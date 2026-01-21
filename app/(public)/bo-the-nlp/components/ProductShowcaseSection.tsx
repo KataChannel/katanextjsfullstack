@@ -34,22 +34,22 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
     cards: [
       {
         id: 1,
-        image: "/api/minio-proxy/innerbright/1763613748871-rv6ea.webp",
+        image: "/innerbright/1763613748871-rv6ea.webp",
         number: "01"
       },
       {
         id: 2,
-        image: "/api/minio-proxy/innerbright/1763613749230-g9nxeo.webp",
+        image: "/innerbright/1763613749230-g9nxeo.webp",
         number: "02"
       },
       {
         id: 3,
-        image: "/api/minio-proxy/innerbright/1763613749607-qlfmo5.webp",
+        image: "/innerbright/1763613749607-qlfmo5.webp",
         number: "03"
       },
       {
         id: 4,
-        image: "/api/minio-proxy/innerbright/1763613749994-ysd5i.webp",
+        image: "/innerbright/1763613749994-ysd5i.webp",
         number: "04"
       }
     ],
@@ -60,32 +60,32 @@ export default function ProductShowcaseSection({ data }: ProductShowcaseSectionP
     productImages: [
       {
         id: 1,
-        image: "/api/minio-proxy/innerbright/1763613750324-2tr0l4.webp",
+        image: "/innerbright/1763613750324-2tr0l4.webp",
         alt: "Bộ thẻ NLP trên bàn"
       },
       {
         id: 2,
-        image: "/api/minio-proxy/innerbright/1763613751013-p217o.webp",
+        image: "/innerbright/1763613751013-p217o.webp",
         alt: "Nhiều hộp bộ thẻ NLP"
       },
       {
         id: 3,
-        image: "/api/minio-proxy/innerbright/1763613751778-7zu7a8.webp",
+        image: "/innerbright/1763613751778-7zu7a8.webp",
         alt: "Bộ thẻ NLP trong hộp"
       },
       {
         id: 4,
-        image: "/api/minio-proxy/innerbright/1763613752417-n8rf7b.webp",
+        image: "/innerbright/1763613752417-n8rf7b.webp",
         alt: "Hộp bộ thẻ NLP màu cam"
       },
       {
         id: 5,
-        image: "/api/minio-proxy/innerbright/1763613752870-sg59447.webp",
+        image: "/innerbright/1763613752870-sg59447.webp",
         alt: "Nội dung thẻ NLP"
       },
       {
         id: 6,
-        image: "/api/minio-proxy/innerbright/1763613753463-gojznf.webp",
+        image: "/innerbright/1763613753463-gojznf.webp",
         alt: "Thẻ NLP chi tiết"
       }
     ]

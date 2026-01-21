@@ -24,7 +24,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
     nlpTitle: "NLP",
     nlpSubtitle: "(Neuro Linguistic Programming)",
     description: "Lập trình ngôn ngữ tư duy, không chỉ là một tập hợp các kỹ thuật, mà là một hành trình khám phá sức mạnh nội tại để tạo ra sự chuyển hóa sâu sắc. Để ứng dụng NLP hiệu quả, sự thấu hiểu cội nguồn và nguyên lý hoạt động là then chốt.",
-    image: "/api/minio-proxy/innerbright/1763611178370-rxn0rl.webp",
+    image: "/innerbright/1763611178370-rxn0rl.webp",
     imageAlt: "Vì sao chọn InnerBright"
   };
 
@@ -35,7 +35,7 @@ export default function WhyInnerBrightSection({ data }: WhyInnerBrightSectionPro
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/api/minio-proxy/innerbright/1763884854233-528uu.webp"
+          src="/innerbright/1763884854233-528uu.webp"
           alt="Background"
           fill
           className="object-contain"

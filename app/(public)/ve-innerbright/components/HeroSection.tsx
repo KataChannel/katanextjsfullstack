@@ -31,9 +31,9 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
       description: "InnerBright Training & Coaching",
       subDescription: "được thành lập từ năm 2020",
       badge: "Bởi nhà đào tạo\nCHLOE QUÝ CHÂU",
-      image: "/api/minio-proxy/innerbright/1763620949996-bvu1vi.webp",
-      avatar: "/api/minio-proxy/innerbright/1763602085989-jm48us.webp",
-      nameBackground: "/api/minio-proxy/innerbright/1763744032611-92q332.webp"
+      image: "/innerbright/1763620949996-bvu1vi.webp",
+      avatar: "/innerbright/1763602085989-jm48us.webp",
+      nameBackground: "/innerbright/1763744032611-92q332.webp"
     }
   ];
 
@@ -68,7 +68,7 @@ export default function HeroSection({ slides: propSlides }: HeroSectionProps) {
                 {currentSlideData.title}
               </h3>
               <Image
-                src="/api/minio-proxy/innerbright/1763998388399-lt1gtw.svg"
+                src="/innerbright/1763998388399-lt1gtw.svg"
                 alt="Arrow decoration"
                 width={120}
                 height={60}

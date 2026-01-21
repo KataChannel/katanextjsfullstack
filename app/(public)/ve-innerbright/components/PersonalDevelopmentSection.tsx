@@ -22,7 +22,7 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
     subtitle: "LÀ SỨC MẠNH ĐỂ THAY ĐỔI THẾ GIỚI",
     description: "Thế giới của mỗi người chính là bề sinh trắc, nơi mỗi chúng ta sống và làm việc cùng các cộng đồng. Tại InnerBright, điều quan trọng không chỉ là được thành công cá nhân, mà còn là sử dụng sức mạnh này để tạo ra sự khác biệt và ảnh hưởng đến hệ sinh thái của riêng bạn. Bằng cách phát triển bản thân, chúng ta tự trở thành người cảm trích và sẽ thay đổi cả thế giới.",
     highlight: "Chúng tôi - những con người tại InnerBright rất tự hào và sẵn sàng đồng hành cùng bạn trên hành trình này để khai phóng tiềm năng và giúp phát huy tối đa nội lực của riêng Bạn",
-    image: "/api/minio-proxy/innerbright/1763602098838-btb47.webp",
+    image: "/innerbright/1763602098838-btb47.webp",
     imageAlt: "InnerBright - Phát triển bản thân"
   };
 
@@ -33,7 +33,7 @@ export default function PersonalDevelopmentSection({ data }: PersonalDevelopment
       {/* Background Image */}
       <div className="absolute inset-0 z-0 animate-scale-in">
         <Image
-          src="/api/minio-proxy/innerbright/1763882937290-vfejy.webp"
+          src="/innerbright/1763882937290-vfejy.webp"
           alt="Background"
           fill
           className="object-cover"

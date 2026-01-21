@@ -25,19 +25,19 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
     benefits: [
       {
         id: 1,
-        image: "/api/minio-proxy/innerbright/1763613731231-h1rzn.webp",
+        image: "/innerbright/1763613731231-h1rzn.webp",
         title: "Trở thành người giao tiếp hiệu quả",
         description: "Xây dựng những mối quan hệ chất lượng là chất liệu tạo nên hạnh phúc và thành công của bất kỳ cá nhân hay tổ chức nào."
       },
       {
         id: 2,
-        image: "/api/minio-proxy/innerbright/1763613734099-ak1ny.webp",
+        image: "/innerbright/1763613734099-ak1ny.webp",
         title: "Phát huy sự tự tin",
         description: "Kết nối với mục đích sống của bản thân để sự tự tin của bạn không thể lay chuyển trong mọi tình huống."
       },
       {
         id: 3,
-        image: "/api/minio-proxy/innerbright/1763613736870-vnagg.webp",
+        image: "/innerbright/1763613736870-vnagg.webp",
         title: "Trở thành người khai phóng tiềm năng",
         description: "Phá vỡ những điểm mù, và phát huy những tiềm năng tuyệt vời từ bản thân và người khác bằng năng lực coaching."
       }
@@ -47,7 +47,7 @@ export default function BenefitsSection({ data }: BenefitsSectionProps) {
       "Bộ thẻ gồm 45 thẻ này là một công cụ hỗ trợ tuyệt vời cho Bạn khi thực hành NLP hoặc đang ở những bước đầu tiên quan tâm đến phương pháp chuyên hóa nội lực mạnh mẽ này.",
       "Mỗi thẻ bài chứa đựng những kiến thức, phương pháp tư duy và kỹ thuật được hệ thống hóa một cách đơn giản và dễ ghi nhớ, nhằm giúp Bạn gia tăng năng lực thấu hiểu bản thân và người khác, cải thiện chất lượng tương giao và đồng thời góp phần nâng cấp cuộc sống của Bạn và những người xung quanh."
     ],
-    productImage: "/api/minio-proxy/innerbright/1763613739714-0tvoj.webp"
+    productImage: "/innerbright/1763613739714-0tvoj.webp"
   };
 
   const sectionData = data || defaultData;

@@ -5,31 +5,31 @@ import type { LandingPageSection } from "@/lib/types/landing-page";
 
 // Lazy load section components
 const HeroSection = dynamic(() => 
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.HeroSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.HeroSection }))
 );
 const MissionVisionSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.MissionVisionSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.MissionVisionSection }))
 );
 const PersonalDevelopmentSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.PersonalDevelopmentSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.PersonalDevelopmentSection }))
 );
 const CertificationSystemSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.CertificationSystemSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.CertificationSystemSection }))
 );
 const WhyInnerBrightSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.WhyInnerBrightSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.WhyInnerBrightSection }))
 );
 const FiveFoundationsSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.FiveFoundationsSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.FiveFoundationsSection }))
 );
 const AtInnerBrightSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.AtInnerBrightSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.AtInnerBrightSection }))
 );
 const TrainerSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.TrainerSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.TrainerSection }))
 );
 const CertificationsSection = dynamic(() =>
-  import("@/app/(public)/ve-innerbright/components").then(mod => ({ default: mod.CertificationsSection }))
+  import("@/app/(public)/innerbright/components").then(mod => ({ default: mod.CertificationsSection }))
 );
 
 interface SectionRendererProps {

@@ -17,11 +17,11 @@ const MINIO_SERVERS = [
  * @returns Proxy URL that works in both dev and production
  * 
  * Examples:
- * - https://116.118.48.208:9000/innerbright/image.webp 
- *   → /api/minio-proxy/innerbright/image.webp
+ * - /innerbright/image.webp 
+ *   → /innerbright/image.webp
  * 
- * - /api/minio-proxy/innerbright/image.webp 
- *   → /api/minio-proxy/innerbright/image.webp (unchanged)
+ * - /innerbright/image.webp 
+ *   → /innerbright/image.webp (unchanged)
  */
 export function getImageUrl(url: string): string {
   // Return empty string or fallback if url is invalid
@@ -29,31 +29,39 @@ export function getImageUrl(url: string): string {
     return '';
   }
 
-  // If already a proxy URL, return as-is
-  if (url.startsWith('/api/minio-proxy/')) {
+  // If starts with /innerbright/, return as-is (this is our target)
+  if (url.startsWith('/innerbright/')) {
     return url;
   }
 
-  // If relative URL, return as-is
+  // If it's a legacy proxy URL, convert to direct public path
+  if (url.startsWith('/api/minio-proxy/innerbright/')) {
+    return url.replace('/api/minio-proxy/innerbright/', '/innerbright/');
+  }
+
+  // If relative URL starting with /, return as-is
   if (url.startsWith('/') && !url.startsWith('//')) {
     return url;
   }
 
-  // Handle URLs with domain (e.g., https://innerbright.vn/api/minio-proxy/...)
-  // Extract just the path part
-  if (url.includes('/api/minio-proxy/')) {
-    const match = url.match(/\/api\/minio-proxy\/.*$/);
+  // Handle URLs with domain (e.g., https://innerbright.vn/api/minio-proxy/innerbright/...)
+  if (url.includes('/api/minio-proxy/innerbright/')) {
+    const match = url.match(/\/api\/minio-proxy\/innerbright\/.*$/);
     if (match) {
-      return match[0];
+      return match[0].replace('/api/minio-proxy/innerbright/', '/innerbright/');
     }
   }
 
-  // Convert production MinIO URL to proxy URL
+  // Convert production MinIO URL to direct public path
   for (const server of MINIO_SERVERS) {
     if (url.startsWith(server)) {
       // Extract path after server (e.g., /innerbright/image.webp)
       const path = url.substring(server.length);
-      return `/api/minio-proxy${path}`;
+      if (path.startsWith('/innerbright/')) {
+        return path;
+      }
+      // Fallback if it's some other bucket? For now assuming innerbright
+      return path;
     }
   }
 

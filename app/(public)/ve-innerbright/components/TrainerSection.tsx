@@ -28,7 +28,7 @@ export default function TrainerSection({ data }: TrainerSectionProps) {
       "Trong quá trình học tập và huấn luyện tại Việt Nam, Chloe Quý Châu là chuyên gia nguyên vật liệu, kiến trúc ABNLP Coaching Division cấp phép đào tạo NLP Master Coach. Chloe tập trung truyền tải nguyên bản công cụ NLP để học viên hiểu rõ, đúng, đủ và ứng dụng linh hoạt vào cuộc sống.",
       "Chloe cũng là một trong số ít người Việt đầu tiên được chứng nhận đào tạo <strong>Time Line Therapy®</strong> trực tiếp từ hiệp hội, một phương pháp mạnh mẽ giúp xử lý sâu sắc các cảm xúc"
     ],
-    image: "/api/minio-proxy/innerbright/1763602545461-ewwycu.webp",
+    image: "/innerbright/1763602545461-ewwycu.webp",
     imageAlt: "Chloe Quý Châu - Chuyên gia đào tạo NLP"
   };
 
