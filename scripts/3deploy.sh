@@ -6,8 +6,8 @@ git commit -m "update"
 git push
 
 # Remote server operations
-ssh root@116.118.49.243 << 'EOF'
-cd shoprausach
+ssh root@116.118.48.208 << 'EOF'
+cd /var/www/innerbright
 
 # Pre-deployment checks
 DISK_USAGE=$(df -h . | awk 'NR==2 {print $5}' | sed 's/%//')

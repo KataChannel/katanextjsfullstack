@@ -35,7 +35,8 @@
     "restore:remote": "./scripts/restore-remote.sh",
     "restore:innerbright": "./scripts/restore-remote.sh innerbright.vn",
     "export": "bun run scripts/export-data.ts",
-    "import": "bun run scripts/import-data.ts"
+    "import": "bun run scripts/import-data.ts",
+    "deploy": "bash ./quick-deploy-new.sh"
   },
   "prisma": {
     "seed": "bun run prisma/seed.ts"

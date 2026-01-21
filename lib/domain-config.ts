@@ -102,10 +102,7 @@ export const DOMAIN_CONFIGS: Record<string, DomainConfig> = {
     devDomain: 'localhost',
     devPort: 3005,
     storage: {
-      type: 'minio',
-      endpoint: '116.118.48.208',
-      port: 9000,
-      useSSL: false,
+      type: 'local',
       bucketName: 'innerbright',
     },
   },

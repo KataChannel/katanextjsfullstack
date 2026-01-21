@@ -14,32 +14,13 @@ const nextConfig: NextConfig = {
         hostname: '**',
       },
       {
-        protocol: 'https',
-        hostname: '116.118.49.243',
-        port: '12007',
-      },
-      {
-        protocol: 'http',
-        hostname: '116.118.49.243',
-        port: '12007',
-      },
-      {
-        protocol: 'https',
-        hostname: '116.118.48.208',
-        port: '9000',
-      },
-      {
-        protocol: 'http',
-        hostname: '116.118.48.208',
-        port: '9000',
-      },
-      {
         protocol: 'http',
         hostname: 'minio',
         port: '9000',
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    qualities: [75, 90],
   },
 
   // Compression
@@ -57,8 +38,8 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: '25mb',
     },
-    // Increase middleware body size limit
-    middlewareClientMaxBodySize: '25mb',
+    // Increase proxy client body size limit
+    proxyClientMaxBodySize: '25mb',
   },
 
   // Headers for security and SEO
