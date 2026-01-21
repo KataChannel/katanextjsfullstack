@@ -24,6 +24,12 @@ NC='\033[0m'
 IMAGE_NAME="innerbright-web"
 IMAGE_TAG="latest"
 SERVER_IP="116.118.48.208"
+# Check if SSH config alias exists
+if grep -q "Host default-${SERVER_IP}" ~/.ssh/config 2>/dev/null; then
+    SERVER_HOST="default-${SERVER_IP}"
+else
+    SERVER_HOST="${SERVER_IP}"
+fi
 SERVER_USER="root"
 DOMAIN="innerbright.vn"
 BRANCH="webseo_dev5"
@@ -38,10 +44,10 @@ echo ""
 
 # Step 0: Pre-check Server
 echo -e "${YELLOW}[0/6] Checking Server Status...${NC}"
-if ! ssh -o ConnectTimeout=5 -o BatchMode=yes ${SERVER_USER}@${SERVER_IP} "echo 'SSH OK'" &>/dev/null; then
+if ! ssh -o ConnectTimeout=5 -o BatchMode=yes ${SERVER_HOST} "echo 'SSH OK'" &>/dev/null; then
     echo -e "${YELLOW}⚠️  SSH Password-less access not verified, you may need to enter password during deployment.${NC}"
 else
-    DISK_USAGE=$(ssh ${SERVER_USER}@${SERVER_IP} "df -h / | awk 'NR==2 {print \$5}' | sed 's/%//'")
+    DISK_USAGE=$(ssh ${SERVER_HOST} "df -h / | awk 'NR==2 {print \$5}' | sed 's/%//'")
     if [ "$DISK_USAGE" -gt 90 ]; then
         echo -e "${RED}❌ Server Disk Usage is high: ${DISK_USAGE}%${NC}"
         echo -e "${YELLOW}Please clean up server before deployment.${NC}"
@@ -82,14 +88,14 @@ echo ""
 
 # Step 4: Transfer to Server
 echo -e "${YELLOW}[4/6] Transferring to server...${NC}"
-scp ${EXPORT_FILE} ${SERVER_USER}@${SERVER_IP}:/root/
+scp ${EXPORT_FILE} ${SERVER_HOST}:/root/
 echo -e "${GREEN}✓ Uploaded${NC}"
 echo ""
 
 # Step 5: Deploy on Server
 echo -e "${YELLOW}[5/6] Deploying on server...${NC}"
 
-ssh ${SERVER_USER}@${SERVER_IP} << 'ENDSSH'
+ssh ${SERVER_HOST} << 'ENDSSH'
 set -e
 
 cd /root
