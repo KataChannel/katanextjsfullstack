@@ -17,9 +17,16 @@ export default async function Home() {
   const headersList = await headers();
   const domain = headersList.get("x-domain") || '';
   
+  // Bypass database for static domain
+  if (domain === 'innerbright.vn' || domain.includes('localhost:3005')) {
+    console.log('[Homepage] Static domain detected, bypassing database');
+    redirect('/innerbright');
+  }
+
+  let prisma;
   let websiteSettings = null;
   try {
-    const prisma = await getPrisma(domain || 'tazagroup.vn');
+    prisma = await getPrisma(domain || 'tazagroup.vn');
     
     // Check if a custom homepage is set
     websiteSettings = await prisma.websiteSettings.findUnique({
@@ -31,21 +38,28 @@ export default async function Home() {
       },
     });
   } catch (error) {
-    console.warn('[Homepage] Database access failed, using fallback logic:', error);
-    // If it's innerbright, we know it should redirect to /innerbright
-    if (domain === 'innerbright.vn' || domain.includes('localhost:3005')) {
-      redirect('/innerbright');
-    }
+    console.warn('[Homepage] Database access failed:', error);
   }
-
-  // Debug logging
-  console.log('[Homepage] Domain:', domain);
-  console.log('[Homepage] Website Settings:', websiteSettings);
 
   // Check if homepage redirect is set
   if (websiteSettings?.homeRedirect && websiteSettings.homeRedirect.trim() !== '') {
     console.log('[Homepage] Redirecting to:', websiteSettings.homeRedirect);
     redirect(websiteSettings.homeRedirect);
+  }
+
+  // If DB connection failed and we're NOT on the static domain, 
+  // we might need a better error handling or fallback.
+  if (!prisma) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-2xl mx-4">
+          <CardHeader>
+            <CardTitle>System Maintenance</CardTitle>
+            <CardDescription>The database is currently unavailable. Please try again later.</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
   }
 
   // If homepage is set to a page or post, render that instead
