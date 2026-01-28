@@ -38,10 +38,10 @@ export default function BoTheNLPPage() {
       <HistorySection />
 
       {/* Đội ngũ & Người thầy */}
-      {/* <TeachersSection /> */}
+      <TeachersSection />
 
       {/* Chứng nhận */}
-      {/* <CertificationsSection /> */}
+      <CertificationsSection />
 
       {/* Contact Form Section */}
       {/* <ContactFormSection /> */}
