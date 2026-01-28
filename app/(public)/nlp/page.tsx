@@ -35,7 +35,7 @@ export default function BoTheNLPPage() {
       {/* <ProductShowcaseSection /> */}
 
       {/* Lược sử NLP */}
-      {/* <HistorySection /> */}
+      <HistorySection />
 
       {/* Đội ngũ & Người thầy */}
       {/* <TeachersSection /> */}
