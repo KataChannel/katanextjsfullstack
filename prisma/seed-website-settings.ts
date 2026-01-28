@@ -7,7 +7,7 @@ async function main() {
 
   // Navigation menu như trong hình
   const navigationMenu = [
-    { label: 'Về InnerBright', url: '/ve-innerbright', children: [] },
+    { label: 'Về InnerBright', url: '/innerbright', children: [] },
     { label: 'NLP', url: '/nlp', children: [] },
     { label: 'Time Line Therapy®', url: '/time-line-therapy', children: [] },
     { label: 'Đào tạo doanh nghiệp', url: '/dao-tao-doanh-nghiep', children: [] },

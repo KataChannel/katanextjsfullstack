@@ -11,7 +11,7 @@ export const defaultPageData: VeInnerbrightPageData = {
         description: "InnerBright Training & Coaching",
         subDescription: "được thành lập từ năm 2020",
         badge: "Bởi nhà đào tạo\nCHLOE QUÝ CHÂU",
-        image: "/innerbright/ve-innerbright-section1-2.webp",
+        image: "/innerbright/innerbright-section1-2.webp",
         avatar: "/innerbright/1763602085989-jm48us.webp",
         nameBackground: "/innerbright/1763744032611-92q332.webp"
       }

@@ -89,7 +89,7 @@ const menuConfigs: MenuConfig[] = [
   {
     domain: 'innerbright.vn',
     menus: [
-      { label: 'Về InnerBright', url: '/ve-innerbright', icon: 'Home', order: 1 },
+      { label: 'Về InnerBright', url: '/innerbright', icon: 'Home', order: 1 },
       { label: 'NLP', url: '/nlp', icon: 'Brain', order: 2 },
       { label: 'Time Line Therapy®', url: '/time-line-therapy', icon: 'Clock', order: 3 },
       { label: 'Đào tạo doanh nghiệp', url: '/dao-tao-doanh-nghiep', icon: 'Building', order: 4 },

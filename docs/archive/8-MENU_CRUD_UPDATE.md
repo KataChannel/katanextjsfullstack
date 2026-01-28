@@ -224,7 +224,7 @@ bun prisma/seed-menus.ts  # Migrate data từ WebsiteSettings
   - Response: `{ success: true }`
 
 ## Menu Mặc Định (9 items)
-1. Về InnerBright - /ve-innerbright
+1. Về InnerBright - /innerbright
 2. NLP - /nlp
 3. Time Line Therapy® - /time-line-therapy
 4. Đào tạo doanh nghiệp - /dao-tao-doanh-nghiep

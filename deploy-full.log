@@ -135,7 +135,7 @@ nohup: đang bỏ qua dữ liệu vào
 #15 41.94 ├ ƒ /admin/website-settings
 #15 41.94 ├ ƒ /api/admin/block-templates
 #15 41.94 ├ ƒ /api/admin/content
-#15 41.94 ├ �#23 41.94 ├ ƒ /admin/content
+#15 41.94 ├ �#23 41.94 ├ ƒ /admin/content
 #23 41.94 ├ ƒ /admin/content/[id]
 #23 41.94 ├ ƒ /admin/media
 #23 41.94 ├ ƒ /admin/menu-permissions
@@ -178,7 +178,7 @@ nohup: đang bỏ qua dữ liệu vào
 #15 41.94 ├ ƒ /posts/[slug]
 #15 41.94 ├ ○ /robots.txt
 #15 41.94 ├ ƒ /sitemap.xml
-#15 41.94 └ ƒ /ve-innerbright
+#15 41.94 └ ƒ /innerbright
 #15 41.94 
 #15 41.94 
 #15 41.94 ƒ Proxy (Middleware)

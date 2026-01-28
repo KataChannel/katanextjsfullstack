@@ -57,7 +57,7 @@ async function main() {
   const innerbrightSettings = await prisma.websiteSettings.upsert({
     where: { domain: 'innerbright.vn' },
     update: {
-      homeRedirect: '/ve-innerbright',
+      homeRedirect: '/innerbright',
     },
     create: {
       domain: 'innerbright.vn',
@@ -68,7 +68,7 @@ async function main() {
       siteOgImage: '/images/innerbright-og.jpg',
       twitterHandle: '@innerbright',
       googleAnalytics: 'G-XXXXXXXXXX',
-      homeRedirect: '/ve-innerbright',
+      homeRedirect: '/innerbright',
       organizationSchema: {
         '@context': 'https://schema.org',
         '@type': 'Organization',

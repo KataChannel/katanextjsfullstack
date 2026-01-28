@@ -22,7 +22,7 @@ image: 'https://images.unsplash.com/photo-552664730-d307ca884978?w=1200&h=600&fi
 - Xóa các carousel duplicate
 
 ### 3. **Kiểm tra render** ✅
-**Page**: `/ve-innerbright` (Về InnerBright)
+**Page**: `/innerbright` (Về InnerBright)
 **Kết quả**: Carousel hiển thị đúng với:
 - 3 slides với hình ảnh Unsplash
 - Auto-play 5000ms
@@ -51,7 +51,7 @@ scripts/
 1. ✅ Start dev server: `bun run dev` → port 3005
 2. ✅ Add carousel data: `bun run scripts/add-carousel-to-page.ts`
 3. ✅ Cleanup duplicates: `bun scripts/cleanup-carousel-duplicates.ts`
-4. ✅ Open browser: http://localhost:3005/ve-innerbright
+4. ✅ Open browser: http://localhost:3005/innerbright
 5. ✅ Verify: Carousel hiển thị với 3 slides
 
 ### Kết quả
@@ -138,5 +138,5 @@ Carousel block đã sẵn sàng cho production:
 ---
 
 **Status**: ✅ Carousel block hoàn chỉnh và hoạt động  
-**Test URL**: http://localhost:3005/ve-innerbright  
+**Test URL**: http://localhost:3005/innerbright  
 **Ngày**: 18/11/2025

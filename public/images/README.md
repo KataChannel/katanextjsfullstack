@@ -1,6 +1,6 @@
 # Images Directory
 
-## Required Images for /ve-innerbright page
+## Required Images for /innerbright page
 
 Please add the following image to this directory:
 

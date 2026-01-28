@@ -244,7 +244,7 @@ case 'container':
 
 ### Test case
 
-1. Vào trang: `http://localhost:3005/ve-innerbright`
+1. Vào trang: `http://localhost:3005/innerbright`
 2. Container với background color `#e7bb40` sẽ hiển thị đúng màu vàng
 3. Container với background image sẽ hiển thị hình ảnh với size/position đúng
 

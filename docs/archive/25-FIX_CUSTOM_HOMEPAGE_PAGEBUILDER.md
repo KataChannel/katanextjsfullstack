@@ -1,7 +1,7 @@
 # Fix: Custom Homepage with Page Builder Not Displaying
 
 ## 🐛 Bug Report
-**Issue**: Khi chọn page `/ve-innerbright` (sử dụng Page Builder với carousel) làm trang chủ, trang chủ `/` không hiển thị đúng - carousel không xuất hiện.
+**Issue**: Khi chọn page `/innerbright` (sử dụng Page Builder với carousel) làm trang chủ, trang chủ `/` không hiển thị đúng - carousel không xuất hiện.
 
 ## 🔍 Root Cause Analysis
 
@@ -68,7 +68,7 @@ Domain: innerbright.vn
   ✅ SEO Settings exist
     homePageType: page
     homePageId: 4a83da73-fdf0-467a-be5e-8906ee05c18c
-    Page: Về InnerBright (/ve-innerbright)
+    Page: Về InnerBright (/innerbright)
 
 Domain: localhost
   ✅ SEO Settings exist

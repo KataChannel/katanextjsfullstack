@@ -152,7 +152,7 @@ export default function VeInnerbrightPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('/api/ve-innerbright');
+        const res = await fetch('/api/innerbright');
         const data = await res.json();
         setPageData(data);
       } catch (error) {

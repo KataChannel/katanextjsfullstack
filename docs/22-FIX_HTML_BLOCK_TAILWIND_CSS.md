@@ -5,7 +5,7 @@
 
 ## Vấn đề
 
-HTML custom block render trên **http://localhost:3005/ve-innerbright** nhưng **Tailwind CSS classes không hoạt động**.
+HTML custom block render trên **http://localhost:3005/innerbright** nhưng **Tailwind CSS classes không hoạt động**.
 
 ### Biểu hiện
 
@@ -313,7 +313,7 @@ w-full max-w-prose mx-auto py-12
 - [x] Drag & drop OK
 
 ### ✅ Frontend Pages
-- [x] Tailwind classes render đúng trên `/ve-innerbright`
+- [x] Tailwind classes render đúng trên `/innerbright`
 - [x] Container responsive (max-w, mx-auto, padding...)
 - [x] Content HTML styles apply đúng
 - [x] Hover effects hoạt động

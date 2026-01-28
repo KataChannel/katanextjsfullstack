@@ -13,7 +13,7 @@ async function main() {
     
     // Tạo menu mặc định nếu không có
     const defaultMenus = [
-      { label: 'Về InnerBright', url: '/ve-innerbright', order: 1 },
+      { label: 'Về InnerBright', url: '/innerbright', order: 1 },
       { label: 'NLP', url: '/nlp', order: 2 },
       { label: 'Time Line Therapy®', url: '/time-line-therapy', order: 3 },
       { label: 'Đào tạo doanh nghiệp', url: '/dao-tao-doanh-nghiep', order: 4 },

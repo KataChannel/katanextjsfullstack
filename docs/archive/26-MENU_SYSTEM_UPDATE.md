@@ -22,7 +22,7 @@ Cập nhật hệ thống menu trong database cho tất cả domains với cấu
 
 ### InnerBright Public Menu (Header) - 9 items
 ```
-1. Về InnerBright → /ve-innerbright
+1. Về InnerBright → /innerbright
 2. NLP → /nlp
 3. Time Line Therapy® → /time-line-therapy
 4. Đào tạo doanh nghiệp → /dao-tao-doanh-nghiep
@@ -244,7 +244,7 @@ model Menu {
 Cần tạo các page tương ứng với menu URLs:
 
 **InnerBright**:
-- [ ] `/ve-innerbright` - ✅ Đã có (Page Builder)
+- [ ] `/innerbright` - ✅ Đã có (Page Builder)
 - [ ] `/nlp`
 - [ ] `/time-line-therapy`
 - [ ] `/dao-tao-doanh-nghiep`

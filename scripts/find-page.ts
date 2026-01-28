@@ -4,7 +4,7 @@ async function findPage() {
   const domain = 'innerbright.vn';
   const prisma = await getPrisma(domain);
 
-  console.log('\n🔍 Looking for /ve-innerbright page in:', domain);
+  console.log('\n🔍 Looking for /innerbright page in:', domain);
   console.log('═══════════════════════════════════════════\n');
 
   // Find page by slug

@@ -23,7 +23,7 @@ Migrated InnerBright.vn domain from old MinIO server to new MinIO server.
 - ✅ `lib/minio.ts` - MinIO client configuration
 - ✅ `components/header.tsx` - Logo URL
 - ✅ `components/footer.tsx` - Logo URL
-- ✅ `app/(public)/ve-innerbright/**` - All component image URLs
+- ✅ `app/(public)/innerbright/**` - All component image URLs
 - ✅ `app/(public)/bo-the-nlp/**` - All component image URLs
 
 ### 2. Images Migrated
@@ -54,7 +54,7 @@ url: 'http://116.118.48.208:9000/innerbright/[filename].webp'
 lib/minio.ts
 components/header.tsx
 components/footer.tsx
-app/(public)/ve-innerbright/components/*.tsx (13 files)
+app/(public)/innerbright/components/*.tsx (13 files)
 app/(public)/bo-the-nlp/components/*.tsx (5 files)
 ```
 

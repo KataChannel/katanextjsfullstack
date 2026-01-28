@@ -1,7 +1,7 @@
 # Bổ sung tính năng Homepage Redirect Dynamic
 
 ## Tổng quan
-Đã bổ sung tính năng redirect động khi truy cập trang chủ vào Website Settings, cho phép admin cấu hình để tự động chuyển hướng người dùng từ trang chủ sang một URL khác (ví dụ: `/ve-innerbright`, `/khoa-hoc`).
+Đã bổ sung tính năng redirect động khi truy cập trang chủ vào Website Settings, cho phép admin cấu hình để tự động chuyển hướng người dùng từ trang chủ sang một URL khác (ví dụ: `/innerbright`, `/khoa-hoc`).
 
 ## Các thay đổi
 
@@ -10,7 +10,7 @@
 
 Thêm trường mới vào model `WebsiteSettings`:
 ```prisma
-homeRedirect String? // URL to redirect when accessing homepage (e.g., '/ve-innerbright')
+homeRedirect String? // URL to redirect when accessing homepage (e.g., '/innerbright')
 ```
 
 **Migration:** 
@@ -22,8 +22,8 @@ homeRedirect String? // URL to redirect when accessing homepage (e.g., '/ve-inne
 
 Thêm input field mới trong tab "SEO":
 - **Label:** Homepage Redirect
-- **Input:** Text field với placeholder `/ve-innerbright`
-- **Description:** "URL để redirect khi truy cập trang chủ (VD: /ve-innerbright, /khoa-hoc). Để trống nếu không cần redirect."
+- **Input:** Text field với placeholder `/innerbright`
+- **Description:** "URL để redirect khi truy cập trang chủ (VD: /innerbright, /khoa-hoc). Để trống nếu không cần redirect."
 - **Vị trí:** Sau field "Homepage ID", trước "Robots.txt"
 
 ### 3. Homepage Logic
@@ -55,7 +55,7 @@ if (websiteSettings?.homeRedirect) {
 1. **Vào Admin Panel:** `/admin/website-settings`
 2. **Chọn tab "SEO"**
 3. **Tìm field "Homepage Redirect"**
-4. **Nhập URL cần redirect:** Ví dụ: `/ve-innerbright` hoặc `/khoa-hoc`
+4. **Nhập URL cần redirect:** Ví dụ: `/innerbright` hoặc `/khoa-hoc`
 5. **Lưu cài đặt**
 
 Khi người dùng truy cập trang chủ (`/`), hệ thống sẽ tự động redirect họ đến URL đã cấu hình.
@@ -72,9 +72,9 @@ Khi người dùng truy cập trang chủ (`/`), hệ thống sẽ tự động 
 
 **Trường hợp 1:** Website InnerBright muốn redirect trang chủ về trang "Về InnerBright"
 - Vào Website Settings
-- Nhập `homeRedirect`: `/ve-innerbright`
+- Nhập `homeRedirect`: `/innerbright`
 - Lưu
-- Kết quả: Người dùng truy cập `innerbright.vn` → Tự động chuyển sang `innerbright.vn/ve-innerbright`
+- Kết quả: Người dùng truy cập `innerbright.vn` → Tự động chuyển sang `innerbright.vn/innerbright`
 
 **Trường hợp 2:** Website muốn giữ homepage mặc định
 - Để trống field `homeRedirect` hoặc xóa giá trị hiện tại

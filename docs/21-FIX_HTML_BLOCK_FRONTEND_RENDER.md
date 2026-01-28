@@ -5,14 +5,14 @@
 
 ## Vấn đề
 
-HTML custom block không hiển thị trên trang public **http://localhost:3005/ve-innerbright** và các trang khác sử dụng blocksV2.
+HTML custom block không hiển thị trên trang public **http://localhost:3005/innerbright** và các trang khác sử dụng blocksV2.
 
 ### Nguyên nhân
 
 Có **2 component renderer** thiếu case 'html':
 
 1. **BlocksV2Renderer** trong `app/(public)/[slug]/page.tsx`
-   - Dùng cho dynamic pages: `/ve-innerbright`, `/lien-he`, etc.
+   - Dùng cho dynamic pages: `/innerbright`, `/lien-he`, etc.
    - Thiếu case 'html' → HTML block không render
 
 2. **PageBlocksRenderer** trong `components/custom-homepage.tsx`
@@ -76,7 +76,7 @@ components/custom-homepage.tsx        ✅ Added case 'html' to PageBlocksRendere
 - [x] Drag & drop OK
 
 ### ✅ Frontend Public Pages (BlocksV2Renderer)
-- [x] HTML block render trên `/ve-innerbright`
+- [x] HTML block render trên `/innerbright`
 - [x] HTML block render trên các dynamic pages khác
 - [x] Tailwind CSS classes hoạt động
 - [x] JavaScript embeds execute
@@ -95,7 +95,7 @@ components/custom-homepage.tsx        ✅ Added case 'html' to PageBlocksRendere
 
 ### Test 1: Dynamic Page (ve-innerbright)
 ```
-URL: http://localhost:3005/ve-innerbright
+URL: http://localhost:3005/innerbright
 
 Kết quả mong đợi:
 - Page load thành công
@@ -178,7 +178,7 @@ HTML custom block giờ render đầy đủ ở:
 
 ---
 
-**Vấn đề ban đầu:** HTML block không hiển thị trên /ve-innerbright  
+**Vấn đề ban đầu:** HTML block không hiển thị trên /innerbright  
 **Nguyên nhân:** 2 renderer components thiếu case 'html'  
 **Giải pháp:** Thêm case 'html' vào cả 2 renderer functions  
 **Kết quả:** ✅ HTML block render đầy đủ ở mọi nơi

@@ -52,7 +52,7 @@ model MenuPermission {
 - Demo User: user@example.com
   - Password: User@123456  
   - Role: user
-  - Chỉ 3 menu: /ve-innerbright, /lien-he, /thu-vien
+  - Chỉ 3 menu: /innerbright, /lien-he, /thu-vien
 
 ## File Đã Cập Nhật
 
@@ -135,11 +135,11 @@ Menu: Tất cả (9 items)
 Email: user@example.com
 Password: User@123456  
 Role: user
-Menu: 3 items (/ve-innerbright, /lien-he, /thu-vien)
+Menu: 3 items (/innerbright, /lien-he, /thu-vien)
 ```
 
 ## Menu Items Mẫu (9 items)
-1. /ve-innerbright - Về InnerBright
+1. /innerbright - Về InnerBright
 2. /nlp - NLP
 3. /time-line-therapy - Time Line Therapy®
 4. /dao-tao-doanh-nghiep - Đào tạo doanh nghiệp

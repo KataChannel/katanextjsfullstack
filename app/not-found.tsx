@@ -19,7 +19,7 @@ export default function NotFound() {
             Về trang chủ
           </Link>
           <Link
-            href="/ve-innerbright"
+            href="/innerbright"
             className="inline-flex items-center px-6 py-3 border border-blue-600 text-base font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 transition-colors"
           >
             Về InnerBright

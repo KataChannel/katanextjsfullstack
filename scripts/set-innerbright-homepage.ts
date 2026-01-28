@@ -9,7 +9,7 @@ async function main() {
   const settings = await prisma.websiteSettings.upsert({
     where: { domain: 'innerbright.vn' },
     update: {
-      homeRedirect: '/ve-innerbright',
+      homeRedirect: '/innerbright',
     },
     create: {
       domain: 'innerbright.vn',
@@ -20,7 +20,7 @@ async function main() {
       siteOgImage: '/images/innerbright-og.jpg',
       twitterHandle: '@innerbright',
       googleAnalytics: 'G-XXXXXXXXXX',
-      homeRedirect: '/ve-innerbright',
+      homeRedirect: '/innerbright',
       organizationSchema: {
         '@context': 'https://schema.org',
         '@type': 'Organization',
@@ -35,7 +35,7 @@ async function main() {
   console.log('📌 Domain:', settings.domain);
   console.log('🏠 Trang chủ redirect:', settings.homeRedirect);
   console.log('📝 Site name:', settings.siteName);
-  console.log('\n✨ Bây giờ khi truy cập https://innerbright.vn sẽ tự động redirect sang /ve-innerbright');
+  console.log('\n✨ Bây giờ khi truy cập https://innerbright.vn sẽ tự động redirect sang /innerbright');
 }
 
 main()

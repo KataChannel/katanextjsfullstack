@@ -195,7 +195,7 @@ NETWORK: innerbright-network
 4. `components/footer.tsx` - Logo URL
 
 ### Public Pages (20+ files)
-5. `app/(public)/ve-innerbright/components/*.tsx` (10 files)
+5. `app/(public)/innerbright/components/*.tsx` (10 files)
 6. `app/(public)/bo-the-nlp/components/*.tsx` (5 files)
 
 ### Scripts
@@ -214,7 +214,7 @@ NETWORK: innerbright-network
 
 - **Website:** https://innerbright.vn/
 - **API Proxy Pattern:** https://innerbright.vn/api/minio-proxy/innerbright/{filename}
-- **About Page:** https://innerbright.vn/ve-innerbright
+- **About Page:** https://innerbright.vn/innerbright
 - **NLP Page:** https://innerbright.vn/bo-the-nlp
 
 ## 📌 Next Steps

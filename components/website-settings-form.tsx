@@ -239,10 +239,10 @@ export function WebsiteSettingsForm({ domain, websiteSettings }: WebsiteSettings
                   id="homeRedirect"
                   name="homeRedirect"
                   defaultValue={websiteSettings.homeRedirect || ""}
-                  placeholder="/ve-innerbright"
+                  placeholder="/innerbright"
                 />
                 <p className="text-sm text-muted-foreground">
-                  URL để redirect khi truy cập trang chủ (VD: /ve-innerbright, /khoa-hoc). Để trống nếu không cần redirect.
+                  URL để redirect khi truy cập trang chủ (VD: /innerbright, /khoa-hoc). Để trống nếu không cần redirect.
                 </p>
               </div>
 

@@ -5,7 +5,7 @@
 
 ## Vấn đề
 
-Class `text-[#FFB340]` (arbitrary value) **KHÔNG hoạt động** trong HTML Custom Block trên http://localhost:3005/ve-innerbright
+Class `text-[#FFB340]` (arbitrary value) **KHÔNG hoạt động** trong HTML Custom Block trên http://localhost:3005/innerbright
 
 ## Nguyên nhân
 

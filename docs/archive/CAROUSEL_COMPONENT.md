@@ -72,7 +72,7 @@
 
 ## Sử Dụng
 1. Carousel đã được thêm vào page "Về InnerBright"
-2. Truy cập: http://localhost:3005/ve-innerbright
+2. Truy cập: http://localhost:3005/innerbright
 3. Carousel sẽ tự động chạy với 3 slides mẫu
 
 ## Lưu Ý

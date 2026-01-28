@@ -271,7 +271,7 @@ POSTS:
   - Expected: Shows 3 V2 blocks (text, image, button)
 
 - [ ] Individual page renders V2 blocks
-  - URL: http://localhost:3005/ve-innerbright
+  - URL: http://localhost:3005/innerbright
   - Expected: Shows page content with V2 blocks
 
 - [ ] Empty V2 pages show correctly

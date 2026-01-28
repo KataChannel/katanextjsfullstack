@@ -198,7 +198,7 @@ URL: http://localhost:3005/
       ├─ If custom homepage set → <CustomHomePage />
       └─ Else → Default homepage
 
-URL: http://localhost:3005/ve-innerbright
+URL: http://localhost:3005/innerbright
   ↓
   └─→ app/(public)/[slug]/page.tsx (slug="ve-innerbright") ✅
 ```
@@ -247,11 +247,11 @@ Result: V2 blocks only (clean full-width layout)
 
 ### Test 2: Dynamic Page Route ✅
 **Setup:**
-- Page "Về InnerBright" với slug "/ve-innerbright"
+- Page "Về InnerBright" với slug "/innerbright"
 - Has blocksV2 với 3 blocks
 
 **Expected:**
-- URL "/ve-innerbright" works correctly
+- URL "/innerbright" works correctly
 - NO conflict with homepage
 - Proper page rendering
 
@@ -358,7 +358,7 @@ Blocks: V2 format (4 blocks: image, text, button, container)
 
 **URL Routing:**
 - `http://localhost:3005/` → Page "Trang Chủ" (V2 blocks, no header)
-- `http://localhost:3005/ve-innerbright` → Page "Về InnerBright" (V2 blocks, no header)
+- `http://localhost:3005/innerbright` → Page "Về InnerBright" (V2 blocks, no header)
 - Other URLs → Dynamic routing as normal
 
 ---

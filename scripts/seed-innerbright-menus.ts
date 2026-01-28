@@ -22,7 +22,7 @@ async function seedMenus() {
   const menus = [
     {
       label: 'Về InnerBright',
-      url: '/ve-innerbright',
+      url: '/innerbright',
       icon: 'Home',
       order: 1,
       published: true,

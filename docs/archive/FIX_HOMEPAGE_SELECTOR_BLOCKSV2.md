@@ -171,7 +171,7 @@ bun run scripts/check-homepage-settings.ts
 
 ✅ Homepage is set to PAGE:
   - Title: Về InnerBright
-  - Slug: /ve-innerbright
+  - Slug: /innerbright
   - Published: true
   - Has blocks (V1): false
   - Has blocksV2: true

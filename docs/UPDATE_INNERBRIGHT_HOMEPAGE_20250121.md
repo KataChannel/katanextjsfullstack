@@ -6,13 +6,13 @@
 
 ### 1. Cấu hình database
 - ✅ Đã cập nhật `WebsiteSettings` cho domain `innerbright.vn`
-- ✅ Thiết lập `homeRedirect = '/ve-innerbright'`
+- ✅ Thiết lập `homeRedirect = '/innerbright'`
 - ✅ Tự động redirect khi truy cập https://innerbright.vn
 
 ### 2. Cấu trúc database
 ```sql
 UPDATE "WebsiteSettings" 
-SET "homeRedirect" = '/ve-innerbright',
+SET "homeRedirect" = '/innerbright',
     "siteName" = 'InnerBright Training & Coaching',
     "metaTitle" = 'InnerBright - Đào tạo NLP & Coaching chuyên nghiệp'
 WHERE domain = 'innerbright.vn';
@@ -28,9 +28,9 @@ WHERE domain = 'innerbright.vn';
    ↓
 4. Kiểm tra websiteSettings.homeRedirect
    ↓
-5. Nếu có homeRedirect → redirect('/ve-innerbright')
+5. Nếu có homeRedirect → redirect('/innerbright')
    ↓
-6. User được redirect sang: https://innerbright.vn/ve-innerbright
+6. User được redirect sang: https://innerbright.vn/innerbright
 ```
 
 ### 4. Files liên quan
@@ -60,21 +60,21 @@ if (websiteSettings?.homeRedirect && websiteSettings.homeRedirect.trim() !== '')
 
 ### 5. Kết quả
 
-✅ **Đã hoàn thành:** Domain innerbright.vn giờ sẽ tự động redirect sang `/ve-innerbright`
+✅ **Đã hoàn thành:** Domain innerbright.vn giờ sẽ tự động redirect sang `/innerbright`
 
 📝 **Console logs khi truy cập:**
 ```
 [Homepage] Domain: innerbright.vn
-[Homepage] Website Settings: { homeRedirect: '/ve-innerbright', ... }
-[Homepage] Home Redirect: /ve-innerbright
-[Homepage] Redirecting to: /ve-innerbright
+[Homepage] Website Settings: { homeRedirect: '/innerbright', ... }
+[Homepage] Home Redirect: /innerbright
+[Homepage] Redirecting to: /innerbright
 ```
 
 ### 6. Testing
 
 **Test trên production:**
 1. Truy cập: https://innerbright.vn
-2. Sẽ tự động redirect sang: https://innerbright.vn/ve-innerbright
+2. Sẽ tự động redirect sang: https://innerbright.vn/innerbright
 3. Trang "Về InnerBright" sẽ hiển thị
 
 **Kiểm tra database:**
@@ -99,7 +99,7 @@ bun prisma studio
 Có thể thay đổi homepage redirect qua admin panel:
 1. Truy cập: /admin/website-settings
 2. Tìm field "Home Redirect URL"
-3. Nhập: `/ve-innerbright` hoặc bất kỳ URL nào
+3. Nhập: `/innerbright` hoặc bất kỳ URL nào
 4. Lưu lại
 
 ## Triển khai
@@ -118,4 +118,4 @@ bun run scripts/set-innerbright-homepage.ts
 
 ## Hoàn thành ✅
 
-Domain **innerbright.vn** giờ đã được cấu hình redirect trang chủ sang **/ve-innerbright**
+Domain **innerbright.vn** giờ đã được cấu hình redirect trang chủ sang **/innerbright**

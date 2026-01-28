@@ -42,7 +42,7 @@ async function main() {
   // Mặc định menu URLs nếu chưa có trong settings
   if (allMenuUrls.length === 0) {
     allMenuUrls = [
-      '/ve-innerbright',
+      '/innerbright',
       '/nlp',
       '/time-line-therapy',
       '/dao-tao-doanh-nghiep',
@@ -89,11 +89,11 @@ async function main() {
   const userPermission = await prisma.menuPermission.upsert({
     where: { userId: demoUser.id },
     update: {
-      allowedMenus: ['/ve-innerbright', '/lien-he', '/thu-vien'],
+      allowedMenus: ['/innerbright', '/lien-he', '/thu-vien'],
     },
     create: {
       userId: demoUser.id,
-      allowedMenus: ['/ve-innerbright', '/lien-he', '/thu-vien'],
+      allowedMenus: ['/innerbright', '/lien-he', '/thu-vien'],
     },
   });
 

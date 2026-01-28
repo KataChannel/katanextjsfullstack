@@ -355,7 +355,7 @@ Click **Save Changes**
 ### Bước 5: Preview & Test
 
 - Canvas editor: Live preview
-- Frontend: Refresh trang `/ve-innerbright`
+- Frontend: Refresh trang `/innerbright`
 - Verify colors hiển thị đúng
 
 ## Tips & Tricks
