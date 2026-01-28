@@ -9,7 +9,7 @@ export default function HeroSection() {
       {/* Background Brain/Hands */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/resources/nlp/hero-nlp-bg.png"
+          src="/resources/nlp/hinh1.png"
           alt="NLP Brain and Hands Background"
           fill
           className="object-cover opacity-70"
