@@ -13,7 +13,7 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const prisma = await getPrisma();
-  
+
   const page = await prisma.page.findUnique({
     where: { slug },
   });
@@ -33,8 +33,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export async function generateStaticParams() {
   try {
-    const prisma = await getPrisma('tazagroup.vn');
-    
+    const prisma = await getPrisma('innerbright.vn');
+
     const pages = await prisma.page.findMany({
       where: { published: true },
       select: { slug: true },
@@ -52,7 +52,7 @@ export async function generateStaticParams() {
 export default async function DynamicPage({ params }: PageProps) {
   const { slug } = await params;
   const prisma = await getPrisma();
-  
+
   const page = await prisma.page.findUnique({
     where: { slug },
     include: {
@@ -98,7 +98,7 @@ export default async function DynamicPage({ params }: PageProps) {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto prose prose-sm sm:prose dark:prose-invert">
             {page.content && (
-              <div 
+              <div
                 dangerouslySetInnerHTML={{ __html: page.content }}
                 className="space-y-4"
               />

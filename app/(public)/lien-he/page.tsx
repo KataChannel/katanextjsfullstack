@@ -45,21 +45,21 @@ export default function ContactPage() {
         setLoading(false);
       }
     };
-    
+
     fetchContactPage();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      
+
       if (res.ok) {
         setSubmitted(true);
         setFormData({ name: '', email: '', phone: '', message: '' });
@@ -125,8 +125,8 @@ export default function ContactPage() {
                       <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium mb-1">Điện thoại</p>
-                        <a 
-                          href="tel:1900xxxx" 
+                        <a
+                          href="tel:1900xxxx"
                           className="text-sm text-muted-foreground hover:text-primary transition-colors"
                         >
                           1900 xxxx
@@ -140,11 +140,11 @@ export default function ContactPage() {
                       <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                       <div>
                         <p className="font-medium mb-1">Email</p>
-                        <a 
-                          href="mailto:contact@tazagroup.vn" 
+                        <a
+                          href="mailto:contact@innerbright.vn"
                           className="text-sm text-muted-foreground hover:text-primary transition-colors"
                         >
-                          contact@tazagroup.vn
+                          contact@innerbright.vn
                         </a>
                       </div>
                     </CardContent>
@@ -237,8 +237,8 @@ export default function ContactPage() {
                       />
                     </div>
 
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       disabled={isSubmitting}
                       className="w-full"
                     >
@@ -253,7 +253,7 @@ export default function ContactPage() {
           {/* Page Content from Database */}
           {pageData?.content && (
             <div className="mt-12 max-w-3xl mx-auto prose prose-sm sm:prose dark:prose-invert">
-              <div 
+              <div
                 dangerouslySetInnerHTML={{ __html: pageData.content }}
                 className="space-y-4"
               />

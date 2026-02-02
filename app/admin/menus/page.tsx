@@ -90,18 +90,7 @@ export default function MenuManagementPage() {
   // Detect current domain from port
   useEffect(() => {
     const detectDomain = () => {
-      const port = window.location.port || "3000";
-      const portMap: Record<string, string> = {
-        "3000": "tazagroup.vn",
-        "3001": "tazaskinclinic.com",
-        "3002": "timona.edu.vn",
-        "3003": "hderma.vn",
-        "3004": "elasome.com",
-        "3005": "innerbright.vn",
-      };
-      
-      const detectedDomain = portMap[port] || "tazagroup.vn";
-      setSelectedDomain(detectedDomain);
+      setSelectedDomain("innerbright.vn");
     };
 
     detectDomain();
@@ -119,7 +108,7 @@ export default function MenuManagementPage() {
 
   const fetchMenus = async () => {
     if (!selectedDomain) return;
-    
+
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/menus?domain=${selectedDomain}`);
@@ -180,7 +169,7 @@ export default function MenuManagementPage() {
 
       const res = await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method,
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
@@ -229,8 +218,8 @@ export default function MenuManagementPage() {
   };
 
   const handleToggleSelectMenu = (menuId: string) => {
-    setSelectedMenuIds(prev => 
-      prev.includes(menuId) 
+    setSelectedMenuIds(prev =>
+      prev.includes(menuId)
         ? prev.filter(id => id !== menuId)
         : [...prev, menuId]
     );
@@ -267,7 +256,7 @@ export default function MenuManagementPage() {
     try {
       const res = await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method: "PUT",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -302,7 +291,7 @@ export default function MenuManagementPage() {
 
     const newMenus = [...menus];
     const swapIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
-    
+
     // Swap orders
     const temp = newMenus[currentIndex].order;
     newMenus[currentIndex].order = newMenus[swapIndex].order;
@@ -312,7 +301,7 @@ export default function MenuManagementPage() {
     try {
       await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method: "PUT",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -329,7 +318,7 @@ export default function MenuManagementPage() {
 
       await fetch(`/api/admin/menus?domain=${selectedDomain}`, {
         method: "PUT",
-        headers: { 
+        headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -443,8 +432,8 @@ export default function MenuManagementPage() {
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 {selectedMenuIds.length > 0 && (
-                  <Button 
-                    variant="destructive" 
+                  <Button
+                    variant="destructive"
                     size="sm"
                     onClick={() => setIsBulkDeleteDialogOpen(true)}
                   >
@@ -583,104 +572,104 @@ export default function MenuManagementPage() {
                 </thead>
                 <tbody className="divide-y">
                   {filteredAndSortedMenus.map((menu, index) => (
-                  <tr key={menu.id} className="hover:bg-muted/30">
-                    <td className="px-4 py-3 text-center">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-5 w-5"
-                        onClick={() => handleToggleSelectMenu(menu.id)}
-                      >
-                        {selectedMenuIds.includes(menu.id) ? (
-                          <CheckSquare className="h-4 w-4 text-primary" />
-                        ) : (
-                          <Square className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </td>
-                    <td className="px-4 py-3 text-sm">{index + 1}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{menu.label}</span>
-                        {menu.parentId && (
-                          <Badge variant="outline" className="text-xs">
-                            Submenu
-                          </Badge>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-muted-foreground">
-                      {menu.url}
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge variant="outline" className="text-xs">
-                        {POSITION_OPTIONS.find(p => p.value === menu.position)?.label || menu.position}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge variant={menu.published ? "default" : "secondary"}>
-                        {menu.published ? "Hiện" : "Ẩn"}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
+                    <tr key={menu.id} className="hover:bg-muted/30">
+                      <td className="px-4 py-3 text-center">
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="h-7 w-7"
-                          onClick={() => handleReorder(menu, "up")}
-                          disabled={index === 0}
+                          className="h-5 w-5"
+                          onClick={() => handleToggleSelectMenu(menu.id)}
                         >
-                          <ArrowUp className="h-4 w-4" />
-                        </Button>
-                        <span className="text-sm text-muted-foreground w-8 text-center">
-                          {menu.order}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          onClick={() => handleReorder(menu, "down")}
-                          disabled={index === menus.length - 1}
-                        >
-                          <ArrowDown className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleTogglePublish(menu)}
-                          title={menu.published ? "Ẩn menu" : "Hiện menu"}
-                        >
-                          {menu.published ? (
-                            <Eye className="h-4 w-4" />
+                          {selectedMenuIds.includes(menu.id) ? (
+                            <CheckSquare className="h-4 w-4 text-primary" />
                           ) : (
-                            <EyeOff className="h-4 w-4" />
+                            <Square className="h-4 w-4" />
                           )}
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleOpenDialog(menu)}
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            setSelectedMenu(menu);
-                            setIsDeleteDialogOpen(true);
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className="px-4 py-3 text-sm">{index + 1}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{menu.label}</span>
+                          {menu.parentId && (
+                            <Badge variant="outline" className="text-xs">
+                              Submenu
+                            </Badge>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-muted-foreground">
+                        {menu.url}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant="outline" className="text-xs">
+                          {POSITION_OPTIONS.find(p => p.value === menu.position)?.label || menu.position}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge variant={menu.published ? "default" : "secondary"}>
+                          {menu.published ? "Hiện" : "Ẩn"}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => handleReorder(menu, "up")}
+                            disabled={index === 0}
+                          >
+                            <ArrowUp className="h-4 w-4" />
+                          </Button>
+                          <span className="text-sm text-muted-foreground w-8 text-center">
+                            {menu.order}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => handleReorder(menu, "down")}
+                            disabled={index === menus.length - 1}
+                          >
+                            <ArrowDown className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleTogglePublish(menu)}
+                            title={menu.published ? "Ẩn menu" : "Hiện menu"}
+                          >
+                            {menu.published ? (
+                              <Eye className="h-4 w-4" />
+                            ) : (
+                              <EyeOff className="h-4 w-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleOpenDialog(menu)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setSelectedMenu(menu);
+                              setIsDeleteDialogOpen(true);
+                            }}
+                          >
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
                   ))}
                 </tbody>
               </table>

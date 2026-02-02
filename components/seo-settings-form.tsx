@@ -41,7 +41,7 @@ export function SeoSettingsForm({ domain, seoSettings }: SeoSettingsFormProps) {
 
     try {
       const formData = new FormData(e.currentTarget);
-      
+
       const response = await fetch("/api/seo-settings", {
         method: "POST",
         body: formData,
@@ -66,7 +66,7 @@ export function SeoSettingsForm({ domain, seoSettings }: SeoSettingsFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <input type="hidden" name="domain" value={domain} />
-      
+
       {/* Basic SEO */}
       <Card>
         <CardHeader>
@@ -82,7 +82,7 @@ export function SeoSettingsForm({ domain, seoSettings }: SeoSettingsFormProps) {
               id="siteName"
               name="siteName"
               defaultValue={seoSettings.siteName || ""}
-              placeholder="Ví dụ: Taza Group - Giải pháp làm đẹp toàn diện"
+              placeholder="Ví dụ: InnerBright - Training & Coaching NLP"
               className="max-w-full"
             />
             <p className="text-xs text-muted-foreground">
@@ -110,7 +110,7 @@ export function SeoSettingsForm({ domain, seoSettings }: SeoSettingsFormProps) {
               id="twitterHandle"
               name="twitterHandle"
               defaultValue={seoSettings.twitterHandle || ""}
-              placeholder="@tazagroup"
+              placeholder="@innerbright"
             />
             <p className="text-xs text-muted-foreground">
               Tài khoản Twitter/X của bạn (bao gồm @)
@@ -203,7 +203,7 @@ export function SeoSettingsForm({ domain, seoSettings }: SeoSettingsFormProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <HomePageSelector 
+          <HomePageSelector
             defaultType={seoSettings.homePageType}
             defaultId={seoSettings.homePageId}
           />

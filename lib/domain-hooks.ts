@@ -26,9 +26,9 @@ export function useDomainInfo() {
   return useMemo(() => {
     if (typeof window === 'undefined') {
       return {
-        hostname: 'localhost:3000',
-        domain: 'tazagroup.vn',
-        port: '3000',
+        hostname: 'localhost:3005',
+        domain: 'innerbright.vn',
+        port: '3005',
       };
     }
 
@@ -36,23 +36,9 @@ export function useDomainInfo() {
     const port = window.location.port;
     const fullHostname = port ? `${hostname}:${port}` : hostname;
 
-    // Map localhost:port to actual domain
-    const portToDomain: Record<string, string> = {
-      '3000': 'tazagroup.vn',
-      '3001': 'tazaskinclinic.com',
-      '3002': 'timona.edu.vn',
-      '3003': 'hderma.vn',
-      '3004': 'elasome.com',
-    };
-
-    let actualDomain = hostname;
-    if (hostname === 'localhost' && port) {
-      actualDomain = portToDomain[port] || 'tazagroup.vn';
-    }
-
     return {
       hostname: fullHostname,
-      domain: actualDomain.replace(/^www\./, ''),
+      domain: 'innerbright.vn',
       port,
     };
   }, []);

@@ -16,7 +16,7 @@ export default async function Home() {
   // Get current domain from proxy middleware (x-domain header)
   const headersList = await headers();
   const domain = headersList.get("x-domain") || '';
-  
+
   // Bypass database for static domain
   if (domain === 'innerbright.vn' || domain.includes('localhost:3005')) {
     console.log('[Homepage] Static domain detected, bypassing database');
@@ -26,11 +26,11 @@ export default async function Home() {
   let prisma;
   let websiteSettings = null;
   try {
-    prisma = await getPrisma(domain || 'tazagroup.vn');
-    
+    prisma = await getPrisma(domain || 'innerbright.vn');
+
     // Check if a custom homepage is set
     websiteSettings = await prisma.websiteSettings.findUnique({
-      where: { domain: domain || 'tazagroup.vn' },
+      where: { domain: domain || 'innerbright.vn' },
       select: {
         homePageType: true,
         homePageId: true,
@@ -143,16 +143,16 @@ export default async function Home() {
     ]),
     // Fetch custom homepage blocks if any
     prisma.page.findFirst({
-      where: { 
+      where: {
         slug: 'homepage-blocks',
-        published: true 
+        published: true
       },
       select: {
         blocks: true,
       }
     })
   ]);
-  
+
   const [postsCount, pagesCount, usersCount] = stats;
 
   // Hero carousel slides

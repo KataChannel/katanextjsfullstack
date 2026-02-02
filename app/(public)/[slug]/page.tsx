@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   try {
     const { slug } = await params;
     const prisma = await getPrisma();
-    
+
     // Try to find as page first
     const page = await prisma.page.findUnique({
       where: { slug },
@@ -72,11 +72,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export async function generateStaticParams() {
   try {
     // Sử dụng domain mặc định cho build time
-    const prisma = await getPrisma('tazagroup.vn');
-    
+    const prisma = await getPrisma('innerbright.vn');
+
     // Get all published pages (exclude slug "/" - handled by homepage route)
     const pages = await prisma.page.findMany({
-      where: { 
+      where: {
         published: true,
         slug: { not: '/' }  // Exclude homepage slug
       },
@@ -105,19 +105,19 @@ export async function generateStaticParams() {
 export default async function PageDetail({ params, searchParams }: PageProps) {
   try {
     const { slug } = await params;
-    
+
     // Redirect slug "/" to homepage (handled by app/(public)/page.tsx)
     if (slug === '/') {
       redirect('/');
     }
-    
+
     const { preview } = await searchParams;
     const prisma = await getPrisma();
 
     // Check if preview mode and user is authenticated
     const isPreview = preview === 'true';
     let canPreview = false;
-    
+
     if (isPreview) {
       const session = await auth();
       canPreview = !!session?.user;
@@ -211,12 +211,12 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
   let blocks: any[] | null = null;
   let isPageBuilder = false;
   let blocksV2: any[] | null = null;
-  
+
   // Check for V2 blocks first (newer format)
   if (content.blocksV2) {
     try {
       const parsed = typeof content.blocksV2 === 'string' ? JSON.parse(content.blocksV2) : content.blocksV2;
-      
+
       // V2 format: { blocks: [...], version: 2 }
       if (parsed && parsed.blocks && Array.isArray(parsed.blocks)) {
         blocksV2 = parsed.blocks;
@@ -226,17 +226,17 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
       blocksV2 = null;
     }
   }
-  
+
   // Check for V1 blocks (legacy format)
   if (!blocksV2 && content.blocks) {
     try {
       const parsed = typeof content.blocks === 'string' ? JSON.parse(content.blocks) : content.blocks;
-      
+
       // Check if it's PageBuilder format (has canvas.elements)
       if (parsed && typeof parsed === 'object' && parsed.canvas && Array.isArray(parsed.canvas.elements)) {
         blocks = parsed.canvas.elements;
         isPageBuilder = true;
-      } 
+      }
       // Check if it's old format (direct array)
       else if (Array.isArray(parsed)) {
         blocks = parsed;
@@ -257,8 +257,8 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
   let articleSchema = null;
   if (type === 'post') {
     const headersList = await headers();
-    const hostname = headersList.get('x-hostname') || 'tazagroup.vn';
-    
+    const hostname = headersList.get('x-hostname') || 'innerbright.vn';
+
     articleSchema = generateArticleSchema({
       headline: content.title,
       description: content.excerpt || content.content?.substring(0, 200) || '',
@@ -269,7 +269,7 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
         name: content.author?.name || 'Admin',
       },
       publisher: {
-        name: 'Taza Group',
+        name: 'InnerBright',
         logo: `https://${hostname}/logo.png`,
       },
       url: `https://${hostname}/${content.slug}`,
@@ -293,78 +293,78 @@ async function renderContent(content: any, type: 'page' | 'post', showHeader = t
             ⚠️ Preview Mode - This draft is only visible to authenticated users
           </div>
         )}
-        
+
         <div className="container mx-auto">
-        <article className="mx-auto">
-        {/* Header - Only show for posts or pages without V2 blocks/Page Builder */}
-        {(type === 'post' || (!blocksV2 && !isPageBuilder)) && (
-          <header className="mb-8">
-            {/* Featured Image (for posts) */}
-            {type === 'post' && content.ogImage && (
-              <div className="mb-6 -mx-4 md:mx-0">
-                <img
-                  src={content.ogImage}
-                  alt={content.title}
-                  className="w-full h-auto rounded-lg"
-                />
-              </div>
-            )}
+          <article className="mx-auto">
+            {/* Header - Only show for posts or pages without V2 blocks/Page Builder */}
+            {(type === 'post' || (!blocksV2 && !isPageBuilder)) && (
+              <header className="mb-8">
+                {/* Featured Image (for posts) */}
+                {type === 'post' && content.ogImage && (
+                  <div className="mb-6 -mx-4 md:mx-0">
+                    <img
+                      src={content.ogImage}
+                      alt={content.title}
+                      className="w-full h-auto rounded-lg"
+                    />
+                  </div>
+                )}
 
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{content.title}</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4">{content.title}</h1>
 
-            {/* Excerpt (for posts) */}
-            {type === 'post' && content.excerpt && (
-              <p className="text-xl text-muted-foreground mb-4">{content.excerpt}</p>
-            )}
+                {/* Excerpt (for posts) */}
+                {type === 'post' && content.excerpt && (
+                  <p className="text-xl text-muted-foreground mb-4">{content.excerpt}</p>
+                )}
 
-            {/* Meta info */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-t border-b py-4">
-              <time dateTime={content.createdAt.toISOString()}>
-                {new Date(content.createdAt).toLocaleDateString('vi-VN', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
-              {content.author?.name && (
-                <>
-                  <span>•</span>
-                  <span>Bởi {content.author.name}</span>
-                </>
-              )}
-              {content.updatedAt > content.createdAt && (
-                <>
-                  <span>•</span>
-                  <span>
-                    Cập nhật:{' '}
-                    {new Date(content.updatedAt).toLocaleDateString('vi-VN', {
+                {/* Meta info */}
+                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground border-t border-b py-4">
+                  <time dateTime={content.createdAt.toISOString()}>
+                    {new Date(content.createdAt).toLocaleDateString('vi-VN', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
                     })}
-                  </span>
-                </>
+                  </time>
+                  {content.author?.name && (
+                    <>
+                      <span>•</span>
+                      <span>Bởi {content.author.name}</span>
+                    </>
+                  )}
+                  {content.updatedAt > content.createdAt && (
+                    <>
+                      <span>•</span>
+                      <span>
+                        Cập nhật:{' '}
+                        {new Date(content.updatedAt).toLocaleDateString('vi-VN', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </>
+                  )}
+                </div>
+              </header>
+            )}
+
+            {/* Content */}
+            <div className="prose prose-lg max-w-none">
+              {blocksV2 && blocksV2.length > 0 ? (
+                <BlocksV2Renderer blocks={blocksV2} />
+              ) : blocks && blocks.length > 0 ? (
+                isPageBuilder ? (
+                  <PageBuilderRenderer elements={blocks} />
+                ) : (
+                  <PageBlocksRenderer blocks={blocks} />
+                )
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: content.content || '' }} />
               )}
             </div>
-          </header>
-        )}
-
-        {/* Content */}
-        <div className="prose prose-lg max-w-none">
-          {blocksV2 && blocksV2.length > 0 ? (
-            <BlocksV2Renderer blocks={blocksV2} />
-          ) : blocks && blocks.length > 0 ? (
-            isPageBuilder ? (
-              <PageBuilderRenderer elements={blocks} />
-            ) : (
-              <PageBlocksRenderer blocks={blocks} />
-            )
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: content.content || '' }} />
-          )}
+          </article>
         </div>
-      </article>
-      </div>
       </PageLayoutWrapper>
     </>
   );
@@ -380,7 +380,7 @@ function PageBuilderRenderer({ elements }: { elements: any[] }) {
     <div className="relative w-full">
       {elements.map((element: any) => {
         const { id, type, content, styles = {}, props = {} } = element;
-        
+
         // Build inline styles from element.styles
         const inlineStyles: React.CSSProperties = {
           position: styles.position || 'relative',
@@ -437,9 +437,9 @@ function PageBuilderRenderer({ elements }: { elements: any[] }) {
             return (
               <div key={id} style={inlineStyles} className="image-element">
                 {content ? (
-                  <img 
-                    src={content} 
-                    alt={props.alt || ''} 
+                  <img
+                    src={content}
+                    alt={props.alt || ''}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -506,7 +506,7 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
     <div className="space-y-6">
       {blocks.map((block: any, index: number) => {
         const blockId = block.id || `block-${index}`;
-        
+
         switch (block.type) {
           case 'carousel':
             // V2 carousel block
@@ -514,7 +514,7 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const autoplay = block.content?.autoplay ?? true;
             const interval = block.content?.interval || 5000;
             const carouselStyles = block.styles?.element || block.styles?.container || '';
-            
+
             return (
               <div key={blockId} className={carouselStyles || 'w-full'}>
                 <CarouselBlock
@@ -525,17 +525,17 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
               </div>
             );
 
-          
+
           case 'text':
             // V2 text block with rich content
             const textContent = block.content?.text || block.content || '';
             const textTag = block.content?.tag || 'div';
             const textStyles = block.styles?.element || block.styles?.container || '';
-            
+
             // Render with appropriate tag
             const validTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'span'];
             const safeTag = validTags.includes(textTag) ? textTag : 'div';
-            
+
             switch (safeTag) {
               case 'h1':
                 return <h1 key={blockId} className={textStyles || 'prose prose-lg max-w-none'} dangerouslySetInnerHTML={{ __html: textContent }} />;
@@ -563,7 +563,7 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const imageAlt = block.content?.alt || block.name || '';
             const imageContainerStyles = block.styles?.container || '';
             const imageStyles = block.styles?.element || 'w-full h-auto rounded-lg';
-            
+
             return (
               <figure key={blockId} className={imageContainerStyles || 'my-8'}>
                 <img
@@ -580,14 +580,13 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const buttonLink = block.content?.link || '#';
             const buttonContainerStyles = block.styles?.container || '';
             const buttonStyles = block.styles?.element || '';
-            
+
             // Use custom styles if provided, otherwise use default variant styles
-            const defaultButtonStyles = buttonStyles || `inline-block px-6 py-3 rounded-lg font-semibold transition-colors ${
-              block.content?.variant === 'secondary'
-                ? 'bg-gray-200 text-gray-900 hover:bg-gray-300'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`;
-            
+            const defaultButtonStyles = buttonStyles || `inline-block px-6 py-3 rounded-lg font-semibold transition-colors ${block.content?.variant === 'secondary'
+              ? 'bg-gray-200 text-gray-900 hover:bg-gray-300'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`;
+
             return (
               <div key={blockId} className={buttonContainerStyles || 'my-6'}>
                 <a
@@ -605,10 +604,10 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const containerElementStyles = block.styles?.element || '';
             const containerBg = block.content?.background || {};
             const children = block.children || [];
-            
+
             // Build inline styles for background
             const containerInlineStyles: React.CSSProperties = {};
-            
+
             if (containerBg.type === 'color' && containerBg.value) {
               containerInlineStyles.backgroundColor = containerBg.value;
               if (containerBg.opacity !== undefined && containerBg.opacity !== 100) {
@@ -623,10 +622,10 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
                 containerInlineStyles.opacity = containerBg.opacity / 100;
               }
             }
-            
+
             return (
-              <div 
-                key={blockId} 
+              <div
+                key={blockId}
                 className={containerStyles || 'w-full'}
                 style={Object.keys(containerInlineStyles).length > 0 ? containerInlineStyles : undefined}
               >
@@ -647,7 +646,7 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const headingText = block.content?.text || block.content || 'Heading';
             const headingLevel = block.content?.level || 2;
             const headingStyles = block.styles?.element || block.styles?.container || '';
-            
+
             // Default styles if no custom styles provided
             const defaultHeadingStyles: Record<number, string> = {
               1: 'text-4xl font-bold my-4',
@@ -657,9 +656,9 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
               5: 'text-lg font-bold my-4',
               6: 'text-base font-bold my-4',
             };
-            
+
             const finalHeadingStyles = headingStyles || defaultHeadingStyles[headingLevel] || defaultHeadingStyles[2];
-            
+
             // Render heading based on level
             if (headingLevel === 1) {
               return <h1 key={blockId} className={finalHeadingStyles}>{headingText}</h1>;
@@ -679,14 +678,14 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             // V2 HTML custom block
             const htmlContent = block.content?.html || '';
             const htmlContainerStyles = block.styles?.container || 'w-full';
-            
+
             // Container có Tailwind classes, content HTML bên trong
             return (
               <div key={blockId} className={htmlContainerStyles}>
                 <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
               </div>
             );
-            
+
           case 'divider':
             // V2 divider block
             const dividerStyles = block.styles?.element || block.styles?.container || 'border-t border-gray-300 my-4';
@@ -697,8 +696,8 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const spacerHeight = block.content?.height || '2rem';
             const spacerStyles = block.styles?.element || block.styles?.container || '';
             return (
-              <div 
-                key={blockId} 
+              <div
+                key={blockId}
                 className={spacerStyles}
                 style={{ height: spacerHeight }}
               />
@@ -710,7 +709,7 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const videoProvider = block.content?.provider || 'youtube';
             const videoContainerStyles = block.styles?.container || 'relative w-full my-8';
             const videoStyles = block.styles?.element || 'w-full aspect-video';
-            
+
             return (
               <div key={blockId} className={videoContainerStyles}>
                 {videoUrl ? (
@@ -733,7 +732,7 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
             const iconName = block.content?.name || 'star';
             const iconSize = block.content?.size || 24;
             const iconStyles = block.styles?.element || block.styles?.container || 'text-gray-900';
-            
+
             return (
               <div key={blockId} className={iconStyles}>
                 <svg
@@ -752,12 +751,12 @@ function BlocksV2Renderer({ blocks }: { blocks: any[] }) {
           default:
             // Unknown block type - try to render content with styles
             if (block.content) {
-              const content = typeof block.content === 'string' 
-                ? block.content 
+              const content = typeof block.content === 'string'
+                ? block.content
                 : block.content?.text || JSON.stringify(block.content);
-              
+
               const unknownBlockStyles = block.styles?.element || block.styles?.container || '';
-              
+
               return (
                 <div key={blockId} className={unknownBlockStyles || 'my-4'}>
                   <div dangerouslySetInnerHTML={{ __html: content }} />

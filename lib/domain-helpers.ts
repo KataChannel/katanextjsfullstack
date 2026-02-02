@@ -38,7 +38,7 @@ export async function getCurrentHostname(): Promise<string> {
  */
 export async function getCurrentDomain(): Promise<string> {
   const headersList = await headers();
-  return headersList.get('x-domain') || 'tazagroup.vn';
+  return headersList.get('x-domain') || 'innerbright.vn';
 }
 
 /**
@@ -46,7 +46,7 @@ export async function getCurrentDomain(): Promise<string> {
  */
 export async function getCurrentSiteName(): Promise<string> {
   const headersList = await headers();
-  return headersList.get('x-site-name') || 'Taza Group';
+  return headersList.get('x-site-name') || 'InnerBright';
 }
 
 /**

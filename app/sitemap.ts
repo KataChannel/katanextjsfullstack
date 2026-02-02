@@ -4,7 +4,7 @@ import { headers } from 'next/headers';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const headersList = await headers();
-  const domain = headersList.get('x-hostname') || 'tazagroup.vn';
+  const domain = headersList.get('x-hostname') || 'innerbright.vn';
   const baseUrl = `https://${domain}`;
 
   try {

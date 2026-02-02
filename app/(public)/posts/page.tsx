@@ -14,8 +14,8 @@ export const metadata: Metadata = generateSEOMetadata({
 });
 
 export default async function BlogListPage() {
-  const prisma = await getPrisma('tazagroup.vn');
-  
+  const prisma = await getPrisma('innerbright.vn');
+
   const posts = await prisma.post.findMany({
     where: { published: true },
     orderBy: { createdAt: 'desc' },
@@ -86,8 +86,8 @@ export default async function BlogListPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {posts.map((post) => (
-                <Card 
-                  key={post.id} 
+                <Card
+                  key={post.id}
                   className="flex flex-col hover:shadow-xl transition-all duration-300 group"
                 >
                   <CardHeader className="space-y-3">

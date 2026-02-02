@@ -7,7 +7,7 @@ import { headers } from 'next/headers';
 export async function GET(request: Request) {
   try {
     const headersList = await headers();
-    const domain = headersList.get('x-domain') || 'tazagroup.vn';
+    const domain = headersList.get('x-domain') || 'innerbright.vn';
     const prisma = await getPrisma(domain);
     
     // Lấy position từ query parameter

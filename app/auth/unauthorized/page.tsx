@@ -10,9 +10,9 @@ export default function UnauthorizedPage() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await signOut({ 
+    await signOut({
       callbackUrl: "/auth/login",
-      redirect: true 
+      redirect: true
     });
   };
 
@@ -57,7 +57,7 @@ export default function UnauthorizedPage() {
                   Vui lòng liên hệ quản trị viên hệ thống để được cấp quyền.
                 </p>
                 <p className="text-sm text-blue-600 mt-2">
-                  Email: <a href="mailto:admin@tazagroup.vn" className="underline">admin@tazagroup.vn</a>
+                  Email: <a href="mailto:admin@innerbright.vn" className="underline">admin@innerbright.vn</a>
                 </p>
               </div>
             </div>

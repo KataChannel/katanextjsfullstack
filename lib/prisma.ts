@@ -12,7 +12,7 @@ const isSkipDbBuild = process.env.SKIP_DB_DURING_BUILD === '1';
 // Get default hostname at runtime (not build time)
 // This function ensures the env variable is read at runtime
 function getDefaultHostname(): string {
-  return process.env.DEFAULT_HOSTNAME || 'innerbright.vn';
+  return 'innerbright.vn';
 }
 
 /**

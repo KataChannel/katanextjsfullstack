@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     // Admin có full quyền
     if (session.user.role === 'admin') {
       const websiteSettings = await prisma.websiteSettings.findUnique({
-        where: { domain: 'tazagroup.vn' },
+        where: { domain: 'innerbright.vn' },
       });
 
       let allMenuUrls: string[] = [];

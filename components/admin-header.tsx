@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
-import { 
-  Menu, 
-  X, 
-  LayoutDashboard, 
-  Users, 
-  FileText, 
-  Image, 
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  Users,
+  FileText,
+  Image,
   Settings,
   LogOut,
   User,
@@ -23,7 +23,7 @@ import {
   PopoverTrigger,
 } from "./ui/popover";
 
-const adminNavigation:any = [
+const adminNavigation: any = [
   // { name: "Tổng quan", href: "/admin", icon: LayoutDashboard },
   // { name: "Quản lý Nội dung", href: "/admin/content", icon: FileText },
   // { name: "Page Builder", href: "/admin/page-builder", icon: LayoutDashboard },
@@ -37,9 +37,9 @@ export function AdminHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
-    await signOut({ 
+    await signOut({
       callbackUrl: "/auth/login",
-      redirect: true 
+      redirect: true
     });
   };
 
@@ -82,7 +82,7 @@ export function AdminHeader() {
                 <div className="space-y-1">
                   <div className="px-3 py-2 border-b">
                     <p className="text-sm font-medium">Admin User</p>
-                    <p className="text-xs text-muted-foreground">admin@tazagroup.vn</p>
+                    <p className="text-xs text-muted-foreground">admin@innerbright.vn</p>
                   </div>
                   <Button variant="ghost" className="w-full justify-start" asChild>
                     <Link href="/admin/profile">
@@ -97,8 +97,8 @@ export function AdminHeader() {
                     </Link>
                   </Button>
                   <div className="border-t pt-1">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       className="w-full justify-start text-destructive hover:text-destructive"
                       onClick={handleLogout}
                     >
@@ -131,7 +131,7 @@ export function AdminHeader() {
         {mobileMenuOpen && (
           <div className="lg:hidden absolute top-16 left-0 right-0 bg-background border-b shadow-lg">
             <div className="py-4 px-4 space-y-1 max-h-[calc(100vh-4rem)] overflow-y-auto">
-              {adminNavigation.map((item:any) => {
+              {adminNavigation.map((item: any) => {
                 const Icon = item.icon;
                 return (
                   <Link
@@ -146,9 +146,9 @@ export function AdminHeader() {
                 );
               })}
               <div className="pt-2 border-t">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start" 
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start"
                   asChild
                   onClick={() => setMobileMenuOpen(false)}
                 >

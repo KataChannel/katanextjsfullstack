@@ -23,7 +23,7 @@ export function generateSEOMetadata(config: SEOConfig): Metadata {
     ogImage,
     ogType = 'website',
     canonicalUrl,
-    siteName = 'Taza Group',
+    siteName = 'InnerBright',
     locale = 'vi_VN',
     twitterHandle,
   } = config;
