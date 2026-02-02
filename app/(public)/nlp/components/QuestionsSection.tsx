@@ -134,8 +134,6 @@ export default function QuestionsSection() {
                 >
                     <p className="text-xl lg:text-2xl text-gray-900 font-bold leading-relaxed">
                         Bạn chính là tác giả của cuộc đời mình, là đạo diễn của vở kịch mang tên “Cuộc sống” mà bạn đóng vai chính.
-                    </p>
-                    <p className="text-xl lg:text-2xl text-gray-900 font-bold leading-relaxed">
                         Mỗi người sinh ra đều sở hữu tiềm năng to lớn bên trong để kiến tạo cuộc sống như mong muốn.
                     </p>
                 </motion.div>
