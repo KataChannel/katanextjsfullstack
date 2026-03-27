@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo Cải thiện Chỉ số Google Maps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c62828;
+            --secondary: #1565c0;
+            --success: #2e7d32;
+            --warning: #ef6c00;
+            --danger: #d32f2f;
+            --bg-body: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .report-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #222;
+            text-transform: uppercase;
+            font-size: 1.8rem;
+            margin: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            margin-top: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+        }
+
+        .alert-box {
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 6px solid;
+        }
+
+        .alert-important {
+            border-color: var(--primary);
+            background: #fff5f5;
+        }
+
+        .alert-note {
+            border-color: var(--secondary);
+            background: #f0f7ff;
+        }
+
+        .alert-warning {
+            border-color: var(--warning);
+            background: #fffcf0;
+        }
+
+        .alert-caution {
+            border-color: #d32f2f;
+            background: #fff0f0;
+        }
+
+        .alert-tip {
+            border-color: var(--success);
+            background: #f0fff4;
+        }
+
+        .alert-box strong {
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .status-danger {
+            color: var(--danger);
+            font-weight: 700;
+        }
+
+        .status-success {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        @media (max-width: 600px) {
+            .report-wrap {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="report-wrap">
+        <header>
+            <h1>BÁO CÁO CẢI THIỆN CHỈ SỐ GOOGLE MAPS</h1>
+        </header>
+
+        <div class="alert-box alert-important">
+            <strong>LƯU Ý QUAN TRỌNG</strong>
+            <b>Tình trạng hiện tại:</b> Cần tập trung xử lý các đánh giá tiêu cực và tăng cường đánh giá 5 sao để nâng
+            điểm trung bình lên mục tiêu 4.5.
+        </div>
+
+        <section>
+            <h2>📊 1. Thống kê Đánh giá Hiện tại</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mức đánh giá</th>
+                        <th>Số lượng</th>
+                        <th>Tỷ lệ (%)</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>⭐ (1 sao)</td>
+                        <td><b>57</b></td>
+                        <td>16.4%</td>
+                        <td class="status-danger">⚠️ <b>Cần xử lý gấp</b></td>
+                    </tr>
+                    <tr>
+                        <td>⭐⭐ (2 sao)</td>
+                        <td><b>2</b></td>
+                        <td>0.6%</td>
+                        <td>⚠️ Cần theo dõi</td>
+                    </tr>
+                    <tr>
+                        <td>⭐⭐⭐ (3 sao)</td>
+                        <td><b>0</b></td>
+                        <td>0%</td>
+                        <td>Bình thường</td>
+                    </tr>
+                    <tr>
+                        <td>⭐⭐⭐⭐ (4 sao)</td>
+                        <td><b>8</b></td>
+                        <td>2.3%</td>
+                        <td>Tốt</td>
+                    </tr>
+                    <tr>
+                        <td>⭐⭐⭐⭐⭐ (5 sao)</td>
+                        <td><b>281</b></td>
+                        <td>80.7%</td>
+                        <td class="status-success">✅ <b>Rất tốt</b></td>
+                    </tr>
+                    <tr style="font-weight: 700; background: #fafafa;">
+                        <td>TỔNG CỘNG</td>
+                        <td>348</td>
+                        <td>100%</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert-box alert-important" style="text-align: center;">
+                <strong>MỤC TIÊU ƯU TIÊN: 4.5 SAO</strong>
+                <b>Cần thêm ít nhất:</b> <span style="font-size: 1.4rem; color: var(--primary);">+136</span> đánh giá 5
+                sao mới (không phát sinh 1 sao).
+            </div>
+        </section>
+
+        <section>
+            <h2>📈 2. Lộ trình nâng điểm</h2>
+            <p>Dưới đây là số lượng đánh giá 5 sao cần thiết và thời gian dự kiến (trung bình 4 đánh giá/ngày):</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mục tiêu</th>
+                        <th>Số đánh giá 5⭐ cần thêm</th>
+                        <th>Tổng số đạt được</th>
+                        <th>Thời gian dự kiến</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>🚀 4.5 SAO</b></td>
+                        <td><b>+136</b></td>
+                        <td>484</td>
+                        <td><b>~5 tuần</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>⭐ 4.6 SAO</b></td>
+                        <td><b>+257</b></td>
+                        <td>605</td>
+                        <td><b>~9 tuần</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>⭐ 4.7 SAO</b></td>
+                        <td><b>+459</b></td>
+                        <td>807</td>
+                        <td><b>~16 tuần</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>⭐ 4.8 SAO</b></td>
+                        <td><b>+862</b></td>
+                        <td>1210</td>
+                        <td><b>~31 tuần</b></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert-box alert-note">
+                <strong>GHI CHÚ</strong>
+                <ul>
+                    <li>Thời gian dự kiến tính theo tần suất an toàn: <b>3-5 đánh giá/ngày</b> (trung bình 4).</li>
+                    <li>Giả định không phát sinh thêm đánh giá 1-4 sao nào trong quá trình thực hiện.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>🛠️ 3. Phương án Xử lý & Cải thiện</h2>
+
+            <h3>🛑 Giai đoạn 1: Xử lý Đánh giá Tiêu cực (1 Sao)</h3>
+            <div class="alert-box alert-important" style="border-left-color: var(--warning); background: #fffcf0;">
+                <strong>CẢNH BÁO</strong>
+                Việc xóa đánh giá phụ thuộc rất lớn vào định dạng của đánh giá đó.
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Trường hợp</th>
+                        <th>Đặc điểm</th>
+                        <th>Phương án</th>
+                        <th>Chi phí / Khả năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Đánh giá không ảnh</b></td>
+                        <td>Chỉ có chữ hoặc trống</td>
+                        <td>Khó báo cáo vi phạm</td>
+                        <td><b>Không thể xóa</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>Đánh giá có ảnh</b></td>
+                        <td>Đính kèm hình ảnh</td>
+                        <td>Báo cáo vi phạm chính sách</td>
+                        <td><b>Có thể xóa</b> (250k - 750k)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-style: italic;">Note: Có thể thương lượng giá với các bên dịch vụ tùy theo số lượng đánh giá
+                cần xử lý.</p>
+
+            <h3>🚀 Giai đoạn 2: Đẩy mạnh Đánh giá 5 Sao</h3>
+            <div class="alert-box alert-important" style="border-left-color: #d32f2f; background: #fff0f0;">
+                <strong>THẬN TRỌNG</strong>
+                Thuật toán Google hiện nay quét rất gắt về tính chân thực của người dùng.
+            </div>
+            <ul>
+                <li><b>Thời gian triển khai:</b> Cần lộ trình <b>dài hạn</b> để đảm bảo tính tự nhiên.</li>
+                <li><b>Chất lượng:</b> Chỉ sử dụng các tài khoản có lịch sử hoạt động thật để tránh bị quét mất đánh
+                    giá.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>💰 4. Chi phí & Dự kiến triển khai</h2>
+            <p>Dưới đây là bảng giá tham khảo cho dịch vụ tăng đánh giá 5 sao (có bảo hành):</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hình thức đánh giá</th>
+                        <th>Chi phí trung bình / Đánh giá</th>
+                        <th>Ghi chú</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Đánh giá thường</b></td>
+                        <td>28.000đ ~ 45.000đ</td>
+                        <td>Có bảo hành, tài khoản sạch</td>
+                    </tr>
+                    <tr>
+                        <td><b>Local Guide Cấp 4+</b></td>
+                        <td>50.000đ ~ 80.000đ</td>
+                        <td>Độ tin cậy cao, có bảo hành</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>🧾 5. Bảng chi phí tham khảo tổng thể</h2>
+            <p>Tính toán dựa trên tỷ lệ: <b>90% Đánh giá thường</b> và <b>10% Đánh giá Local Guide</b>:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mục tiêu</th>
+                        <th>Tổng 5⭐</th>
+                        <th>90% Thường</th>
+                        <th>10% LG</th>
+                        <th>Thời gian</th>
+                        <th>Chi phí tổng dự kiến</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>🚀 4.5 SAO</b></td>
+                        <td>136</td>
+                        <td>122</td>
+                        <td>14</td>
+                        <td>~5 tuần</td>
+                        <td><b>4.116k - 6.610k</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>⭐ 4.6 SAO</b></td>
+                        <td>257</td>
+                        <td>231</td>
+                        <td>26</td>
+                        <td>~9 tuần</td>
+                        <td><b>7.768k - 12.475k</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>⭐ 4.7 SAO</b></td>
+                        <td>459</td>
+                        <td>413</td>
+                        <td>46</td>
+                        <td>~16 tuần</td>
+                        <td><b>13.864k - 22.265k</b></td>
+                    </tr>
+                    <tr>
+                        <td><b>⭐ 4.8 SAO</b></td>
+                        <td>862</td>
+                        <td>776</td>
+                        <td>86</td>
+                        <td>~31 tuần</td>
+                        <td><b>26.028k - 41.800k</b></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="alert-box alert-tip">
+                <strong>MẸO & LƯU Ý</strong>
+                <ul>
+                    <li>Giá trên là mức dự kiến tổng hợp (k = 1.000đ) để tối ưu ngân sách và độ uy tín.</li>
+                    <li>Tùy vào ngân sách và độ ưu tiên, có thể lựa chọn đơn vị phù hợp hoặc thương lượng thêm về giá
+                        theo số lượng lớn.</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="footer">
+            Báo cáo được thực hiện bởi team IT - SEO
+        </div>
+    </div>
+</body>
+
+</html>
